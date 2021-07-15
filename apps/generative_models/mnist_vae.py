@@ -497,7 +497,7 @@ def generate_samples(args):
     model.eval()
 
     # Sample some latent vectors
-    n = 8
+    n = 1
     bs = n*n
     z = th.randn(bs, model.zdim)
 
