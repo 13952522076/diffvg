@@ -572,7 +572,7 @@ def generate_samples(args):
     LOG.info("Generated %d shapes", len(all_shapes))
 
     fname = os.path.join(chkpt, "digits.svg")
-    print(f"writing svg images to : {path}")
+    print(f"writing svg images to : {fname}")
     pydiffvg.save_svg(fname, n*model.imsize, n*model.imsize, all_shapes,
                       all_shape_groups, use_gamma=False)
 
