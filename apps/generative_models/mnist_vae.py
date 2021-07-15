@@ -536,6 +536,7 @@ def generate_samples(args):
     images = images.contiguous().view(n*h, n*w)
     images = th.clamp(images, 0, 1).cpu().numpy()
     path = os.path.join(chkpt, "samples.png")
+    print(f"writing sampled images to : {path}")
     pydiffvg.imwrite(images, path, gamma=2.2)
 
     if autoencode:
@@ -545,6 +546,7 @@ def generate_samples(args):
         ref = ref.contiguous().view(n*h, n*w)
         ref = th.clamp(ref, 0, 1).cpu().numpy()
         path = os.path.join(chkpt, "ref.png")
+        print(f"writing reference images to : {path}")
         pydiffvg.imwrite(ref, path, gamma=2.2)
 
     # merge scenes
@@ -570,6 +572,7 @@ def generate_samples(args):
     LOG.info("Generated %d shapes", len(all_shapes))
 
     fname = os.path.join(chkpt, "digits.svg")
+    print(f"writing svg images to : {path}")
     pydiffvg.save_svg(fname, n*model.imsize, n*model.imsize, all_shapes,
                       all_shape_groups, use_gamma=False)
 
