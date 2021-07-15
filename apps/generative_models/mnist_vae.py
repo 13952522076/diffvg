@@ -684,6 +684,7 @@ if __name__ == "__main__":
     parser_interpolate.set_defaults(func=interpolate)
 
     args = parser.parse_args()
+    print(f"args: {args}")
 
     ttools.set_logger(True)
     args.func(args)
