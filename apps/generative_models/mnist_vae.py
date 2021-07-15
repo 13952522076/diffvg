@@ -160,6 +160,9 @@ class VectorMNISTVAE(th.nn.Module):
         self.zdim = zdim
         self.conditional = conditional
         self.variational = variational
+        print(f"Employing VectorMNISTVAE: samples:{self.samples}, imsize:{self.imsize}, paths:{self.paths}, "
+              f"segments: {self.segments}, zdim:{self.zdim}, conditional: {self.conditional}, "
+              f"varitional: {self.variational}")
 
         if stroke_width is None:
             self.stroke_width = (1.0, 3.0)
@@ -172,6 +175,7 @@ class VectorMNISTVAE(th.nn.Module):
             ncond = 10
 
         self.fc = fc
+        print(f"self.fc is {self.fc}")
         mult = 1
         nc = 1024
 
@@ -215,6 +219,7 @@ class VectorMNISTVAE(th.nn.Module):
         )
 
         self.raster = raster
+        print(f"self.raster is {self.raster}")
 
         if self.raster:
             self.raster_decoder = th.nn.Sequential(
@@ -418,6 +423,7 @@ def train(args):
                         segments=args.segments, conditional=args.conditional,
                         zdim=args.zdim, fc=args.fc)
 
+    print(f"Chooose generator: {args.generator}")
     if args.generator == "vae":
         model = VectorMNISTVAE(variational=True, **model_params)
         chkpt = VAE_OUTPUT
