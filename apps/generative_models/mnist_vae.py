@@ -559,6 +559,7 @@ def generate_samples(args):
     all_shape_groups = []
     cur_id = 0
     for idx, s in enumerate(scenes):
+        print(f"sampling scenes idx: {idx}")
         shapes, shape_groups, _ = s
         # width, height = sizes
 
