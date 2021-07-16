@@ -474,8 +474,8 @@ def train(args):
     port = 8080
     trainer.add_callback(ttools.callbacks.ProgressBarCallback(
         keys=keys, val_keys=keys))
-    trainer.add_callback(ttools.callbacks.VisdomLoggingCallback(
-        keys=keys, val_keys=keys, env=name, port=port))
+    # trainer.add_callback(ttools.callbacks.VisdomLoggingCallback(
+    #     keys=keys, val_keys=keys, env=name, port=port))
     trainer.add_callback(MNISTCallback(
         env=name, win="samples", port=port, frequency=args.freq))
     trainer.add_callback(ttools.callbacks.CheckpointingCallback(
