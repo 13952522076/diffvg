@@ -142,7 +142,7 @@ class VAEInterface(ttools.ModelInterface):
         ret["data_loss"] = data_loss.item()
         ret["auxdata"] = auxdata
         ret["rendering"] = rendering
-        ret["logvar"] = logvar.abs().max().item()
+        ret["logvar"] = logvar.abs().max().item() if self.variational else None
 
         return ret
 
