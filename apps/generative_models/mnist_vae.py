@@ -149,7 +149,7 @@ class VAEInterface(ttools.ModelInterface):
 
 class VectorMNISTVAE(th.nn.Module):
     def __init__(self, imsize=28, paths=4, segments=5, samples=2, zdim=128,
-                 conditional=False, variational=True, raster=False, fc=False,
+                 conditional=False, variational=True, raster=True, fc=False,
                  stroke_width=None):
         super(VectorMNISTVAE, self).__init__()
 
@@ -471,7 +471,6 @@ def train(args):
         keys = ["kld", "data_loss", "loss", "logvar"]
     elif args.generator == "ae":
         keys = ["data_loss", "loss"]
-    port = 8080
     trainer.add_callback(ttools.callbacks.ProgressBarCallback(
         keys=keys, val_keys=keys))
     # trainer.add_callback(ttools.callbacks.VisdomLoggingCallback(
