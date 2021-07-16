@@ -408,7 +408,7 @@ def train(args):
     imsize = 28
     dataset = Dataset(args.data_dir, imsize)
     dataloader = DataLoader(dataset, batch_size=args.bs,
-                            num_workers=4, shuffle=True)
+                            num_workers=8, shuffle=True)
 
     if args.generator in ["vae", "ae"]:
         LOG.info("Vector config:\n  samples %d\n"
@@ -668,7 +668,7 @@ if __name__ == "__main__":
                               help="learning rate")
     parser_train.add_argument("--kld_weight", type=float, default=1.0,
                               help="scalar weight for the KL divergence term.")
-    parser_train.add_argument("--bs", type=int, default=32, help="batch size")
+    parser_train.add_argument("--bs", type=int, default=64, help="batch size")
     parser_train.add_argument("--num_epochs", default=50, type=int,
                               help="max number of epochs")
     # Vector configs
@@ -676,7 +676,7 @@ if __name__ == "__main__":
                               help="number of vector paths to generate.")
     parser_train.add_argument("--segments", type=int, default=3,
                               help="number of segments per vector path")
-    parser_train.add_argument("--samples", type=int, default=16,
+    parser_train.add_argument("--samples", type=int, default=4,
                               help="number of samples in the MC rasterizer")
     parser_train.add_argument("--zdim", type=int, default=20,
                               help="dimension of the latent space")
