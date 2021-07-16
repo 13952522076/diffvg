@@ -676,7 +676,7 @@ if __name__ == "__main__":
                               help="number of vector paths to generate.")
     parser_train.add_argument("--segments", type=int, default=3,
                               help="number of segments per vector path")
-    parser_train.add_argument("--samples", type=int, default=4,
+    parser_train.add_argument("--samples", type=int, default=16,
                               help="number of samples in the MC rasterizer")
     parser_train.add_argument("--zdim", type=int, default=20,
                               help="dimension of the latent space")
