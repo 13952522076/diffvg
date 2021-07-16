@@ -668,7 +668,7 @@ if __name__ == "__main__":
                               help="learning rate")
     parser_train.add_argument("--kld_weight", type=float, default=1.0,
                               help="scalar weight for the KL divergence term.")
-    parser_train.add_argument("--bs", type=int, default=8, help="batch size")
+    parser_train.add_argument("--bs", type=int, default=32, help="batch size")
     parser_train.add_argument("--num_epochs", default=50, type=int,
                               help="max number of epochs")
     # Vector configs
