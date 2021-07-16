@@ -149,7 +149,7 @@ class VAEInterface(ttools.ModelInterface):
 
 class VectorMNISTVAE(th.nn.Module):
     def __init__(self, imsize=28, paths=4, segments=5, samples=2, zdim=128,
-                 conditional=False, variational=True, raster=True, fc=False,
+                 conditional=False, variational=True, raster=False, fc=False,
                  stroke_width=None):
         super(VectorMNISTVAE, self).__init__()
 
