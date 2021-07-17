@@ -229,7 +229,7 @@ class VectorMNISTVAE(th.nn.Module):
             # 4 points bezier with n_segments -> 3*n_segments + 1 points
             self.point_predictor = th.nn.Sequential(
                 th.nn.Linear(nc, 2*self.paths*(self.segments*3+1)),
-                th.nn.Tanh()  # bound spatial extent
+                th.nn.Tanh()  # bound spatial extent [-1,1]
             )
 
             self.width_predictor = th.nn.Sequential(
@@ -502,7 +502,7 @@ def generate_samples(args):
     model.eval()
 
     # Sample some latent vectors
-    n = 1
+    n = 8
     bs = n*n
     z = th.randn(bs, model.zdim)
 
