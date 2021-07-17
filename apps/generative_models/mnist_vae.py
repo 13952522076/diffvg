@@ -690,10 +690,6 @@ if __name__ == "__main__":
     parser_sample.add_argument("--digit", type=int, choices=list(range(10)),
                                help="digits to synthesize, "
                                "random if not specified")
-    parser_train.add_argument("--generator", choices=["vae", "ae"],
-                              default="vae",
-                              help="choice of regular or variational "
-                                   "autoencoder")
     parser_sample.set_defaults(func=generate_samples)
 
     parser_interpolate = subs.add_parser("interpolate")
