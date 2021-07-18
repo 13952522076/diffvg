@@ -16,7 +16,7 @@ from torchvision.datasets.mnist import FashionMNIST, MNIST
 from torchvision import transforms
 from tqdm import tqdm
 import models as models
-from .helper import mkdir_p, save_model, save_args, set_seed, Logger
+from helper import mkdir_p, save_model, save_args, set_seed, Logger
 
 def parse_args():
     """Parameters"""
