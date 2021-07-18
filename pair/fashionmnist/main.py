@@ -183,7 +183,7 @@ def validate(net, testloader, criterion, device):
 
 def visualize(net, trainloader, device, path,  nrow=8):
     data, label = next(iter(trainloader))
-    data = data.to(device), label.to(device)
+    data = data.to(device)
     print(data)
     print(data.shape)
     net.eval()
