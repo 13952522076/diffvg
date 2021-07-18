@@ -103,7 +103,6 @@ def main():
         net.load_state_dict(checkpoint['net'])
         start_epoch = checkpoint['epoch']
         best_test_loss = checkpoint['best_test_loss']
-        best_train_loss = checkpoint['best_train_loss']
         logger = Logger(os.path.join(args.checkpoint, 'log.txt'), title="main", resume=True)
         optimizer_dict = checkpoint['optimizer']
 
@@ -187,7 +186,9 @@ def visualize(net, trainloader, device, path,  nrow=8):
     with torch.no_grad():
         id, (data, label) = next(enumerate(trainloader))
         data = data.to(device), label.to(device)
+        print(data.shape)
         out = net(data)
+        print(out.shape)
     vutils.save_image(data, f"{path}_gt.png", nrow=nrow, normalize=True)
     vutils.save_image(out, f"{path}_out.png", nrow=nrow, normalize=True)
 
