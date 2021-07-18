@@ -182,7 +182,7 @@ def validate(net, testloader, criterion, device):
 
 
 def visualize(net, trainloader, device, path,  nrow=8):
-    id, (data, label) = next(enumerate(trainloader))
+    data, label = next(iter(trainloader))
     data = data.to(device), label.to(device)
     print(data)
     print(data.shape)
