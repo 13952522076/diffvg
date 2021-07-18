@@ -182,11 +182,12 @@ def validate(net, testloader, criterion, device):
 
 
 def visualize(net, trainloader, device, path,  nrow=8):
+    id, (data, label) = next(enumerate(trainloader))
+    data = data.to(device), label.to(device)
+    print(data)
+    print(data.shape)
     net.eval()
     with torch.no_grad():
-        id, (data, label) = next(enumerate(trainloader))
-        data = data.to(device), label.to(device)
-        print(data.shape)
         out = net(data)
         print(out.shape)
     vutils.save_image(data, f"{path}_gt.png", nrow=nrow, normalize=True)
