@@ -26,13 +26,13 @@ def parse_args():
     parser.add_argument('--msg', type=str, help='message after checkpoint')
     parser.add_argument('--model', default='VectorMNISTAE', help='model name [default: pointnet_cls]')
     # training
-    parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=200, type=int, help='number of epoch in training')
+    parser.add_argument('--batch_size', type=int, default=64, help='batch size in training')
+    parser.add_argument('--epoch', default=80, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=8, type=int, help='workers')
-    parser.add_argument('--frequency', default=100, type=int, help='workers')
+    parser.add_argument('--frequency', default=200, type=int, help='workers')
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
     parser.add_argument('--imsize', default=28, type=int)
@@ -149,9 +149,9 @@ def train(net, trainloader, optimizer, criterion, device):
         loss.backward()
         optimizer.step()
         train_loss += loss.item()
-        if batch_idx >=0 and batch_idx%args.frequency == 0:
+        if batch_idx >1 and batch_idx%args.frequency == 0:
             time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-            printf(f"[{batch_idx}/{len(trainloader)}]  Train time {time_cost}s  Train loss {train_loss/(batch_idx + 1)}")
+            printf(f"[{batch_idx}/{len(trainloader)}]\t  Train time {time_cost}s  Train loss {train_loss/(batch_idx + 1)}")
             time_cost = datetime.datetime.now()
     return {
         "loss": float("%.3f" % (train_loss / (batch_idx + 1)))
