@@ -14,9 +14,12 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
 from torchvision.datasets.mnist import FashionMNIST, MNIST
 from torchvision import transforms
+import torchvision.utils as vutils
 from tqdm import tqdm
 import models as models
+import matplotlib.pyplot as plt
 from helper import mkdir_p, save_model, save_args, set_seed, Logger
+
 
 def parse_args():
     """Parameters"""
@@ -36,12 +39,13 @@ def parse_args():
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
     parser.add_argument('--imsize', default=28, type=int)
-    parser.add_argument('--paths', default=4, type=int)
+    parser.add_argument('--paths', default=8, type=int)
     parser.add_argument('--segments', default=5, type=int)
     parser.add_argument('--samples', default=2, type=int)
     parser.add_argument('--zdim', default=1024, type=int)
 
     return parser.parse_args()
+
 
 args = parse_args()
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
@@ -128,13 +132,16 @@ def main():
         else:
             is_best = False
 
-        save_model( net, epoch, path=args.checkpoint, is_best=is_best,
-                    test_loss=test_out["loss"], optimizer=optimizer.state_dict())
+        save_model(net, epoch, path=args.checkpoint, is_best=is_best,
+                   test_loss=test_out["loss"], optimizer=optimizer.state_dict())
         logger.append([epoch, optimizer.param_groups[0]['lr'], train_out["loss"], test_out["loss"]])
 
-        printf(f"Train loss:{train_out['loss']} Test loss:{test_out['loss']} [best test loss:{best_test_loss}] \n\n")
-    logger.close()
+        printf(f"Train loss:{train_out['loss']} Test loss:{test_out['loss']} [best test loss:{best_test_loss}]")
+        printf(f"==> saving visualized images ... \n\n")
+        img_save_path = args.checkpoint +'/epoch'+str(epoch+1)
+        visualize(net, train_loader, device, img_save_path, nrow=8)
 
+    logger.close()
 
 
 def train(net, trainloader, optimizer, criterion, device):
@@ -149,9 +156,10 @@ def train(net, trainloader, optimizer, criterion, device):
         loss.backward()
         optimizer.step()
         train_loss += loss.item()
-        if batch_idx >1 and batch_idx%args.frequency == 0:
+        if batch_idx > 1 and batch_idx % args.frequency == 0:
             time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-            printf(f"[{batch_idx}/{len(trainloader)}]\t  Train time {time_cost}s  Train loss {train_loss/(batch_idx + 1)}")
+            printf(
+                f"[{batch_idx}/{len(trainloader)}]\t  Train time {time_cost}s  Train loss {train_loss / (batch_idx + 1)}")
             time_cost = datetime.datetime.now()
     return {
         "loss": float("%.3f" % (train_loss / (batch_idx + 1)))
@@ -170,6 +178,16 @@ def validate(net, testloader, criterion, device):
     return {
         "loss": float("%.3f" % (test_loss / (batch_idx + 1)))
     }
+
+
+def visualize(net, trainloader, device, path,  nrow=8):
+    net.eval()
+    with torch.no_grad():
+        id, (data, label) = next(enumerate(trainloader))
+        data = data.to(device), label.to(device)
+        out = net(data)
+    vutils.save_image(data, f"{path}_gt.png", nrow=nrow, normalize=True)
+    vutils.save_image(out, f"{path}_out.png", nrow=nrow, normalize=True)
 
 
 if __name__ == '__main__':
