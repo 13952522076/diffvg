@@ -52,9 +52,9 @@ class Encoder(nn.Module):
         return self.encoder(x)
 
 
-class VectorMNISTVAE(nn.Module):
-    def __init__(self, imsize=28, paths=4, segments=5, samples=2, zdim=1024, stroke_width=None):
-        super(VectorMNISTVAE, self).__init__()
+class VectorMNISTAE(nn.Module):
+    def __init__(self, imsize=28, paths=4, segments=5, samples=2, zdim=1024, stroke_width=None, **kwargs):
+        super(VectorMNISTAE, self).__init__()
         self.encoder = Encoder(zdim)
         self.segments = segments
         self.paths = paths
@@ -139,6 +139,6 @@ class VectorMNISTVAE(nn.Module):
 
 if __name__ == '__main__':
     data = torch.rand(2,1,28,28)
-    model = VectorMNISTVAE()
+    model = VectorMNISTAE()
     out = model(data)
     print(out.shape)
