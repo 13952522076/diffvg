@@ -126,8 +126,6 @@ class VectorMNISTAE(nn.Module):
             out = out.permute(2, 0, 1).view(4, self.imsize, self.imsize)[:3].mean(0, keepdim=True)
             outputs.append(out)
         output = torch.stack(outputs).to(z.device)
-        # map to [-1, 1]
-        output = output * 2.0 - 1.0
         return output
 
 
