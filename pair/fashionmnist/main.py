@@ -133,7 +133,7 @@ def main():
         else:
             is_best = False
 
-        save_model(net, epoch, path=args.checkpoint, is_best=is_best,
+        save_model(net, epoch, path=args.checkpoint, is_best=is_best, best_test_loss = best_test_loss,
                    test_loss=test_out["loss"], optimizer=optimizer.state_dict())
         logger.append([epoch, optimizer.param_groups[0]['lr'], train_out["loss"], test_out["loss"]])
 
