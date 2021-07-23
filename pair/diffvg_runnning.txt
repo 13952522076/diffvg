@@ -6,3 +6,5 @@ export CXX=/cm/shared/utils/GCC/8.1.0/bin/g++
 
 
 nohup python main.py --batch_size 64 --epoch 80 --learning_rate 0.001 --frequency 200 --paths 8 --segments 5 --zdim 1024 --msg bs64-e80-lr001-path8-seg5-zdim1024 > nohup/bs64-e80-lr001-path8-seg5-zdim1024.out &
+
+nohup python main.py --batch_size 64 --epoch 80 --learning_rate 0.001 --frequency 200 --paths 5 --segments 3 --zdim 1024 --msg bs64-e80-lr001-path5-seg3-zdim1024 > nohup/bs64-e80-lr001-path5-seg3-zdim1024.out &
