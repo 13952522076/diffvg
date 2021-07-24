@@ -210,10 +210,10 @@ def main(args):
     # Save the intermediate render.
     pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/final.png'.format(t), gamma=gamma)
     # Convert the intermediate renderings to a video.
-    from subprocess import call
-    call(["ffmpeg", "-framerate", "24", "-i",
-          "results/painterly_rendering/iter_%d.png", "-vb", "20M",
-          "results/painterly_rendering/out.mp4"])
+    # from subprocess import call
+    # call(["ffmpeg", "-framerate", "24", "-i",
+    #       "results/painterly_rendering/iter_%d.png", "-vb", "20M",
+    #       "results/painterly_rendering/out.mp4"])
 
 
 if __name__ == "__main__":
