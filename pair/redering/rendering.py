@@ -14,6 +14,7 @@ import random
 import ttools.modules
 import argparse
 import math
+import os
 
 pydiffvg.set_print_timing(True)
 
@@ -26,6 +27,7 @@ def main(args):
 
     perception_loss = ttools.modules.LPIPS().to(pydiffvg.get_device())
 
+    filename = os.path.basename(args.target).split('.')[0]
     # target = torch.from_numpy(skimage.io.imread('imgs/lena.png')).to(torch.float32) / 255.0
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
     target = target.pow(gamma)
@@ -164,7 +166,7 @@ def main(args):
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
                                                           device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         # Save the intermediate render.
-        pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
+        pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/{}_iter_{}.png'.format(filename,t), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
@@ -194,7 +196,7 @@ def main(args):
                 group.stroke_color.data.clamp_(0.0, 1.0)
 
         if t % 10 == 0 or t == args.num_iter - 1:
-            pydiffvg.save_svg('results/painterly_rendering/iter_{}.svg'.format(t),
+            pydiffvg.save_svg('results/painterly_rendering/{}_iter_{}.svg'.format(filename,t),
                               canvas_width, canvas_height, shapes, shape_groups)
 
     # Render the final result.
