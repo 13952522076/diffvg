@@ -19,14 +19,16 @@ import matplotlib.pyplot as plt
 import torchvision.utils as vutils
 
 transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.1307,), (0.3081,))
+    transforms.ToTensor()
 ])
 
 test_loader = DataLoader(FashionMNIST('../data', train=False, download=True, transform=transform),
                          num_workers=1, batch_size=4, shuffle=True, pin_memory=True)
 
 data, label = next(iter(test_loader))
+print(type(data))
+print(f"data value range is: {data.max()}-{data.min()}")
+print(data)
 print(data.shape)
 data = data[:16]
 vutils.save_image(data, "view.png", nrow=8, normalize=True)

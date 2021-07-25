@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
 from torchvision.datasets.mnist import FashionMNIST, MNIST
+from torchvision.datasets import Caltech101
 from torchvision import transforms
 import torchvision.utils as vutils
 from tqdm import tqdm
@@ -71,6 +72,7 @@ def printf(str):
 
 
 def main():
+
     if args.seed is not None:
         set_seed(args.seed)
         printf(f'==> fixing the random seed to: {args.seed}')
@@ -108,11 +110,12 @@ def main():
 
     printf('==> Preparing data..')
     transform = transforms.Compose([
-        transforms.ToTensor()
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
     ])
-    train_loader = DataLoader(FashionMNIST('../data', train=True, download=True, transform=transform),
+    train_loader = DataLoader(Caltech101('../data', train=True, download=True, transform=transform),
                               num_workers=args.workers, batch_size=args.batch_size, shuffle=True, pin_memory=True)
-    test_loader = DataLoader(FashionMNIST('../data', train=False, download=True, transform=transform),
+    test_loader = DataLoader(Caltech101('../data', train=False, download=True, transform=transform),
                              num_workers=args.workers, batch_size=args.batch_size, shuffle=False, pin_memory=True)
     optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)
     if optimizer_dict is not None:
