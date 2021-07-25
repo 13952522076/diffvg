@@ -1,3 +1,9 @@
+"""
+Example:
+    python main.py --msg bs64-e80-lr001-path8-seg5-zdim1024-scale0-1
+"""
+
+
 import argparse
 import os
 import logging
