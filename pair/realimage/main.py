@@ -13,7 +13,6 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
 from torchvision.datasets.mnist import FashionMNIST, MNIST
-from torchvision.datasets import Caltech101
 from torchvision import transforms
 import torchvision.utils as vutils
 from tqdm import tqdm
