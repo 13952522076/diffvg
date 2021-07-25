@@ -10,7 +10,7 @@ from torchvision.models import resnet50
 class Encoder(nn.Module):
  def __init__(self, zdim=1024, pretrained=True):
      net = resnet50(pretrained=pretrained)
-     #net.fc = nn.Linear(2048,zdim)
+     net.fc = nn.Linear(2048,zdim)
      print(net.fc)
 
 
