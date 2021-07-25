@@ -196,7 +196,8 @@ def main(args):
                 group.stroke_color.data.clamp_(0.0, 1.0)
 
         if t % 10 == 0 or t == args.num_iter - 1:
-            pydiffvg.save_svg('results/painterly_rendering/{}_iter_{}.svg'.format(filename,t),
+            use_blob = "closed" if args.use_blob else "open"
+            pydiffvg.save_svg('results/painterly_rendering/{}-{}_iter_{}.svg'.format(filename,use_blob,t),
                               canvas_width, canvas_height, shapes, shape_groups)
 
     # Render the final result.

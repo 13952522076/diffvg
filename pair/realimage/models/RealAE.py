@@ -11,7 +11,20 @@ class Encoder(nn.Module):
  def __init__(self, zdim=1024, pretrained=True):
      net = resnet50(pretrained=pretrained)
      net.fc = nn.Linear(2048,zdim)
-     print(net.fc)
+     self.net = net
+
+ def forward(self, x):
+     return self.net(x)
+
+
+class Predictor(nn.Module):
+    def __init__(self, zdim=1024, paths=512, segments=2):
+        self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
+        self.point = nn.Sequential(
+            nn.Linear(zdim, )
+        )
+
+
 
 
 # def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
