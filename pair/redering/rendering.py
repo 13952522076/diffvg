@@ -119,7 +119,7 @@ def main(args):
                  0,  # seed
                  None,
                  *scene_args)
-    pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/init.png', gamma=gamma)
+    # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/init.png', gamma=gamma)
 
     points_vars = []
     stroke_width_vars = []
@@ -166,7 +166,7 @@ def main(args):
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
                                                           device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         # Save the intermediate render.
-        pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/{}_iter_{}.png'.format(filename,t), gamma=gamma)
+        # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/{}_iter_{}.png'.format(filename,t), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
@@ -195,9 +195,10 @@ def main(args):
             for group in shape_groups:
                 group.stroke_color.data.clamp_(0.0, 1.0)
 
-        if t % 10 == 0 or t == args.num_iter - 1:
+        # if t % 10 == 0 or t == args.num_iter - 1:
+        if t == args.num_iter - 1:
             use_blob = "closed" if args.use_blob else "open"
-            pydiffvg.save_svg('results/painterly_rendering/{}-{}_iter_{}.svg'.format(filename,use_blob,t),
+            pydiffvg.save_svg('results/rendering/{}-{}_iter_{}.svg'.format(filename,use_blob,t),
                               canvas_width, canvas_height, shapes, shape_groups)
 
     # Render the final result.
@@ -209,7 +210,7 @@ def main(args):
                  None,
                  *scene_args)
     # Save the intermediate render.
-    pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/final.png'.format(t), gamma=gamma)
+    # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/final.png'.format(t), gamma=gamma)
     # Convert the intermediate renderings to a video.
     # from subprocess import call
     # call(["ffmpeg", "-framerate", "24", "-i",
