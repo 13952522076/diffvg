@@ -32,6 +32,7 @@ def main(args):
     img_data = skimage.io.imread(args.target)
     if img_data.shape[2]==4:
         print("alpha channel")
+        img_data = skimage.color.rgba2rgb(img_data)
     else:
         print("no alpha channel")
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
