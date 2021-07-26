@@ -29,6 +29,11 @@ def main(args):
 
     filename = os.path.basename(args.target).split('.')[0]
     # target = torch.from_numpy(skimage.io.imread('imgs/lena.png')).to(torch.float32) / 255.0
+    img_data = skimage.io.imread(args.target)
+    if img_data.size()[2]==4:
+        print("alpha channel")
+    else:
+        print("no alpha channel")
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
