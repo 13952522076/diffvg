@@ -175,6 +175,7 @@ def main(args):
             loss = perception_loss(img, target) + (img.mean() - target.mean()).pow(2)
         else:
             loss = (img - target).pow(2).mean()
+            print(f"img.shape: {img.shape}, target.shape: {target.shape}")
         print('render loss:', loss.item())
 
         # Backpropagate the gradients.
