@@ -35,7 +35,7 @@ def main(args):
         img_data = skimage.color.rgba2rgb(img_data)
     else:
         print("no alpha channel")
-    target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
+    target = torch.from_numpy(img_data).to(torch.float32) / 255.0
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0)
