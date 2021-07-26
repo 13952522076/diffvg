@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for filename in $(ls images2/)
+for filename in $(ls images/)
 do
 
 	echo $filename
