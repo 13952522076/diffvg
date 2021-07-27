@@ -12,4 +12,4 @@ __pycache__
 .idea/
 
 pair/data
-pair/redering/images_resized/
+#pair/redering/images_resized/

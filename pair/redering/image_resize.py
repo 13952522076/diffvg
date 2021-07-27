@@ -1,7 +1,7 @@
 import cv2
 import os
 
-dir = "/Users/melody/Downloads/diffvg_html/images2"
+dir = "/Users/melody/Downloads/diffvg_html/new_images"
 saved_dir = "images_resized"
 resize_factors = [1,2,3,4,5,6,7,8]
 
