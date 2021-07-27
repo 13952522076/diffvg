@@ -151,7 +151,6 @@ def main(args):
     color_optim = torch.optim.Adam(color_vars, lr=0.01)
     # Adam iterations.
     for t in range(args.num_iter):
-        print('iteration:', t)
         points_optim.zero_grad()
         if len(stroke_width_vars) > 0:
             width_optim.zero_grad()
@@ -181,7 +180,7 @@ def main(args):
             # print(f"img.shape: {img.shape}, target.shape: {target.shape}")
             loss = (img - target).pow(2).mean()
 
-        print('render loss:', loss.item())
+        print(f'iteration: {t} \t render loss: {loss.item()}')
 
         # Backpropagate the gradients.
         loss.backward()
