@@ -204,7 +204,7 @@ def main(args):
         # if t % 10 == 0 or t == args.num_iter - 1:
         if t == args.num_iter - 1:
             use_blob = "closed" if args.use_blob else "open"
-            pydiffvg.save_svg('results/rendering/{}-{}_iter_{}.svg'.format(filename,use_blob,t),
+            pydiffvg.save_svg('results/{}/{}-{}_iter_{}.svg'.format(args.folder, filename, use_blob,t),
                               canvas_width, canvas_height, shapes, shape_groups)
 
     # Render the final result.
@@ -231,6 +231,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_width", type=float, default=2.0)
     parser.add_argument("--use_lpips_loss", dest='use_lpips_loss', action='store_true')
     parser.add_argument("--num_iter", type=int, default=500)
+    parser.add_argument("--folder", type=str, default="rendering")
     parser.add_argument("--use_blob", dest='use_blob', action='store_true')
     args = parser.parse_args()
     main(args)
