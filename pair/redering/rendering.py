@@ -178,7 +178,7 @@ def main(args):
         if args.use_lpips_loss:
             loss = perception_loss(img, target) + (img.mean() - target.mean()).pow(2)
         else:
-            print(f"img.shape: {img.shape}, target.shape: {target.shape}")
+            # print(f"img.shape: {img.shape}, target.shape: {target.shape}")
             loss = (img - target).pow(2).mean()
 
         print('render loss:', loss.item())
