@@ -7,25 +7,59 @@ import torch.nn.functional as F
 # import pydiffvg
 from torchvision.models import resnet50
 
-class Encoder(nn.Module):
- def __init__(self, zdim=1024, pretrained=True):
-     super(Encoder, self).__init__()
-     net = resnet50(pretrained=pretrained)
-     net.fc = nn.Linear(2048,zdim)
-     self.net = net
 
- def forward(self, x):
-     return self.net(x)
+class Encoder(nn.Module):
+    def __init__(self, zdim=2048, pretrained=True):
+        super(Encoder, self).__init__()
+        net = resnet50(pretrained=pretrained)
+        net.fc = nn.Linear(2048, zdim)
+        self.net = net
+
+    def forward(self, x):
+        return self.net(x)
 
 
 class Predictor(nn.Module):
-    def __init__(self, zdim=1024, paths=512, segments=2):
-        self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
-        self.point = nn.Sequential(
-            nn.Linear(zdim, )
+    def __init__(self, zdim=2048, paths=512, segments=2, max_width=2.0, im_size=224.0):
+        super(Predictor, self).__init__()
+        self.max_width = max_width
+        self.im_size = im_size
+        # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
+        self.point_predictor = nn.Sequential(
+            nn.Linear(zdim, zdim),
+            nn.ReLU(inplace=True),
+            nn.Linear(zdim, 2 * paths * (segments * 3 + 1))
         )
+        self.width_predictor = nn.Sequential(
+            nn.Linear(zdim, zdim),
+            nn.ReLU(inplace=True),
+            nn.Linear(zdim, paths)  # width will be normalized to range [1, max]
+        )
+        self.color_predictor = nn.Sequential(
+            nn.Linear(zdim, zdim),
+            nn.ReLU(inplace=True),
+            nn.Linear(zdim, paths * 4)  # color will be clamped to range [0,1]
+        )
+        # initialize parameters
+        self._init_param()
 
+    def _init_param(self):
+        nn.init.constant_((self.width_predictor[2]).weight, 0)
+        if (self.width_predictor[2]).bias is not None:
+            torch.nn.init.constant_((self.width_predictor[2]).bias, 0)
 
+    def forward(self, x):  # [b,z_dim]
+        points = self.point_predictor(x)
+        points *= self.im_size
+        widths = self.width_predictor(x)
+        widths = torch.clamp(widths, 1.0, self.max_width)
+        colors = self.color_predictor(x)
+        colors = torch.clamp(colors, 0, 1)
+        return {
+            "points": points,
+            "widths": widths,
+            "colors": colors
+        }
 
 
 # def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
@@ -157,5 +191,13 @@ class Predictor(nn.Module):
 #
 
 if __name__ == '__main__':
-    encoder = Encoder()
-
+    encoder = Encoder(zdim=2048, pretrained=False)
+    predictor = Predictor(zdim=2048, paths=512, segments=2, max_width=2.0, im_size=224.0)
+    input = torch.rand([1, 3, 224, 224])
+    embed_fea = encoder(input)
+    predictions = predictor(embed_fea)
+    print((predictions["points"]).shape)
+    print((predictions["widths"]).shape)
+    print((predictions["colors"]).shape)
+    print((predictions["widths"]))
+    # print(predictor)
