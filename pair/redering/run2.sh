@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for filename in $(ls images_resized_2/ | sort -nr)
+for filename in $(ls images_resized_2/ | sort -n)
 do
 
 	echo $filename
