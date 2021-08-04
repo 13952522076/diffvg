@@ -67,6 +67,7 @@ def main(args):
                     points.append(p3)
                     p0 = p3
             points = torch.tensor(points)
+            print(f"points shape is: {points.shape} | num_segments is {num_segments}")
             points[:, 0] *= canvas_width
             points[:, 1] *= canvas_height
             path = pydiffvg.Path(num_control_points=num_control_points,
