@@ -153,12 +153,13 @@ if __name__ == '__main__':
     print((predictions["points"]).shape)
     print((predictions["widths"]).shape)
     print((predictions["colors"]).shape)
-    print((predictions["widths"]))
+    print((predictions["widths"]).shape)
     # print(predictor)
 
     # test  the pipeline
-    img = torch.rand([3,3,224,224],device=pydiffvg.get_device())
+    img = torch.rand([2, 3, 224,224],device=pydiffvg.get_device())
     model = RealAE( imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
                  pretained_encoder=True)
+    model.to("cuda")
     out = model(img)
     print(f"out shape is: {out.shape}")
