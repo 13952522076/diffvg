@@ -116,8 +116,6 @@ class RealAE(nn.Module):
         print(f"batch size: {batch}")
         img_batch = []
         for i in range(batch):
-            scene_args = pydiffvg.RenderFunction.serialize_scene(
-                self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i])
             img = render(self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i], samples=self.samples)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
@@ -142,6 +140,7 @@ class RealAE(nn.Module):
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
+        print(f"len(shapes_batch) is {len(shapes_batch)}, len(shape_groups_batch) is {len(shape_groups_batch)}")
         out = self.decoder(shapes_batch, shape_groups_batch)
 
         return out
