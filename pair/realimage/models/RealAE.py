@@ -139,7 +139,7 @@ class RealAE(nn.Module):
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
-        out = self.decoder(self, shapes_batch, shape_groups_batch)
+        out = self.decoder(shapes_batch, shape_groups_batch)
 
         return out
 
