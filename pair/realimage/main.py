@@ -118,7 +118,7 @@ def main():
 
     printf('==> Preparing data..')
     transform = transforms.Compose([
-        transforms.Resize(args.imsize),
+        transforms.Resize((args.imsize,args.imsize)),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor()
     ])
