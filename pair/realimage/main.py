@@ -121,9 +121,9 @@ def main():
     ])
     dataset = ImageFolder(root="./data/emoji/", transform=transform)
     train_loader = DataLoader(dataset, num_workers=args.workers,
-                              batch_size=args.batch_size, shuffle=True, pin_memory=True)
+                              batch_size=args.batch_size, shuffle=True, pin_memory=False)
     test_loader = DataLoader(dataset, num_workers=args.workers,
-                             batch_size=args.batch_size, shuffle=False, pin_memory=True)
+                             batch_size=args.batch_size, shuffle=False, pin_memory=False)
     optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)
     if optimizer_dict is not None:
         optimizer.load_state_dict(optimizer_dict)
@@ -160,10 +160,8 @@ def train(net, trainloader, optimizer, criterion, device):
     time_cost = datetime.datetime.now()
     for batch_idx, (data, label) in enumerate(trainloader):
         data, label = data.to(device), label.to(device)
-        print(f"data.shape: {data.shape}, label.shape: {label.shape}")
         optimizer.zero_grad()
         out = net(data)
-        print(f"out.shape: {out.shape}")
         loss = criterion(data, out)
         loss.backward()
         optimizer.step()
