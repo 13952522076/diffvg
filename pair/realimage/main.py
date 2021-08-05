@@ -14,6 +14,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
 from torchvision.datasets.mnist import FashionMNIST, MNIST
 from torchvision import transforms
+from torchvision.datasets import ImageFolder
 import torchvision.utils as vutils
 from tqdm import tqdm
 import models as models
@@ -27,22 +28,25 @@ def parse_args():
     parser.add_argument('-c', '--checkpoint', type=str, metavar='PATH',
                         help='path to save checkpoint (default: checkpoint)')
     parser.add_argument('--msg', type=str, help='message after checkpoint')
-    parser.add_argument('--model', default='VectorMNISTAE', help='model name [default: pointnet_cls]')
+    parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
     # training
-    parser.add_argument('--batch_size', type=int, default=64, help='batch size in training')
+    parser.add_argument('--batch_size', type=int, default=4, help='batch size in training')
     parser.add_argument('--epoch', default=80, type=int, help='number of epoch in training')
-    parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
+    parser.add_argument('--learning_rate', default=0.01, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=8, type=int, help='workers')
     parser.add_argument('--frequency', default=200, type=int, help='workers')
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
-    parser.add_argument('--imsize', default=28, type=int)
-    parser.add_argument('--paths', default=8, type=int)
-    parser.add_argument('--segments', default=5, type=int)
+    parser.add_argument('--imsize', default=224, type=int)
+    parser.add_argument('--paths', default=512, type=int)
+    parser.add_argument('--segments', default=3, type=int)
     parser.add_argument('--samples', default=2, type=int)
     parser.add_argument('--zdim', default=1024, type=int)
+    parser.add_argument('--max_width', default=2, type=int)
+    parser.add_argument('--pretained_encoder', dest='pretrained', action='store_true')
+
 
     return parser.parse_args()
 
@@ -81,9 +85,11 @@ def main():
 
     # building models
     printf(f'==> Building model: {args.model}')
-    net = models.__dict__[args.model](imsize=args.imsize, paths=args.paths,
-                                      segments=args.segments, samples=args.samples, zdim=args.zdim)
-    criterion = nn.L1Loss().to(device)
+    net = models.__dict__[args.model](
+        imsize=args.imsize, paths=args.paths, segments=args.segments, samples=args.samples,
+        zdim=args.zdim, max_width=2, pretained_encoder=args.pretained_encoder)
+    criterion = nn.MSELoss().to(device)
+
     net = net.to(device)
     if device == 'cuda':
         net = torch.nn.DataParallel(net)
@@ -109,19 +115,21 @@ def main():
 
     printf('==> Preparing data..')
     transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
+        transforms.RandomResizedCrop(args.imsize),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor()
     ])
-    train_loader = DataLoader(Caltech101('../data', train=True, download=True, transform=transform),
-                              num_workers=args.workers, batch_size=args.batch_size, shuffle=True, pin_memory=True)
-    test_loader = DataLoader(Caltech101('../data', train=False, download=True, transform=transform),
-                             num_workers=args.workers, batch_size=args.batch_size, shuffle=False, pin_memory=True)
+    dataset = ImageFolder(root="./data/emoji/train/", transform=transform)
+    train_loader = DataLoader(dataset, num_workers=args.workers,
+                              batch_size=args.batch_size, shuffle=True, pin_memory=True)
+    test_loader = DataLoader(dataset, num_workers=args.workers,
+                             batch_size=args.batch_size, shuffle=False, pin_memory=True)
     optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)
     if optimizer_dict is not None:
         optimizer.load_state_dict(optimizer_dict)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate / 100, last_epoch=start_epoch - 1)
     # init save images
-    visualize(net, train_loader, device, args.checkpoint +'/epoch-0', nrow=8)
+    # visualize(net, train_loader, device, args.checkpoint +'/epoch-0', nrow=8)
     for epoch in range(start_epoch, args.epoch):
         printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         train_out = train(net, train_loader, optimizer, criterion, device)  # {"loss"}
@@ -139,9 +147,9 @@ def main():
         logger.append([epoch, optimizer.param_groups[0]['lr'], train_out["loss"], test_out["loss"]])
 
         printf(f"Train loss:{train_out['loss']} Test loss:{test_out['loss']} [best test loss:{best_test_loss}]")
-        printf(f"==> saving visualized images ... \n\n")
-        img_save_path = args.checkpoint +'/epoch'+str(epoch+1)
-        visualize(net, train_loader, device, img_save_path, nrow=8)
+        # printf(f"==> saving visualized images ... \n\n")
+        # img_save_path = args.checkpoint +'/epoch'+str(epoch+1)
+        # visualize(net, train_loader, device, img_save_path, nrow=8)
 
     logger.close()
 
