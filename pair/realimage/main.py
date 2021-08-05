@@ -119,7 +119,7 @@ def main():
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor()
     ])
-    dataset = ImageFolder(root="./data/emoji/train/", transform=transform)
+    dataset = ImageFolder(root="./data/emoji/", transform=transform)
     train_loader = DataLoader(dataset, num_workers=args.workers,
                               batch_size=args.batch_size, shuffle=True, pin_memory=True)
     test_loader = DataLoader(dataset, num_workers=args.workers,
