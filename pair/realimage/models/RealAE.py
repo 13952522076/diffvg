@@ -117,7 +117,7 @@ class RealAE(nn.Module):
         for i in range(batch):
             scene_args = pydiffvg.RenderFunction.serialize_scene(
                 self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i])
-            img=  self.render(self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i], samples=self.samples)
+            img = render(self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i], samples=self.samples)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
                                                               device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
