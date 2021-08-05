@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pydiffvg
 from torchvision.models import resnet50
+pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
 class Encoder(nn.Module):
@@ -28,7 +29,7 @@ class Predictor(nn.Module):
         self.point_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths * (segments * 3 + 1))
+            nn.Linear(zdim, 2 * paths * (segments * 3))
         )
         self.width_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
@@ -85,56 +86,62 @@ class RealAE(nn.Module):
         self.imsize = imsize
         self.samples = samples
         self.predictor = Predictor(zdim=zdim, paths=paths, segments=segments, max_width=max_width, im_size=imsize)
+        self.render = pydiffvg.RenderFunction.apply
+        # self.register_buffer("background",torch.ones(self.imsize, self.imsize, 3) * (1 - img[:, :, 3:4]))
 
-    def decoder(self, z):
-        bs = z.shape[0]
-        # predict points, points are centeralized
-        all_points = self.point_predictor(z).view(bs, self.paths, -1, 2)
-        all_points = all_points * (self.imsize // 2 - 2) + self.imsize // 2
 
-        # predict width, min-max normalization to range [min-max]
-        all_widths = self.width_predictor(z)
-        min_width = self.stroke_width[0]
-        max_width = self.stroke_width[1]
-        all_widths = (max_width - min_width) * all_widths + min_width
+    def get_batch_shapes_groups(self, predict_points, predict_widths, predict_colors):
+        shapes_batch= []
+        shape_groups_batch = []
+        num_batch,num_paths, _, _ = predict_points.size()
+        num_control_points = torch.zeros(self.segments, dtype=torch.int32) + 2
+        for i in range(num_batch):
+            shapes_image = []
+            shape_groups_image = []
+            for j in range(num_paths):
+                path = pydiffvg.Path(num_control_points=num_control_points,
+                                     points=predict_points[i,j,:,:],
+                                     stroke_width=predict_widths[i,j],
+                                     is_closed=True)
+                shapes_image.append(path)
 
-        # predict alpha channel
-        all_alphas = self.alpha_predictor(z)
+                path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes_image) - 1]),
+                                                 fill_color=predict_colors[i, j, :])
+                shape_groups_image.append(path_group)
+        shapes_batch.append(shapes_image)
+        shape_groups_batch.append(shape_groups_image)
+        return shapes_batch, shape_groups_batch
 
-        # Process the batch sequentially
-        outputs = []
-        scenes = []
-        for k in range(bs):
-            # Get point parameters from network
-            shapes = []
-            shape_groups = []
-            for p in range(self.paths):
-                points = all_points[k, p].contiguous().cpu()
-                width = all_widths[k, p].cpu()
-                alpha = all_alphas[k, p].cpu()
-                color = torch.cat([torch.ones(3), alpha.view(1, )])
-                num_ctrl_pts = torch.zeros(self.segments, dtype=torch.int32) + 2
-                path = pydiffvg.Path(num_control_points=num_ctrl_pts, points=points, stroke_width=width, is_closed=False)
-                shapes.append(path)
-                path_group = pydiffvg.ShapeGroup(
-                    shape_ids=torch.tensor([len(shapes) - 1]),
-                    fill_color=None,stroke_color=color)
-                shape_groups.append(path_group)
-            scenes.append([shapes, shape_groups, (self.imsize, self.imsize)])
-            # Rasterize
-            out = render(self.imsize, self.imsize, shapes, shape_groups, samples=self.samples)
-            # Torch format, discard alpha, make gray
-            out = out.permute(2, 0, 1).view(4, self.imsize, self.imsize)[:3].mean(0, keepdim=True)
-            outputs.append(out)
-        output = torch.stack(outputs).to(z.device)
-        return output
-
+    def decoder(self, shapes_batch, shape_groups_batch):
+        batch = len(shapes_batch)
+        img_batch = []
+        for i in range(batch):
+            scene_args = pydiffvg.RenderFunction.serialize_scene(
+                self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i])
+            img=  self.render(self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i], samples=self.samples)
+            # Compose img with white background
+            img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
+                                                              device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+            # Save the intermediate render.
+            # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/{}_iter_{}.png'.format(filename,t), gamma=gamma)
+            img = img[:, :, :3]
+            # Convert img from HWC to NCHW
+            img = img.unsqueeze(0)
+            img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
+            img_batch.append(img)
+        return torch.cat(img_batch, dim=0)
 
     def forward(self, x):
+        b, _, _, _ = x.size()
         z= self.encoder(x)
-        predict = self.predictor(z)  # ["points" 2paths(3segments+1), "widths" paths, "colors" 4paths]
-        output = self.decoder(z)
-        return output
+        predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
+        predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2) * self.imsize
+        predict_widths = (predict["widths"]).view(b, self.paths)
+        predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
+        out = self.decoder(self, shapes_batch, shape_groups_batch)
+
+        return out
 
 
 if __name__ == '__main__':
@@ -148,3 +155,10 @@ if __name__ == '__main__':
     print((predictions["colors"]).shape)
     print((predictions["widths"]))
     # print(predictor)
+
+    # test  the pipeline
+    img = torch.rand([3,3,224,224],device=pydiffvg.get_device())
+    model = RealAE( imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
+                 pretained_encoder=True)
+    out = model(img)
+    print(f"out shape is: {out.shape}")
