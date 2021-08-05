@@ -32,17 +32,20 @@ class Predictor(nn.Module):
         self.point_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths * (segments * 3))
+            nn.Linear(zdim, 2 * paths * (segments * 3)),
+            nn.Tanh()
         )
         self.width_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, paths)  # width will be normalized to range [1, max]
+            nn.Linear(zdim, paths),  # width will be normalized to range [1, max]
+            nn.Sigmoid()
         )
         self.color_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, paths * 4)  # color will be clamped to range [0,1]
+            nn.Linear(zdim, paths * 4),  # color will be clamped to range [0,1]
+            nn.Sigmoid()
         )
         # initialize parameters
         self._init_param()
@@ -54,11 +57,10 @@ class Predictor(nn.Module):
 
     def forward(self, x):  # [b,z_dim]
         points = self.point_predictor(x)
-        points *= self.im_size
+        points = points * (self.im_size // 2) + self.im_size // 2
         widths = self.width_predictor(x)
-        widths = torch.clamp(widths, 1.0, self.max_width)
+        widths = (self.max_width - 1) * widths + 1
         colors = self.color_predictor(x)
-        colors = torch.clamp(colors, 0, 1)
         return {
             "points": points,
             "widths": widths,
