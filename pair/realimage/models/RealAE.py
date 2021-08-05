@@ -113,7 +113,6 @@ class RealAE(nn.Module):
 
     def decoder(self, shapes_batch, shape_groups_batch):
         batch = len(shapes_batch)
-        print(f"batch size: {batch}")
         img_batch = []
         for i in range(batch):
             img = render(self.imsize, self.imsize, shapes_batch[i], shape_groups_batch[i], samples=self.samples)
@@ -126,26 +125,18 @@ class RealAE(nn.Module):
             # Convert img from HWC to NCHW
             img = img.unsqueeze(0)
             img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
-            print(f"img shape: {img.shape}")
             img_batch.append(img)
-            print(f"img_batch length: {len(img_batch)}")
 
         return torch.cat(img_batch, dim=0)
 
     def forward(self, x):
         b, _, _, _ = x.size()
-        print(f"b is {b}")
         z= self.encoder(x)
-        print(f"z shape is {z.shape}")
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
         predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2) * self.imsize
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
-        print(f"predict_points shape:{predict_points.shape}")
-        print(f"predict_widths shape:{predict_widths.shape}")
-        print(f"predict_colors shape:{predict_colors.shape}")
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
-        print(f"len(shapes_batch) is {len(shapes_batch)}, len(shape_groups_batch) is {len(shape_groups_batch)}")
         out = self.decoder(shapes_batch, shape_groups_batch)
 
         return out
