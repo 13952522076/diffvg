@@ -86,7 +86,6 @@ class RealAE(nn.Module):
         self.imsize = imsize
         self.samples = samples
         self.predictor = Predictor(zdim=zdim, paths=paths, segments=segments, max_width=max_width, im_size=imsize)
-        self.render = pydiffvg.RenderFunction.apply
         # self.register_buffer("background",torch.ones(self.imsize, self.imsize, 3) * (1 - img[:, :, 3:4]))
 
 
