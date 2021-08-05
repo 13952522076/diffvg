@@ -133,6 +133,7 @@ def main():
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate / 100, last_epoch=start_epoch - 1)
     # init save images
     # visualize(net, train_loader, device, args.checkpoint +'/epoch-0', nrow=8)
+    visualize(net, test_loader, device, "init")
     for epoch in range(start_epoch, args.epoch):
         printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         train_out = train(net, train_loader, optimizer, criterion, device)  # {"loss"}
