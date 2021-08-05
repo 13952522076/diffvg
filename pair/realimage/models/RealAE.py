@@ -107,8 +107,8 @@ class RealAE(nn.Module):
                 path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes_image) - 1]),
                                                  fill_color=predict_colors[i, j, :])
                 shape_groups_image.append(path_group)
-        shapes_batch.append(shapes_image)
-        shape_groups_batch.append(shape_groups_image)
+            shapes_batch.append(shapes_image)
+            shape_groups_batch.append(shape_groups_image)
         return shapes_batch, shape_groups_batch
 
     def decoder(self, shapes_batch, shape_groups_batch):
