@@ -204,14 +204,6 @@ def visualize(net, testloader, device, epoch):
         net.visualize(data, inputpath=inputpath, svgpath=svgpath, renderpath=renderpath)
     printf(f"Finish visualization of epoch {epoch}.")
 
-def visualize(net, trainloader, device, path,  nrow=8):
-    data, label = next(iter(trainloader))
-    data = data.to(device)
-    net.eval()
-    with torch.no_grad():
-        out = net(data)
-    vutils.save_image(data, f"{path}_gt.png", nrow=nrow, normalize=True)
-    vutils.save_image(out, f"{path}_out.png", nrow=nrow, normalize=True)
 
 
 if __name__ == '__main__':
