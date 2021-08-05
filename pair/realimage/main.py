@@ -164,7 +164,7 @@ def train(net, trainloader, optimizer, criterion, device):
         optimizer.zero_grad()
         out = net(data)
         print(f"out.shape: {out.shape}")
-        loss = criterion(out, data)
+        loss = criterion(data, out)
         loss.backward()
         optimizer.step()
         train_loss += loss.item()

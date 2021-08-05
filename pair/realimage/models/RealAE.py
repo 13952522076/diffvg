@@ -113,6 +113,7 @@ class RealAE(nn.Module):
 
     def decoder(self, shapes_batch, shape_groups_batch):
         batch = len(shapes_batch)
+        print(f"batch size: {batch}")
         img_batch = []
         for i in range(batch):
             scene_args = pydiffvg.RenderFunction.serialize_scene(
@@ -127,7 +128,10 @@ class RealAE(nn.Module):
             # Convert img from HWC to NCHW
             img = img.unsqueeze(0)
             img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
+            print(f"img shape: {img.shape}")
             img_batch.append(img)
+            print(f"img_batch length: {len(img_batch)}")
+
         return torch.cat(img_batch, dim=0)
 
     def forward(self, x):
