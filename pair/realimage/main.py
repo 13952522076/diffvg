@@ -45,7 +45,7 @@ def parse_args():
     parser.add_argument('--samples', default=2, type=int)
     parser.add_argument('--zdim', default=1024, type=int)
     parser.add_argument('--max_width', default=2, type=int)
-    parser.add_argument('--pretained_encoder', dest='pretrained', action='store_true')
+    parser.add_argument('--pretained_encoder', dest='pretained_encoder', action='store_true')
 
 
     return parser.parse_args()
