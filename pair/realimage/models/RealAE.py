@@ -77,8 +77,8 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
     return img
 
 class RealAE(nn.Module):
-    def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
-                 pretained_encoder=True, **kwargs):
+    def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048,
+                 max_width=2, pretained_encoder=True, **kwargs):
         super(RealAE, self).__init__()
         self.encoder = Encoder(zdim, pretrained=pretained_encoder)
         self.segments = segments
