@@ -134,11 +134,16 @@ class RealAE(nn.Module):
 
     def forward(self, x):
         b, _, _, _ = x.size()
+        print(f"b is {b}")
         z= self.encoder(x)
+        print(f"z shape is {z.shape}")
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
         predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2) * self.imsize
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        print(f"predict_points shape:{predict_points.shape}")
+        print(f"predict_widths shape:{predict_widths.shape}")
+        print(f"predict_colors shape:{predict_colors.shape}")
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
         print(f"len(shapes_batch) is {len(shapes_batch)}, len(shape_groups_batch) is {len(shape_groups_batch)}")
         out = self.decoder(shapes_batch, shape_groups_batch)
@@ -160,7 +165,7 @@ if __name__ == '__main__':
 
     # test  the pipeline
     img = torch.rand([2, 3, 224,224],device=pydiffvg.get_device())
-    model = RealAE( imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
+    model = RealAE(imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
                  pretained_encoder=True)
     model.to("cuda")
     out = model(img)
