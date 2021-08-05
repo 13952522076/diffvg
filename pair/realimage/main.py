@@ -58,8 +58,11 @@ os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 time_str = str(datetime.datetime.now().strftime('-%Y%m%d%H%M%S'))
 message = time_str if args.msg is None else "-" + args.msg
 args.checkpoint = 'checkpoints/' + args.model + message
+args.visualize = 'checkpoints/' + args.model + message +'/visualize'
 if not os.path.isdir(args.checkpoint):
     mkdir_p(args.checkpoint)
+if not os.path.isdir(args.visualize):
+    mkdir_p(args.visualize)
 screen_logger = logging.getLogger("Model")
 screen_logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(message)s')
@@ -134,6 +137,7 @@ def main():
         printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         train_out = train(net, train_loader, optimizer, criterion, device)  # {"loss"}
         test_out = validate(net, test_loader, criterion, device)  # {"loss"}
+        visualize(net, test_loader, device, epoch)
         scheduler.step()
 
         if test_out["loss"] < best_test_loss:
@@ -189,6 +193,16 @@ def validate(net, testloader, criterion, device):
         "loss": float("%.3f" % (test_loss / (batch_idx + 1)))
     }
 
+def visualize(net, testloader, device, epoch):
+    net.eval()
+    inputpath = os.path.join(args.visualize, f"epoch_{epoch}_input.png")
+    svgpath = os.path.join(args.visualize, f"epoch_{epoch}_svg.svg")
+    renderpath = os.path.join(args.visualize, f"epoch_{epoch}_render.png")
+    with torch.no_grad():
+        data, label = next(iter(testloader))
+        data, label = data.to(device), label.to(device)
+        net.visualize(data, inputpath=inputpath, svgpath=svgpath, renderpath=renderpath)
+    printf(f"Finish visualization of epoch {epoch}.")
 
 def visualize(net, trainloader, device, path,  nrow=8):
     data, label = next(iter(trainloader))

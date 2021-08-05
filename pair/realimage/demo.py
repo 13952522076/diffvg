@@ -1,6 +1,6 @@
 
 from torch.utils.data import DataLoader
-
+from models.RealAE import RealAE
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
 
