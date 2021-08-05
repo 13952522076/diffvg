@@ -160,8 +160,10 @@ def train(net, trainloader, optimizer, criterion, device):
     time_cost = datetime.datetime.now()
     for batch_idx, (data, label) in enumerate(trainloader):
         data, label = data.to(device), label.to(device)
+        print(f"data.shape: {data.shape}, label.shape: {label.shape}")
         optimizer.zero_grad()
         out = net(data)
+        print(f"out.shape: {out.shape}")
         loss = criterion(out, data)
         loss.backward()
         optimizer.step()
