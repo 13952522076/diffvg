@@ -201,7 +201,7 @@ def visualize(net, testloader, device, epoch):
     with torch.no_grad():
         data, label = next(iter(testloader))
         data, label = data.to(device), label.to(device)
-        net.visualize(data, inputpath=inputpath, svgpath=svgpath, renderpath=renderpath)
+        net.module.visualize(data, inputpath=inputpath, svgpath=svgpath, renderpath=renderpath)
     printf(f"Finish visualization of epoch {epoch}.")
 
 
