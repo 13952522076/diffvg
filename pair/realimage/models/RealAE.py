@@ -6,6 +6,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pydiffvg
 from torchvision.models import resnet50
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
@@ -63,8 +66,10 @@ class Predictor(nn.Module):
         }
 
 
+_render = pydiffvg.RenderFunction.apply
+
+
 def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
-    _render = pydiffvg.RenderFunction.apply
     scene_args = pydiffvg.RenderFunction.serialize_scene(
         canvas_width, canvas_height, shapes, shape_groups)
     img = _render(canvas_width,
@@ -141,6 +146,29 @@ class RealAE(nn.Module):
 
         return out
 
+    def visualize(self, x, svgpath='demo.svg', inputpath='input.png', renderpath='render.png'):
+
+        b, _, _, _ = x.size()
+        if inputpath is not None:
+            first_img = (x[0]).permute(1, 2, 0).cpu().numpy()
+            plt.imsave(inputpath, first_img)
+        z= self.encoder(x)
+        predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
+        predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2) * self.imsize
+        predict_widths = (predict["widths"]).view(b, self.paths)
+        predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
+        shapes, shape_groups = shapes_batch[0], shape_groups_batch[0]
+
+        scene_args = pydiffvg.RenderFunction.serialize_scene(self.imsize, self.imsize, shapes, shape_groups)
+        img = render(self.imsize, self.imsize, self.samples,  self.samples,   0,  None, *scene_args)
+        img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
+                                                          device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+        if renderpath is not None:
+            pydiffvg.imwrite(img.cpu(), renderpath, gamma=1.0)
+        if svgpath is not None:
+            pydiffvg.save_svg(svgpath, self.imsize, self.imsize, shapes, shape_groups)
+
 
 if __name__ == '__main__':
     encoder = Encoder(zdim=2048, pretrained=False)
@@ -161,3 +189,4 @@ if __name__ == '__main__':
     model.to("cuda")
     out = model(img)
     print(f"out shape is: {out.shape}")
+    model.visualize(img, svgpath='demo.svg', inputpath='input.png', renderpath='render.png')
