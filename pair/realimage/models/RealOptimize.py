@@ -22,11 +22,11 @@ class Predictor(nn.Module):
         self.im_size = im_size
 
     def forward(self):  # [b,z_dim]
-        points = F.tanh(self.points)
+        points = torch.tanh(self.points)
         points = points * (self.im_size // 2) + self.im_size // 2
-        widths = F.sigmoid(self.widths)
+        widths = torch.sigmoid(self.widths)
         widths = (self.max_width - 1) * widths + 1
-        colors = F.sigmoid(self.colors)
+        colors = torch.sigmoid(self.colors)
         return {
             "points": points,
             "widths": widths,
@@ -60,6 +60,11 @@ class RealOptimize(nn.Module):
         self.predictor = Predictor(paths=paths, segments=segments, max_width=max_width, im_size=imsize)
         # self.register_buffer("background",torch.ones(self.imsize, self.imsize, 3) * (1 - img[:, :, 3:4]))
 
+        self.points = nn.Parameter(torch.rand(2 * paths * (segments * 3 + 1)))
+        self.widths = nn.Parameter(torch.rand(paths))
+        self.colors = nn.Parameter(torch.rand(paths * 4))
+        self.max_width = max_width
+
     def get_shapes_groups(self, predict_points, predict_widths, predict_colors):
         num_paths, _, _ = predict_points.size()
         num_control_points = torch.zeros(self.segments, dtype=torch.int32) + 2
@@ -90,10 +95,15 @@ class RealOptimize(nn.Module):
         return img
 
     def forward(self):
-        predict = self.predictor()  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(self.paths, -1, 2)
-        predict_widths = (predict["widths"]).view(self.paths)
-        predict_colors = (predict["colors"]).view(self.paths, 4)
+        predict_points = torch.tanh(self.points)
+        predict_points = predict_points * (self.imsize // 2) + self.imsize // 2
+        predict_points = predict_points.view(self.paths, -1, 2)
+        predict_widths = torch.sigmoid(self.widths)
+        predict_widths = (self.max_width - 1) * predict_widths + 1
+        predict_widths = predict_widths.view(self.paths)
+        predict_colors = torch.sigmoid(self.colors)
+        predict_colors = predict_colors.view(self.paths, 4)
+
         shapes, shape_groups = self.get_shapes_groups(predict_points, predict_widths, predict_colors)
         out = self.decoder(shapes, shape_groups)
         return out
