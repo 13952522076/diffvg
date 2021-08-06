@@ -94,7 +94,7 @@ class RealOptimize(nn.Module):
         img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
         return img
 
-    def forward(self):
+    def forward(self,x):
         predict_points = torch.tanh(self.points)
         predict_points = predict_points * (self.imsize // 2) + self.imsize // 2
         predict_points = predict_points.view(self.paths, -1, 2)
@@ -128,6 +128,6 @@ if __name__ == '__main__':
 
     model = RealOptimize(imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2)
     model.to("cuda")
-    out = model()
+    out = model(None)
     print(f"out shape is: {out.shape}")
     model.visualize(svgpath='demo.svg', inputpath='input.png', renderpath='render.png')
