@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
-    parser.add_argument('--frequency', default=20, type=int, help='workers')
+    parser.add_argument('--frequency', default=50, type=int, help='workers')
     parser.add_argument('--loss', default='l1')
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
