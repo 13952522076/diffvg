@@ -15,9 +15,9 @@ pydiffvg.set_use_gpu(torch.cuda.is_available())
 class Predictor(nn.Module):
     def __init__(self, paths=512, segments=2, max_width=2.0, im_size=224.0):
         super(Predictor, self).__init__()
-        self.points = nn.Parameter(2 * paths * (segments * 3 + 1))
-        self.widths = nn.Parameter(paths)
-        self.colors = nn.Parameter(paths*4)
+        self.points = nn.Parameter(torch.rand(2 * paths * (segments * 3 + 1)))
+        self.widths = nn.Parameter(torch.rand(paths))
+        self.colors = nn.Parameter(torch.rand(paths*4))
         self.max_width = max_width
         self.im_size = im_size
 
