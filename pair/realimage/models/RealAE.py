@@ -32,7 +32,7 @@ class Predictor(nn.Module):
         self.point_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths * (segments * 3)),
+            nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),
             nn.Tanh()
         )
         self.width_predictor = nn.Sequential(
@@ -140,7 +140,7 @@ class RealAE(nn.Module):
         b, _, _, _ = x.size()
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2)
+        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
