@@ -50,8 +50,7 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
     return img
 
 class RealOptimize(nn.Module):
-    def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048,
-                 max_width=2, **kwargs):
+    def __init__(self, imsize=224, paths=512, segments=3, samples=2, max_width=2, **kwargs):
         super(RealOptimize, self).__init__()
         self.segments = segments
         self.paths = paths

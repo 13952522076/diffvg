@@ -41,4 +41,4 @@ if __name__ == '__main__':
     model.to("cuda")
     out = model()
     print(out)
-    
+
