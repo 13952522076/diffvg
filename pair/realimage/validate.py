@@ -65,13 +65,6 @@ if not os.path.isdir(args.checkpoint):
     mkdir_p(args.checkpoint)
 if not os.path.isdir(args.visualize):
     mkdir_p(args.visualize)
-screen_logger = logging.getLogger("Model")
-screen_logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(message)s')
-file_handler = logging.FileHandler(os.path.join(args.checkpoint, "screen_out.txt"))
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(formatter)
-screen_logger.addHandler(file_handler)
 
 
 def main():
