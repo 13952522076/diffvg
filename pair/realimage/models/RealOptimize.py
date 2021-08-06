@@ -109,10 +109,14 @@ class RealOptimize(nn.Module):
         return out
 
     def visualize(self, svgpath='demo.svg', inputpath='input.png', renderpath='render.png'):
-        predict = self.predictor()  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(self.paths, -1, 2)
-        predict_widths = (predict["widths"]).view(self.paths)
-        predict_colors = (predict["colors"]).view(self.paths, 4)
+        predict_points = torch.tanh(self.points)
+        predict_points = predict_points * (self.imsize // 2) + self.imsize // 2
+        predict_points = predict_points.view(self.paths, -1, 2)
+        predict_widths = torch.sigmoid(self.widths)
+        predict_widths = (self.max_width - 1) * predict_widths + 1
+        predict_widths = predict_widths.view(self.paths)
+        predict_colors = torch.sigmoid(self.colors)
+        predict_colors = predict_colors.view(self.paths, 4)
         shapes, shape_groups = self.get_shapes_groups(predict_points, predict_widths, predict_colors)
         scene_args = pydiffvg.RenderFunction.serialize_scene(self.imsize, self.imsize, shapes, shape_groups)
         img = _render(self.imsize, self.imsize, self.samples,  self.samples,   0,  None, *scene_args)
