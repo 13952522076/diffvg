@@ -32,17 +32,19 @@ class Predictor(nn.Module):
         self.point_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths * (segments * 3))
+            nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),
+            nn.Tanh()
         )
         self.width_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, paths)  # width will be normalized to range [1, max]
+            nn.Linear(zdim, paths),  # width will be normalized to range [1, max]
+            nn.Sigmoid()
         )
         self.color_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, paths * 4)  # color will be clamped to range [0,1]
+            nn.Linear(zdim, paths * 4),  # color will be clamped to range [0,1]
         )
         # initialize parameters
         self._init_param()
@@ -54,9 +56,9 @@ class Predictor(nn.Module):
 
     def forward(self, x):  # [b,z_dim]
         points = self.point_predictor(x)
-        points *= self.im_size
+        points = points * (self.im_size // 2) + self.im_size // 2
         widths = self.width_predictor(x)
-        widths = torch.clamp(widths, 1.0, self.max_width)
+        widths = (self.max_width - 1) * widths + 1
         colors = self.color_predictor(x)
         colors = torch.clamp(colors, 0, 1)
         return {
@@ -138,7 +140,7 @@ class RealAE2(nn.Module):
         b, _, _, _ = x.size()
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2)
+        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
@@ -154,7 +156,7 @@ class RealAE2(nn.Module):
             plt.imsave(inputpath, first_img)
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, self.segments*3, 2)
+        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
         predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
@@ -184,7 +186,7 @@ if __name__ == '__main__':
 
     # test  the pipeline
     img = torch.rand([2, 3, 224,224],device=pydiffvg.get_device())
-    model = RealAE2(imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
+    model = RealAE(imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
                  pretained_encoder=True)
     model.to("cuda")
     out = model(img)
