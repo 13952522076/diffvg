@@ -30,22 +30,24 @@ def parse_args():
     parser.add_argument('--msg', type=str, help='message after checkpoint')
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
     # training
-    parser.add_argument('--batch_size', type=int, default=4, help='batch size in training')
-    parser.add_argument('--epoch', default=80, type=int, help='number of epoch in training')
-    parser.add_argument('--learning_rate', default=0.01, type=float, help='learning rate in training')
+    parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
+    parser.add_argument('--epoch', default=500, type=int, help='number of epoch in training')
+    parser.add_argument('--learning_rate', default=0.1, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
-    parser.add_argument('--workers', default=8, type=int, help='workers')
-    parser.add_argument('--frequency', default=200, type=int, help='workers')
+    parser.add_argument('--workers', default=4, type=int, help='workers')
+    parser.add_argument('--frequency', default=20, type=int, help='workers')
+    parser.add_argument('--loss', default='l1')
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
     parser.add_argument('--imsize', default=224, type=int)
-    parser.add_argument('--paths', default=512, type=int)
+    parser.add_argument('--paths', default=256, type=int)
     parser.add_argument('--segments', default=3, type=int)
     parser.add_argument('--samples', default=2, type=int)
-    parser.add_argument('--zdim', default=1024, type=int)
+    parser.add_argument('--zdim', default=2048, type=int)
     parser.add_argument('--max_width', default=2, type=int)
     parser.add_argument('--pretained_encoder', dest='pretained_encoder', action='store_true')
+
 
 
     return parser.parse_args()
@@ -91,7 +93,12 @@ def main():
     net = models.__dict__[args.model](
         imsize=args.imsize, paths=args.paths, segments=args.segments, samples=args.samples,
         zdim=args.zdim, max_width=2, pretained_encoder=args.pretained_encoder)
-    criterion = nn.MSELoss().to(device)
+    if args.loss == 'l1':
+        criterion = nn.L1Loss().to(device)
+        printf(f"Using criterion L1 loss.")
+    else:
+        criterion = nn.MSELoss().to(device)
+        printf(f"Using criterion MSE loss.")
 
     net = net.to(device)
     if device == 'cuda':
@@ -122,7 +129,7 @@ def main():
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor()
     ])
-    dataset = ImageFolder(root="./data/emoji/", transform=transform)
+    dataset = ImageFolder(root="./data/full_emoji/", transform=transform)
     train_loader = DataLoader(dataset, num_workers=args.workers,
                               batch_size=args.batch_size, shuffle=True, pin_memory=False)
     test_loader = DataLoader(dataset, num_workers=args.workers,
