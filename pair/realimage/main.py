@@ -31,17 +31,17 @@ def parse_args():
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=500, type=int, help='number of epoch in training')
+    parser.add_argument('--epoch', default=300, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.1, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
-    parser.add_argument('--frequency', default=50, type=int, help='workers')
+    parser.add_argument('--frequency', default=5, type=int, help='workers')
     parser.add_argument('--loss', default='l1')
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
     parser.add_argument('--imsize', default=224, type=int)
-    parser.add_argument('--paths', default=256, type=int)
+    parser.add_argument('--paths', default=128, type=int)
     parser.add_argument('--segments', default=3, type=int)
     parser.add_argument('--samples', default=2, type=int)
     parser.add_argument('--zdim', default=2048, type=int)
