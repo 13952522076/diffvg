@@ -56,9 +56,6 @@ class RealOptimize(nn.Module):
         self.paths = paths
         self.imsize = imsize
         self.samples = samples
-        self.predictor = Predictor(paths=paths, segments=segments, max_width=max_width, im_size=imsize)
-        # self.register_buffer("background",torch.ones(self.imsize, self.imsize, 3) * (1 - img[:, :, 3:4]))
-
         self.points = nn.Parameter(torch.rand(2 * paths * (segments * 3 + 1)))
         self.widths = nn.Parameter(torch.rand(paths))
         self.colors = nn.Parameter(torch.rand(paths * 4))
@@ -107,7 +104,7 @@ class RealOptimize(nn.Module):
         out = self.decoder(shapes, shape_groups)
         return out
 
-    def visualize(self, svgpath='demo.svg', inputpath='input.png', renderpath='render.png'):
+    def visualize(self, svgpath='demo.svg', renderpath='render.png'):
         predict_points = torch.tanh(self.points)
         predict_points = predict_points * (self.imsize // 2) + self.imsize // 2
         predict_points = predict_points.view(self.paths, -1, 2)
