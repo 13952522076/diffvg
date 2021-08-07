@@ -131,6 +131,7 @@ def main():
     printf(f"==> Loading image: {args.img_path}")
     image = Image.open(args.img_path)
     image = transform(image)
+    image = image[:3, :, :]  # remove alpha channel
     image = image.unsqueeze(0)
     image = image.to(device)
 
