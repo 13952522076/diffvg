@@ -1,5 +1,5 @@
 """
-python rendering.py imgs/kitty.jpg --num_paths 256 --use_blob
+python rendering.py --num_paths 256 --use_blob
 """
 import pydiffvg
 import torch
@@ -11,7 +11,7 @@ import argparse
 import math
 import os
 
-pydiffvg.set_print_timing(True)
+pydiffvg.set_print_timing(False)
 
 gamma = 1.0
 
