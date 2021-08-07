@@ -90,7 +90,7 @@ class RealOptimize(nn.Module):
         img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
         return img
 
-    def forward(self):
+    def forward(self,x):
         predict_points = torch.tanh(self.points)
         predict_points = predict_points * (self.imsize // 2) + self.imsize // 2
         predict_points = predict_points.view(self.paths, -1, 2)

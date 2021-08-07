@@ -172,7 +172,7 @@ def main():
 def train(net, image, optimizer, criterion):
     net.train()
     optimizer.zero_grad()
-    out = net()
+    out = net(image)
     loss = criterion(image, out)
     loss.backward()
     optimizer.step()
