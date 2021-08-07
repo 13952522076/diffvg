@@ -43,70 +43,40 @@ def main(args):
 
     shapes = []
     shape_groups = []
-    if args.use_blob:
-        for i in range(num_paths):
-            num_segments = args.num_segments
-            num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
-            points = []
-            p0 = (random.random(), random.random())
-            points.append(p0)
-            for j in range(num_segments):
-                radius = 0.05
-                p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-                p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-                p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-                points.append(p1)
-                points.append(p2)
-                if j < num_segments - 1:
-                    points.append(p3)
-                    p0 = p3
-            points = torch.tensor(points)
-            points[:, 0] *= canvas_width
-            points[:, 1] *= canvas_height
-            path = pydiffvg.Path(num_control_points=num_control_points,
-                                 points=points,
-                                 stroke_width=torch.tensor(1.0),
-                                 is_closed=True)
-            shapes.append(path)
-            path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
-                                             fill_color=torch.tensor([random.random(),
-                                                                      random.random(),
-                                                                      random.random(),
-                                                                      random.random()]))
-            shape_groups.append(path_group)
-    else:
-        for i in range(num_paths):
-            num_segments = random.randint(1, 3)
-            num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
-            points = []
-            p0 = (random.random(), random.random())
-            points.append(p0)
-            for j in range(num_segments):
-                radius = 0.05
-                p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-                p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-                p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-                points.append(p1)
-                points.append(p2)
+
+    for i in range(num_paths):
+        num_segments = args.num_segments
+        num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
+        points = []
+        p0 = (random.random(), random.random())
+        points.append(p0)
+        for j in range(num_segments):
+            radius = 0.05
+            p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+            p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+            p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+            points.append(p1)
+            points.append(p2)
+            if j < num_segments - 1:
                 points.append(p3)
                 p0 = p3
-            points = torch.tensor(points)
-            points[:, 0] *= canvas_width
-            points[:, 1] *= canvas_height
-            # points = torch.rand(3 * num_segments + 1, 2) * min(canvas_width, canvas_height)
-            path = pydiffvg.Path(num_control_points=num_control_points,
-                                 points=points,
-                                 stroke_width=torch.tensor(1.0),
-                                 is_closed=False)
-            shapes.append(path)
-            path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
-                                             fill_color=None,
-                                             stroke_color=torch.tensor([random.random(),
-                                                                        random.random(),
-                                                                        random.random(),
-                                                                        random.random()]))
-            shape_groups.append(path_group)
+        points = torch.tensor(points)
+        points[:, 0] *= canvas_width
+        points[:, 1] *= canvas_height
+        path = pydiffvg.Path(num_control_points=num_control_points,
+                             points=points,
+                             stroke_width=torch.tensor(1.0),
+                             is_closed=True)
+        shapes.append(path)
+        path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
+                                         fill_color=torch.tensor([random.random(),
+                                                                  random.random(),
+                                                                  random.random(),
+                                                                  random.random()]))
+        shape_groups.append(path_group)
 
+
+    print(f"point shape is: {points.shape}")
     scene_args = pydiffvg.RenderFunction.serialize_scene( \
         canvas_width, canvas_height, shapes, shape_groups)
 
