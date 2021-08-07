@@ -131,7 +131,8 @@ def main():
     printf(f"==> Loading image: {args.img_path}")
     image = Image.open(args.img_path)
     image = transform(image)
-    image = image[:3, :, :]  # remove alpha channel
+    if image.size()[0]==4:
+        image = image[:3, :, :]  # remove alpha channel
     image = image.unsqueeze(0)
     image = image.to(device)
 
@@ -171,7 +172,7 @@ def main():
 def train(net, image, optimizer, criterion):
     net.train()
     optimizer.zero_grad()
-    out = net(image)
+    out = net()
     loss = criterion(image, out)
     loss.backward()
     optimizer.step()
