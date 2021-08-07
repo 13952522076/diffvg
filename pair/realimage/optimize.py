@@ -44,7 +44,6 @@ def parse_args():
     parser.add_argument('--paths', default=128, type=int)
     parser.add_argument('--segments', default=3, type=int)
     parser.add_argument('--samples', default=2, type=int)
-    parser.add_argument('--zdim', default=2048, type=int)
     parser.add_argument('--max_width', default=2, type=int)
 
 
@@ -90,8 +89,7 @@ def main():
     # building models
     printf(f'==> Building model: {args.model}')
     net = models.__dict__[args.model](
-        imsize=args.imsize, paths=args.paths, segments=args.segments, samples=args.samples,
-        zdim=args.zdim, max_width=2)
+        imsize=args.imsize, paths=args.paths, segments=args.segments, samples=args.samples, max_width=2)
     if args.loss == 'l1':
         criterion = nn.L1Loss().to(device)
         printf(f"Using criterion L1 loss.")
