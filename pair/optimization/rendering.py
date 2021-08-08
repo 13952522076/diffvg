@@ -7,6 +7,7 @@ import skimage
 import skimage.io
 import random
 import argparse
+import torch.nn.functional as F
 import math
 import os
 
@@ -132,7 +133,7 @@ def main(args):
         img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
 
         # loss = (img - target).pow(2).mean()
-        loss = torch.nn.MSELoss(img, target)
+        loss = F.mse_loss(img, target)
 
         print(f'iteration: {t} \t render loss: {loss.item()}')
 
