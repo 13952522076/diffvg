@@ -15,7 +15,6 @@ pydiffvg.set_print_timing(False)
 # Use GPU if available
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 render = pydiffvg.RenderFunction.apply
-
 gamma = 1.0
 
 def load_img(args):
@@ -33,15 +32,16 @@ def load_img(args):
     return target
 
 def main(args):
+    # loading image.
     target = load_img(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths = args.num_paths
 
-    random.seed(1234)
-    torch.manual_seed(1234)
-
     shapes = []
     shape_groups = []
+
+    points_vars = []
+    color_vars = []
 
     for i in range(num_paths):
         num_segments = args.num_segments
@@ -67,28 +67,28 @@ def main(args):
 
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
+        points = torch.nn.Parameter(points)
+        points_vars.append(points)
         path = pydiffvg.Path(num_control_points=num_control_points,
                              points=points,
                              stroke_width=torch.tensor(1.0),
                              is_closed=True)
         shapes.append(path)
+        colors = torch.nn.Parameter(torch.rand(4))
         path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
-                                         fill_color=torch.tensor([random.random(),
-                                                                  random.random(),
-                                                                  random.random(),
-                                                                  random.random()]))
+                                         fill_color=colors)
+        color_vars.append(colors)
         shape_groups.append(path_group)
 
 
 
-    points_vars = []
-    color_vars = []
-    for path in shapes:
-        path.points.requires_grad = True
-        points_vars.append(path.points)
-    for group in shape_groups:
-        group.fill_color.requires_grad = True
-        color_vars.append(group.fill_color)
+
+    # for path in shapes:
+    #     path.points.requires_grad = True
+    #     points_vars.append(path.points)
+    # for group in shape_groups:
+    #     group.fill_color.requires_grad = True
+    #     color_vars.append(group.fill_color)
 
 
     # Optimize
