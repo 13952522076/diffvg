@@ -6,26 +6,22 @@ import torch
 import skimage
 import skimage.io
 import random
-import ttools.modules
 import argparse
 import math
 import os
 
 pydiffvg.set_print_timing(False)
+# Use GPU if available
+pydiffvg.set_use_gpu(torch.cuda.is_available())
+render = pydiffvg.RenderFunction.apply
 
 gamma = 1.0
 
-
-def main(args):
-    # Use GPU if available
-    pydiffvg.set_use_gpu(torch.cuda.is_available())
-
-    perception_loss = ttools.modules.LPIPS().to(pydiffvg.get_device())
-
-    filename = os.path.basename(args.target).split('.')[0]
+def load_img(args):
+    # filename = os.path.basename(args.target).split('.')[0]
     # target = torch.from_numpy(skimage.io.imread('imgs/lena.png')).to(torch.float32) / 255.0
     img_data = skimage.io.imread(args.target)
-    if img_data.shape[2]==4:
+    if img_data.shape[2] == 4:
         print("Input image includes alpha channel, simply dropout alpha channel.")
         img_data = img_data[:, :, :3]
     target = torch.from_numpy(img_data).to(torch.float32) / 255.0
@@ -33,7 +29,10 @@ def main(args):
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0)
     target = target.permute(0, 3, 1, 2)  # NHWC -> NCHW
-    # target = torch.nn.functional.interpolate(target, size = [256, 256], mode = 'area')
+    return target
+
+def main(args):
+    target = load_img(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths = args.num_paths
     max_width = args.max_width
@@ -48,6 +47,8 @@ def main(args):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
         points = []
+
+        # change the detailed initlization to  will increase the loss from 0.0008 to 0.0017
         p0 = (random.random(), random.random())
         points.append(p0)
         for j in range(num_segments):
@@ -79,19 +80,6 @@ def main(args):
         shape_groups.append(path_group)
 
 
-    print(f"point shape is: {points.shape}")
-    scene_args = pydiffvg.RenderFunction.serialize_scene( \
-        canvas_width, canvas_height, shapes, shape_groups)
-
-    render = pydiffvg.RenderFunction.apply
-    img = render(canvas_width,  # width
-                 canvas_height,  # height
-                 2,  # num_samples_x
-                 2,  # num_samples_y
-                 0,  # seed
-                 None,
-                 *scene_args)
-    # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/init.png', gamma=gamma)
 
     points_vars = []
     stroke_width_vars = []
@@ -142,11 +130,9 @@ def main(args):
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
         img = img.permute(0, 3, 1, 2)  # NHWC -> NCHW
-        if args.use_lpips_loss:
-            loss = perception_loss(img, target) + (img.mean() - target.mean()).pow(2)
-        else:
-            # print(f"img.shape: {img.shape}, target.shape: {target.shape}")
-            loss = (img - target).pow(2).mean()
+
+        # loss = (img - target).pow(2).mean()
+        loss = torch.nn.MSELoss(img, target)
 
         print(f'iteration: {t} \t render loss: {loss.item()}')
 
@@ -171,24 +157,8 @@ def main(args):
         # if t % 10 == 0 or t == args.num_iter - 1:
         if t == args.num_iter - 1:
             use_blob = "closed" if args.use_blob else "open"
-            pydiffvg.save_svg('results/{}-{}_iter_{}.svg'.format(filename, use_blob,t),
+            pydiffvg.save_svg('results/{}_iter_{}.svg'.format(use_blob,t),
                               canvas_width, canvas_height, shapes, shape_groups)
-
-    # Render the final result.
-    # img = render(target.shape[1],  # width
-    #              target.shape[0],  # height
-    #              2,  # num_samples_x
-    #              2,  # num_samples_y
-    #              0,  # seed
-    #              None,
-    #              *scene_args)
-    # Save the intermediate render.
-    # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/final.png'.format(t), gamma=gamma)
-    # Convert the intermediate renderings to a video.
-    # from subprocess import call
-    # call(["ffmpeg", "-framerate", "24", "-i",
-    #       "results/painterly_rendering/iter_%d.png", "-vb", "20M",
-    #       "results/painterly_rendering/out.mp4"])
 
 
 if __name__ == "__main__":
