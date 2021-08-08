@@ -36,7 +36,6 @@ def main(args):
     target = load_img(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths = args.num_paths
-    max_width = args.max_width
 
     random.seed(1234)
     torch.manual_seed(1234)
@@ -83,34 +82,21 @@ def main(args):
 
 
     points_vars = []
-    stroke_width_vars = []
     color_vars = []
     for path in shapes:
         path.points.requires_grad = True
         points_vars.append(path.points)
-    if not args.use_blob:
-        for path in shapes:
-            path.stroke_width.requires_grad = True
-            stroke_width_vars.append(path.stroke_width)
-    if args.use_blob:
-        for group in shape_groups:
-            group.fill_color.requires_grad = True
-            color_vars.append(group.fill_color)
-    else:
-        for group in shape_groups:
-            group.stroke_color.requires_grad = True
-            color_vars.append(group.stroke_color)
+    for group in shape_groups:
+        group.fill_color.requires_grad = True
+        color_vars.append(group.fill_color)
+
 
     # Optimize
     points_optim = torch.optim.Adam(points_vars, lr=1.0)
-    if len(stroke_width_vars) > 0:
-        width_optim = torch.optim.Adam(stroke_width_vars, lr=0.1)
     color_optim = torch.optim.Adam(color_vars, lr=0.01)
     # Adam iterations.
     for t in range(args.num_iter):
         points_optim.zero_grad()
-        if len(stroke_width_vars) > 0:
-            width_optim.zero_grad()
         color_optim.zero_grad()
         # Forward pass: render the image.
         scene_args = pydiffvg.RenderFunction.serialize_scene( \
@@ -142,12 +128,7 @@ def main(args):
 
         # Take a gradient descent step.
         points_optim.step()
-        if len(stroke_width_vars) > 0:
-            width_optim.step()
         color_optim.step()
-        if len(stroke_width_vars) > 0:
-            for path in shapes:
-                path.stroke_width.data.clamp_(1.0, max_width)
         if args.use_blob:
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
