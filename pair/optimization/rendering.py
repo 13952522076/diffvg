@@ -92,8 +92,10 @@ def main(args):
 
 
     # Optimize
-    points_optim = torch.optim.Adam(points_vars, lr=1.0)
-    color_optim = torch.optim.Adam(color_vars, lr=0.01)
+    # points_optim = torch.optim.Adam(points_vars, lr=1.0)
+    # color_optim = torch.optim.Adam(color_vars, lr=0.01)
+    points_optim = torch.optim.SGD(points_vars, lr=1.0, momentum=0.9, weight_decay=1e-4)
+    color_optim = torch.optim.Adam(color_vars, lr=0.01, momentum=0.9, weight_decay=1e-4)
     # Adam iterations.
     for t in range(args.num_iter):
         points_optim.zero_grad()
