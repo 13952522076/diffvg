@@ -37,7 +37,9 @@ def parse_args():
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
     parser.add_argument('--frequency', default=5, type=int, help='workers')
-    parser.add_argument('--loss', default='l1')
+    parser.add_argument('--loss', default='l2')
+    parser.add_argument('--optimizer', default='sgd')
+
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
     parser.add_argument('--imsize', default=224, type=int)
@@ -134,7 +136,13 @@ def main():
                               batch_size=args.batch_size, shuffle=True, pin_memory=False)
     test_loader = DataLoader(dataset, num_workers=args.workers,
                              batch_size=args.batch_size, shuffle=False, pin_memory=False)
-    optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)
+    if args.optimizer =="sgd":
+        printf("==> Using SGD optimizer")
+        optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate,
+                                    momentum=0.9, weight_decay=args.weight_decay)
+    else:
+        printf("==> Using Adam optimizer")
+        optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
     if optimizer_dict is not None:
         optimizer.load_state_dict(optimizer_dict)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate / 100, last_epoch=start_epoch - 1)
