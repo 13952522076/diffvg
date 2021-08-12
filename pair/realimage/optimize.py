@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument('--model', default='RealOptimize', help='model name [default: pointnet_cls]')
     parser.add_argument('--img_path', default='single.png')
     # training
-    parser.add_argument('--epoch', default=500, type=int, help='number of epoch in training')
+    parser.add_argument('--epoch', default=300, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.1, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
