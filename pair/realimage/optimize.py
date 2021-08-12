@@ -1,3 +1,7 @@
+"""
+SGD     lr 1.0      loss 0.079  RealOptimize-20210807150220
+
+"""
 import argparse
 import os
 from PIL import Image
@@ -31,6 +35,7 @@ def parse_args():
     parser.add_argument('--msg', type=str, help='message after checkpoint')
     parser.add_argument('--model', default='RealOptimize', help='model name [default: pointnet_cls]')
     parser.add_argument('--img_path', default='single.png')
+    parser.add_argument('--optimizer', default='sgd')
     # training
     parser.add_argument('--epoch', default=300, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.1, type=float, help='learning rate in training')
@@ -46,8 +51,6 @@ def parse_args():
     parser.add_argument('--samples', default=2, type=int)
     parser.add_argument('--max_width', default=2, type=int)
 
-
-
     return parser.parse_args()
 
 
@@ -58,7 +61,7 @@ os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 time_str = str(datetime.datetime.now().strftime('-%Y%m%d%H%M%S'))
 message = time_str if args.msg is None else "-" + args.msg
 args.checkpoint = 'checkpoints/' + args.model + message
-args.visualize = 'checkpoints/' + args.model + message +'/visualize'
+args.visualize = 'checkpoints/' + args.model + message + '/visualize'
 if not os.path.isdir(args.checkpoint):
     mkdir_p(args.checkpoint)
 if not os.path.isdir(args.visualize):
@@ -78,7 +81,6 @@ def printf(str):
 
 
 def main():
-
     if args.seed is not None:
         set_seed(args.seed)
         printf(f'==> fixing the random seed to: {args.seed}')
@@ -122,14 +124,14 @@ def main():
 
     printf('==> Preparing data..')
     transform = transforms.Compose([
-        transforms.Resize((args.imsize,args.imsize)),
+        transforms.Resize((args.imsize, args.imsize)),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor()
     ])
     printf(f"==> Loading image: {args.img_path}")
     image = Image.open(args.img_path)
     image = transform(image)
-    if image.size()[0]==4:
+    if image.size()[0] == 4:
         image = image[:3, :, :]  # remove alpha channel
     image = image.unsqueeze(0)
     image = image.to(device)
@@ -138,8 +140,13 @@ def main():
     first_img = (image[0]).permute(1, 2, 0).cpu().numpy()
     plt.imsave(os.path.join(args.visualize, "input.png"), first_img)
 
-
-    optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)
+    if args.optimizer == "sgd":
+        printf("==> Using SGD optimizer")
+        optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate,
+                                    momentum=0.9, weight_decay=args.weight_decay)
+    else:
+        printf("==> Using Adam optimizer")
+        optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
     if optimizer_dict is not None:
         optimizer.load_state_dict(optimizer_dict)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate / 100, last_epoch=start_epoch - 1)
@@ -149,7 +156,8 @@ def main():
     for epoch in range(start_epoch, args.epoch):
         printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         train_out = train(net, image, optimizer, criterion)  # {"loss"}
-        visualize(net, epoch)
+        if (epoch + 1) % args.frequency == 0:
+            visualize(net, epoch)
         scheduler.step()
 
         if train_out["loss"] < best_test_loss:
@@ -158,7 +166,7 @@ def main():
         else:
             is_best = False
 
-        save_model(net, epoch, path=args.checkpoint, is_best=is_best, best_test_loss = best_test_loss,
+        save_model(net, epoch, path=args.checkpoint, is_best=is_best, best_test_loss=best_test_loss,
                    test_loss=train_out["loss"], optimizer=optimizer.state_dict())
         logger.append([epoch, optimizer.param_groups[0]['lr'], train_out["loss"]])
 
@@ -186,7 +194,6 @@ def visualize(net, epoch):
     with torch.no_grad():
         net.module.visualize(svgpath=svgpath, renderpath=renderpath)
     printf(f"Finish visualization of epoch {epoch}.")
-
 
 
 if __name__ == '__main__':
