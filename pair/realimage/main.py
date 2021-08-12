@@ -97,10 +97,10 @@ def main():
         zdim=args.zdim, max_width=2, pretained_encoder=args.pretained_encoder)
     if args.loss == 'l1':
         criterion = nn.L1Loss().to(device)
-        printf(f"Using criterion L1 loss.")
+        printf(f"==> Using criterion L1 loss.")
     else:
         criterion = nn.MSELoss().to(device)
-        printf(f"Using criterion MSE loss.")
+        printf(f"==> Using criterion MSE loss.")
 
     net = net.to(device)
     if device == 'cuda':
