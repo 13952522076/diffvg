@@ -1,5 +1,15 @@
 """
-SGD     lr 1.0      loss 0.079  RealOptimize-20210807150220
+CUDA_VISIBLE_DEVICES=0 python optimize.py --learning_rate 1.0 --optimizer sgd --msg sgd_lr1.0
+SGD     lr 1.0      loss 0.078
+SGD     lr 5.0      loss 0.061
+SGD     lr 10.0     loss 0.029
+SGD     lr 15.0     loss 0.032
+
+Adam    lr 0.05     loss 0.008
+Adam    lr 0.1      loss 0.007
+Adam    lr 0.5      loss 0.014
+Adam    lr 1.0      loss 0.021
+Adam    lr 5.0      loss 0.135
 
 """
 import argparse
@@ -130,9 +140,10 @@ def main():
     ])
     printf(f"==> Loading image: {args.img_path}")
     image = Image.open(args.img_path)
-    image = transform(image)
     if image.size()[0] == 4:
-        image = image[:3, :, :]  # remove alpha channel
+        # image = image[:3, :, :]  # remove alpha channel
+        image = image.convert('RGB')
+    image = transform(image)
     image = image.unsqueeze(0)
     image = image.to(device)
 
