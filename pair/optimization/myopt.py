@@ -29,6 +29,7 @@ def load_img(args):
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0)
     target = target.permute(0, 3, 1, 2)  # NHWC -> NCHW
+    print(f"input size would be: {target.shape}")
     return target
 
 def get_points_colors(num_paths, num_segments):
