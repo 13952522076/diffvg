@@ -66,8 +66,6 @@ def main(args):
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths = args.num_paths
 
-
-
     points_vars, color_vars = get_points_colors(num_paths, args.num_segments, canvas_width, canvas_height)
 
     shapes, shape_groups = get_shapes_groups(num_paths, points_vars, color_vars)
