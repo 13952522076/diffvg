@@ -92,14 +92,18 @@ def main(args):
 
 
     # Optimize
-    points_optim = torch.optim.Adam(points_vars, lr=1.0)
+    optim = torch.optim.Adam([
+        {"points_params": points_vars, "lr": 1.0},
+        {"color_params": color_vars, "lr": 0.01},
+    ], lr=1.0)
     # color_optim = torch.optim.Adam(color_vars, lr=0.01)
     # points_optim = torch.optim.SGD(points_vars, lr=1.0)
-    color_optim = torch.optim.Adam(color_vars, lr=1.0)
+    # color_optim = torch.optim.Adam(color_vars, lr=1.0)
     # Adam iterations.
     for t in range(args.num_iter):
-        points_optim.zero_grad()
-        color_optim.zero_grad()
+        optim.zero_grad()
+        # points_optim.zero_grad()
+        # color_optim.zero_grad()
         # Forward pass: render the image.
         scene_args = pydiffvg.RenderFunction.serialize_scene( \
             canvas_width, canvas_height, shapes, shape_groups)
@@ -129,8 +133,9 @@ def main(args):
         loss.backward()
 
         # Take a gradient descent step.
-        points_optim.step()
-        color_optim.step()
+        optim.step()
+        # points_optim.step()
+        # color_optim.step()
         if args.use_blob:
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
