@@ -49,6 +49,7 @@ def main(args):
         points = []
 
         # change the detailed initlization to  will increase the loss from 0.0008 to 0.0017
+        """
         p0 = (random.random(), random.random())
         points.append(p0)
         for j in range(num_segments):
@@ -62,8 +63,9 @@ def main(args):
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
+        """
         # print(f"points value is: {points}")
-        # points = torch.rand([num_segments*3, 2])  # instead from p0=   to points = torch.tensor(points)
+        points = torch.rand([num_segments*3, 2])  # instead from p0=   to points = torch.tensor(points)
 
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
