@@ -5,6 +5,7 @@ import pydiffvg
 import torch
 import skimage
 import skimage.io
+import skimage.transform
 import random
 import argparse
 import torch.nn.functional as F
