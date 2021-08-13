@@ -1,3 +1,7 @@
+"""
+python main.py --learning_rate 0.001 --model ResNetAE --loss l2 --optimizer adam --msg demo1
+python main.py --learning_rate 0.001 --model ViTAE --loss l2 --optimizer adam --msg demo1 --paths 197 --zdim 384
+"""
 import argparse
 import os
 import logging
