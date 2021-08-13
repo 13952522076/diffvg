@@ -9,14 +9,14 @@ from torchvision.models import resnet50
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from .backbone import old_resnet50
+from .backbone import old_resnet18
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
 class Encoder(nn.Module):
     def __init__(self, zdim=2048, pretrained=False):
         super(Encoder, self).__init__()
-        net = old_resnet50()
+        net = old_resnet18()
         net.fc = nn.Linear(2048, zdim)
         self.net = net
 
