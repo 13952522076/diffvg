@@ -40,33 +40,30 @@ def main(args):
     shapes = []
     shape_groups = []
 
-    points_vars = []
-    color_vars = []
+    points_vars = 0.05*(torch.rand([num_paths,args.num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
+    points_vars[:, 0] *= canvas_width
+    points_vars[:, 1] *= canvas_height
+    points_vars = torch.nn.Parameter(points_vars)
+    color_vars = torch.nn.Parameter(torch.rand(num_paths,4))
 
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
-        points = 0.05*(torch.rand([num_segments*3, 2])-0.5) + torch.rand([1, 2])  # 0.00078
-
-        points[:, 0] *= canvas_width
-        points[:, 1] *= canvas_height
-        points = torch.nn.Parameter(points)
-        points_vars.append(points)
+        points = points_vars[i]
         path = pydiffvg.Path(num_control_points=num_control_points,
                              points=points,
                              stroke_width=torch.tensor(1.0),
                              is_closed=True)
         shapes.append(path)
-        colors = torch.nn.Parameter(torch.rand(4))
+        colors = color_vars[i]
         path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
                                          fill_color=colors)
-        color_vars.append(colors)
         shape_groups.append(path_group)
 
 
     # Optimize
-    points_optim = torch.optim.Adam(points_vars, lr=1.0)
-    color_optim = torch.optim.Adam(color_vars, lr=0.01)
+    points_optim = torch.optim.Adam([points_vars], lr=1.0)
+    color_optim = torch.optim.Adam([color_vars], lr=0.01)
 
     # Adam iterations.
     for t in range(args.num_iter):
