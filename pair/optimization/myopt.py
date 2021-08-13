@@ -46,27 +46,27 @@ def main(args):
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
-        points = []
-
-        # change the detailed initlization to  will increase the loss from 0.0008 to 0.0017
-
-        p0 = (random.random(), random.random())
-        points.append(p0)
-        for j in range(num_segments):
-            radius = 0.05
-            p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-            p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-            p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-            points.append(p1)
-            points.append(p2)
-            if j < num_segments - 1:
-                points.append(p3)
-                p0 = p3
-        points = torch.tensor(points)
+        # points = []
+        #
+        # # change the detailed initlization to  will increase the loss from 0.0008 to 0.0017
+        #
+        # p0 = (random.random(), random.random())
+        # points.append(p0)
+        # for j in range(num_segments):
+        #     radius = 0.05
+        #     p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+        #     p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+        #     p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+        #     points.append(p1)
+        #     points.append(p2)
+        #     if j < num_segments - 1:
+        #         points.append(p3)
+        #         p0 = p3
+        # points = torch.tensor(points)
 
         # print(f"points value is: {points}")  # 0.00072
         # points = torch.rand([num_segments*3, 2])  # instead from p0=   to points = torch.tensor(points), 0.0016
-        points = 0.05*(torch.rand([num_segments*3, 2])-0.5) + torch.rand([1, 2])
+        points = 0.05*(torch.rand([num_segments*3, 2])-0.5) + torch.rand([1, 2])  # 0.00078
 
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
