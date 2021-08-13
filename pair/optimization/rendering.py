@@ -93,8 +93,8 @@ def main(args):
 
     # Optimize
     optim = torch.optim.Adam([
-        {"points_params": points_vars, "lr": 1.0},
-        {"color_params": color_vars, "lr": 0.01},
+        {"params": points_vars, "lr": 1.0},
+        {"params": color_vars, "lr": 0.01},
     ], lr=1.0)
     # color_optim = torch.optim.Adam(color_vars, lr=0.01)
     # points_optim = torch.optim.SGD(points_vars, lr=1.0)
