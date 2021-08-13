@@ -50,10 +50,12 @@ def main(args):
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
         points = points_vars[i]
 
-        points[:, 0] *= canvas_width
-        points[:, 1] *= canvas_height
+
+        scaled_points = points*torch.Tensor([[canvas_width, canvas_height]])
+        # points[:, 0] *= canvas_width
+        # points[:, 1] *= canvas_height
         path = pydiffvg.Path(num_control_points=num_control_points,
-                             points=points,
+                             points=scaled_points,
                              stroke_width=torch.tensor(1.0),
                              is_closed=True)
         shapes.append(path)
