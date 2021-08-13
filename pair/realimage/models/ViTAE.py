@@ -9,15 +9,14 @@ from torchvision.models import resnet50
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from .backbone import old_resnet18
+from .backbone import ViT
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
 class Encoder(nn.Module):
-    def __init__(self, zdim=2048, pretrained=False):
+    def __init__(self, zdim=384, pretrained=False):
         super(Encoder, self).__init__()
-        net = old_resnet18()
-        net.fc = nn.Linear(512, zdim)  # for resnet50, should be 2048
+        net = ViT(image_size=224, patch_size=16, num_classes=197, dim=zdim, depth=12, heads=12, mlp_dim=768, dropout=0.1)
         self.net = net
 
     def forward(self, x):
@@ -25,8 +24,9 @@ class Encoder(nn.Module):
 
 
 class Predictor(nn.Module):
-    def __init__(self, zdim=2048, paths=512, segments=2, im_size=224.0):
+    def __init__(self, zdim=384, paths=128, segments=3, max_width=2.0, im_size=224.0):
         super(Predictor, self).__init__()
+        self.max_width = max_width
         self.im_size = im_size
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
         self.point_predictor = nn.Sequential(
@@ -35,20 +35,35 @@ class Predictor(nn.Module):
             nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),
             nn.Tanh()
         )
+        self.width_predictor = nn.Sequential(
+            nn.Linear(zdim, zdim),
+            nn.ReLU(inplace=True),
+            nn.Linear(zdim, paths),  # width will be normalized to range [1, max]
+            nn.Sigmoid()
+        )
         self.color_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
             nn.Linear(zdim, paths * 4),  # color will be clamped to range [0,1]
             nn.Sigmoid()
         )
+        # initialize parameters
+        self._init_param()
 
+    def _init_param(self):
+        nn.init.constant_((self.width_predictor[2]).weight, 0)
+        if (self.width_predictor[2]).bias is not None:
+            torch.nn.init.constant_((self.width_predictor[2]).bias, 0)
 
     def forward(self, x):  # [b,z_dim]
         points = self.point_predictor(x)
         points = points * (self.im_size // 2) + self.im_size // 2
+        widths = self.width_predictor(x)
+        widths = (self.max_width - 1) * widths + 1
         colors = self.color_predictor(x)
         return {
             "points": points,
+            "widths": widths,
             "colors": colors
         }
 
@@ -81,7 +96,7 @@ class ResNetAE(nn.Module):
         # self.register_buffer("background",torch.ones(self.imsize, self.imsize, 3) * (1 - img[:, :, 3:4]))
 
 
-    def get_batch_shapes_groups(self, predict_points, predict_colors):
+    def get_batch_shapes_groups(self, predict_points, predict_widths, predict_colors):
         shapes_batch= []
         shape_groups_batch = []
         num_batch,num_paths, _, _ = predict_points.size()
@@ -92,7 +107,7 @@ class ResNetAE(nn.Module):
             for j in range(num_paths):
                 path = pydiffvg.Path(num_control_points=num_control_points,
                                      points=predict_points[i,j,:,:],
-                                     stroke_width=torch.tensor(1.0),
+                                     stroke_width=predict_widths[i,j],
                                      is_closed=True)
                 shapes_image.append(path)
 
@@ -126,8 +141,9 @@ class ResNetAE(nn.Module):
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
         predict_points = (predict["points"]).view(b, self.paths, -1, 2)
+        predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
-        shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
+        shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
         out = self.decoder(shapes_batch, shape_groups_batch)
 
         return out
@@ -141,11 +157,13 @@ class ResNetAE(nn.Module):
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
         predict_points = (predict["points"]).view(b, self.paths, -1, 2)
+        predict_widths = (predict["widths"]).view(b, self.paths)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
-        shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
+        shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_widths, predict_colors)
         shapes, shape_groups = shapes_batch[0], shape_groups_batch[0]
 
-        img = render(self.imsize, self.imsize, shapes, shape_groups, samples=self.samples)
+        scene_args = pydiffvg.RenderFunction.serialize_scene(self.imsize, self.imsize, shapes, shape_groups)
+        img = _render(self.imsize, self.imsize, self.samples,  self.samples,   0,  None, *scene_args)
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
                                                           device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         if renderpath is not None:
