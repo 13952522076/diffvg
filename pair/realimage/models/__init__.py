@@ -8,3 +8,4 @@ from .ResNetAE import ResNetAE
 from .ViTAE import ViTAE
 from .PositionResNetAE import PositionResNetAE
 from .ParampositionResNetAE import ParampositionResNetAE
+from .LNResNetAE import LNResNetAE
