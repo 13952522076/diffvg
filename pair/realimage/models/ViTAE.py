@@ -67,9 +67,9 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
                   *scene_args)
     return img
 
-class ResNetAE(nn.Module):
+class ViTAE(nn.Module):
     def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048, pretained_encoder=True, **kwargs):
-        super(ResNetAE, self).__init__()
+        super(ViTAE, self).__init__()
         self.encoder = Encoder(zdim, pretrained=pretained_encoder)
         self.segments = segments
         self.paths = paths
