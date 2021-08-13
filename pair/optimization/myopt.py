@@ -31,6 +31,14 @@ def load_img(args):
     target = target.permute(0, 3, 1, 2)  # NHWC -> NCHW
     return target
 
+def get_points_colors(num_paths, num_segments, canvas_width, canvas_height):
+    points_vars = 0.05*(torch.rand([num_paths, num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
+    points_vars[:, :, 0] *= canvas_width
+    points_vars[:, :, 1] *= canvas_height
+    points_vars = torch.nn.Parameter(points_vars)
+    color_vars = torch.nn.Parameter(torch.rand(num_paths, 4))
+    return points_vars, color_vars
+
 def main(args):
     # loading image.
     target = load_img(args)
@@ -40,11 +48,8 @@ def main(args):
     shapes = []
     shape_groups = []
 
-    points_vars = 0.05*(torch.rand([num_paths, args.num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
-    points_vars[:, :, 0] *= canvas_width
-    points_vars[:, :, 1] *= canvas_height
-    points_vars = torch.nn.Parameter(points_vars)
-    color_vars = torch.nn.Parameter(torch.rand(num_paths, 4))
+    points_vars, color_vars = get_points_colors(num_paths, args.num_segments, canvas_width, canvas_height)
+
 
     for i in range(num_paths):
         num_segments = args.num_segments
