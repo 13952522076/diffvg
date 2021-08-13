@@ -206,6 +206,6 @@ def old_resnet152(pretrained=False, **kwargs):
 
 
 if __name__ == '__main__':
-    net = old_resnet50(num_classes=100)
+    net = old_resnet18(num_classes=100)
     y = net(torch.randn(1, 3, 224,224))
     print(y.size())

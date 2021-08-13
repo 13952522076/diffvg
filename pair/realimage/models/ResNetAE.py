@@ -17,11 +17,11 @@ class Encoder(nn.Module):
     def __init__(self, zdim=2048, pretrained=False):
         super(Encoder, self).__init__()
         net = old_resnet18()
-        net.fc = nn.Linear(2048, zdim)
+        net.fc = nn.Linear(512, zdim)  # for resnet50, should be 2048
         self.net = net
 
     def forward(self, x):
-        return self.net(x)
+        return F.relu(self.net(x), inplace=True)
 
 
 class Predictor(nn.Module):
