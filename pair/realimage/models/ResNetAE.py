@@ -69,15 +69,14 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
     return img
 
 class ResNetAE(nn.Module):
-    def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048,
-                 max_width=2, pretained_encoder=True, **kwargs):
+    def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048, pretained_encoder=True, **kwargs):
         super(ResNetAE, self).__init__()
         self.encoder = Encoder(zdim, pretrained=pretained_encoder)
         self.segments = segments
         self.paths = paths
         self.imsize = imsize
         self.samples = samples
-        self.predictor = Predictor(zdim=zdim, paths=paths, segments=segments, max_width=max_width, im_size=imsize)
+        self.predictor = Predictor(zdim=zdim, paths=paths, segments=segments, im_size=imsize)
         # self.register_buffer("background",torch.ones(self.imsize, self.imsize, 3) * (1 - img[:, :, 3:4]))
 
 
@@ -156,19 +155,17 @@ class ResNetAE(nn.Module):
 
 if __name__ == '__main__':
     encoder = Encoder(zdim=2048, pretrained=False)
-    predictor = Predictor(zdim=2048, paths=512, segments=2, max_width=2.0, im_size=224.0)
+    predictor = Predictor(zdim=2048, paths=512, segments=2, im_size=224.0)
     input = torch.rand([1, 3, 224, 224])
     embed_fea = encoder(input)
     predictions = predictor(embed_fea)
     print((predictions["points"]).shape)
-    print((predictions["widths"]).shape)
     print((predictions["colors"]).shape)
-    print((predictions["widths"]).shape)
     # print(predictor)
 
     # test  the pipeline
     img = torch.rand([2, 3, 224,224],device=pydiffvg.get_device())
-    model = ResNetAE(imsize=224, paths=512, segments=3, samples=2, zdim=2048, max_width=2,
+    model = ResNetAE(imsize=224, paths=512, segments=3, samples=2, zdim=2048,
                  pretained_encoder=True)
     model.to("cuda")
     out = model(img)
