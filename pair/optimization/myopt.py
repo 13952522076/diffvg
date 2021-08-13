@@ -40,7 +40,7 @@ def main(args):
     shapes = []
     shape_groups = []
 
-    points_vars = 0.05*(torch.rand([num_paths,args.num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
+    points_vars = 0.05*(torch.rand([num_paths, args.num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
     points_vars[:, 0] *= canvas_width
     points_vars[:, 1] *= canvas_height
     points_vars = torch.nn.Parameter(points_vars)
