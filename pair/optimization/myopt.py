@@ -115,8 +115,8 @@ def main(args):
         for group in shape_groups:
             group.fill_color.data.clamp_(0.0, 1.0)
 
-        # if t % 10 == 0 or t == args.num_iter - 1:
-        if t == args.num_iter - 1:
+        if t % 10 == 0 or t == args.num_iter - 1:
+        # if t == args.num_iter - 1:
             pydiffvg.save_svg('results/closed_iter_{}.svg'.format(t),
                               canvas_width, canvas_height, shapes, shape_groups)
 
