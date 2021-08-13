@@ -65,7 +65,8 @@ def main(args):
         points = torch.tensor(points)
 
         # print(f"points value is: {points}")  # 0.00072
-        points = torch.rand([num_segments*3, 2])  # instead from p0=   to points = torch.tensor(points)
+        # points = torch.rand([num_segments*3, 2])  # instead from p0=   to points = torch.tensor(points), 0.0016
+        points = torch.rand([num_segments*3, 2])*0.05-0.5 + torch.rand([1, 2])
 
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
