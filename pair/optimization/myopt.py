@@ -51,11 +51,11 @@ def main(args):
         points = points_vars[i]
 
 
-        scaled_points = points*torch.Tensor([[canvas_width, canvas_height]])
-        # points[:, 0] *= canvas_width
-        # points[:, 1] *= canvas_height
+        # scaled_points = points*torch.Tensor([[canvas_width, canvas_height]])
+        points[:, 0] = points[:, 0] * canvas_width
+        points[:, 1] = points[:, 1] * canvas_height
         path = pydiffvg.Path(num_control_points=num_control_points,
-                             points=scaled_points,
+                             points=points,
                              stroke_width=torch.tensor(1.0),
                              is_closed=True)
         shapes.append(path)
@@ -105,8 +105,8 @@ def main(args):
         points_optim.step()
         color_optim.step()
 
-        for group in shape_groups:
-            group.fill_color.data.clamp_(0.0, 1.0)
+        # for group in shape_groups:
+        #     group.fill_color.data.clamp_(0.0, 1.0)
 
 
         # if t % 10 == 0 or t == args.num_iter - 1:
