@@ -104,17 +104,14 @@ def main(args):
         # Take a gradient descent step.
         points_optim.step()
         color_optim.step()
-        if args.use_blob:
-            for group in shape_groups:
-                group.fill_color.data.clamp_(0.0, 1.0)
-        else:
-            for group in shape_groups:
-                group.stroke_color.data.clamp_(0.0, 1.0)
+
+        for group in shape_groups:
+            group.fill_color.data.clamp_(0.0, 1.0)
+
 
         # if t % 10 == 0 or t == args.num_iter - 1:
         if t == args.num_iter - 1:
-            use_blob = "closed" if args.use_blob else "open"
-            pydiffvg.save_svg('results/{}_iter_{}.svg'.format(use_blob,t),
+            pydiffvg.save_svg('results/closed_iter_{}.svg'.format(t),
                               canvas_width, canvas_height, shapes, shape_groups)
 
 
