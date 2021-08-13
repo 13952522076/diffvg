@@ -31,22 +31,22 @@ def load_img(args):
     target = target.permute(0, 3, 1, 2)  # NHWC -> NCHW
     return target
 
-def get_points_colors(num_paths, num_segments, canvas_width, canvas_height):
+def get_points_colors(num_paths, num_segments):
     points_vars = 0.05*(torch.rand([num_paths, num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
-    points_vars[:, :, 0] *= canvas_width
-    points_vars[:, :, 1] *= canvas_height
     points_vars = torch.nn.Parameter(points_vars)
     color_vars = torch.nn.Parameter(torch.rand(num_paths, 4))
     return points_vars, color_vars
 
 
-def get_shapes_groups(num_paths, points_vars, color_vars):
+def get_shapes_groups(num_paths, points_vars, color_vars, canvas_width, canvas_height):
     shapes = []
     shape_groups = []
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
         points = points_vars[i]
+        points[:, 0] *= canvas_width
+        points[:, 1] *= canvas_height
         path = pydiffvg.Path(num_control_points=num_control_points,
                              points=points,
                              stroke_width=torch.tensor(1.0),
@@ -66,9 +66,9 @@ def main(args):
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths = args.num_paths
 
-    points_vars, color_vars = get_points_colors(num_paths, args.num_segments, canvas_width, canvas_height)
+    points_vars, color_vars = get_points_colors(num_paths, args.num_segments)
 
-    shapes, shape_groups = get_shapes_groups(num_paths, points_vars, color_vars)
+    shapes, shape_groups = get_shapes_groups(num_paths, points_vars, color_vars, canvas_width, canvas_height)
 
     # Optimize
     points_optim = torch.optim.Adam([points_vars], lr=1.0)
