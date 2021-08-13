@@ -51,7 +51,8 @@ def main(args):
         points = points_vars[i]
 
 
-        scaled_points = points*torch.Tensor([[canvas_width, canvas_height]])
+        # scaled_points = points*torch.Tensor([[canvas_width, canvas_height]])
+        scaled_points = points
         # points[:, 0] = points[:, 0] * canvas_width
         # points[:, 1] = points[:, 1] * canvas_height
         path = pydiffvg.Path(num_control_points=num_control_points,
