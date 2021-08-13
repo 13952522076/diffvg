@@ -40,15 +40,15 @@ def main(args):
     shapes = []
     shape_groups = []
 
-    points_vars = [torch.nn.Parameter(
+    points_vars = torch.nn.Parameter(
         0.05*(torch.rand([num_paths, args.num_segments*3, 2])-0.5) + torch.rand([num_paths, 1, 2])
-    )]
-    color_vars = [torch.nn.Parameter(torch.rand([num_paths,4]))]
+    )
+    color_vars = torch.nn.Parameter(torch.rand([num_paths,4]))
 
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
-        points = points_vars[0][i]
+        points = points_vars[i]
 
 
         scaled_points = points*torch.Tensor([[canvas_width, canvas_height]])
@@ -59,7 +59,7 @@ def main(args):
                              stroke_width=torch.tensor(1.0),
                              is_closed=True)
         shapes.append(path)
-        colors = color_vars[0][i]
+        colors = color_vars[i]
         path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
                                          fill_color=colors)
         shape_groups.append(path_group)
