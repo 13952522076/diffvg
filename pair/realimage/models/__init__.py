@@ -7,3 +7,4 @@ from .RealAE3 import RealAE3
 from .ResNetAE import ResNetAE
 from .ViTAE import ViTAE
 from .PositionResNetAE import PositionResNetAE
+from .ParampositionResNetAE import ParampositionResNetAE
