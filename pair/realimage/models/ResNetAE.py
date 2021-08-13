@@ -9,7 +9,7 @@ from torchvision.models import resnet50
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from backbone import old_resnet50
+from .backbone import old_resnet50
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
