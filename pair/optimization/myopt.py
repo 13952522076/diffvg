@@ -1,5 +1,5 @@
 """
-python rendering.py --num_paths 256 --use_blob
+python rendering.py --num_paths 256
 """
 import pydiffvg
 import torch
@@ -122,6 +122,5 @@ if __name__ == "__main__":
     parser.add_argument("--num_iter", type=int, default=300)
     parser.add_argument("--num_segments", type=int, default=3)
     parser.add_argument("--folder", type=str, default="rendering")
-    parser.add_argument("--use_blob", dest='use_blob', action='store_true')
     args = parser.parse_args()
     main(args)
