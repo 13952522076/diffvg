@@ -47,9 +47,8 @@ def get_shapes_groups(num_paths, points_vars, color_vars, canvas_width, canvas_h
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
-        points = points_vars[i]
-        points[:, 0] *= canvas_width
-        points[:, 1] *= canvas_height
+        points = points_vars[i] * canvas_width
+
         path = pydiffvg.Path(num_control_points=num_control_points,
                              points=points,
                              stroke_width=torch.tensor(1.0),
