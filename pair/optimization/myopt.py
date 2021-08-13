@@ -44,7 +44,7 @@ def main(args):
     points_vars[:, :, 0] *= canvas_width
     points_vars[:, :, 1] *= canvas_height
     points_vars = torch.nn.Parameter(points_vars)
-    color_vars = torch.nn.Parameter(torch.rand(num_paths,4))
+    color_vars = torch.nn.Parameter(torch.rand(num_paths, 4))
 
     for i in range(num_paths):
         num_segments = args.num_segments
