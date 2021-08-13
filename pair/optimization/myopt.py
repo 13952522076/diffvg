@@ -22,7 +22,7 @@ def load_img(args):
     # filename = os.path.basename(args.target).split('.')[0]
     # target = torch.from_numpy(skimage.io.imread('imgs/lena.png')).to(torch.float32) / 255.0
     img_data = skimage.io.imread(args.target)
-    img_data = skimage.transform.resize(img_data, (224, 224), anti_aliasing=True)
+    # img_data = skimage.transform.resize(img_data, (224, 224), anti_aliasing=True)
     if img_data.shape[2] == 4:
         print("Input image includes alpha channel, simply dropout alpha channel.")
         img_data = img_data[:, :, :3]
