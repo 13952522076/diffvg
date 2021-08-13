@@ -39,18 +39,10 @@ def get_points_colors(num_paths, num_segments, canvas_width, canvas_height):
     color_vars = torch.nn.Parameter(torch.rand(num_paths, 4))
     return points_vars, color_vars
 
-def main(args):
-    # loading image.
-    target = load_img(args)
-    canvas_width, canvas_height = target.shape[3], target.shape[2]
-    num_paths = args.num_paths
 
+def get_shapes_groups(num_paths, points_vars, color_vars):
     shapes = []
     shape_groups = []
-
-    points_vars, color_vars = get_points_colors(num_paths, args.num_segments, canvas_width, canvas_height)
-
-
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype=torch.int32) + 2
@@ -64,7 +56,21 @@ def main(args):
         path_group = pydiffvg.ShapeGroup(shape_ids=torch.tensor([len(shapes) - 1]),
                                          fill_color=colors)
         shape_groups.append(path_group)
+    return shapes, shape_groups
 
+
+
+def main(args):
+    # loading image.
+    target = load_img(args)
+    canvas_width, canvas_height = target.shape[3], target.shape[2]
+    num_paths = args.num_paths
+
+
+
+    points_vars, color_vars = get_points_colors(num_paths, args.num_segments, canvas_width, canvas_height)
+
+    shapes, shape_groups = get_shapes_groups(num_paths, points_vars, color_vars)
 
     # Optimize
     points_optim = torch.optim.Adam([points_vars], lr=1.0)
