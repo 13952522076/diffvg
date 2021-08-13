@@ -35,7 +35,7 @@ def parse_args():
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=100, type=int, help='number of epoch in training')
+    parser.add_argument('--epoch', default=80, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.1, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
