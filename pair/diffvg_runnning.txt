@@ -81,3 +81,6 @@ CUDA_VISIBLE_DEVICES=3 nohup python main.py --learning_rate 0.001 --model ResNet
 CUDA_VISIBLE_DEVICES=0 nohup python main.py --learning_rate 0.001 --model ViTAE --loss l2 --optimizer adam --msg demo1 --paths 197 --zdim 384 > nohup/ViTAE_demo1.out &
 
 CUDA_VISIBLE_DEVICES=1 nohup python main.py --learning_rate 0.001 --model ViTAE --loss l2 --optimizer adam --msg demo2_epoch50 --paths 197 --zdim 384 --epoch 50 > nohup/ViTAE_demo2.out &
+
+
+CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE --msg demo1 > nohup/ResNetAE_demo1.out &

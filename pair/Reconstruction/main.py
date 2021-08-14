@@ -1,6 +1,6 @@
 """
 python main.py --learning_rate 0.001 --model ResNetAE --loss l2 --optimizer adam --msg demo1
-python main.py --msg demo1
+python main.py --model ResNetAE --msg demo1
 """
 import argparse
 import os
