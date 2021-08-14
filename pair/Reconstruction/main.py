@@ -202,7 +202,7 @@ def train(net, trainloader, optimizer, criterion, device):
         if (batch_idx+1) % args.frequency == 0:
             time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
             printf(
-                f"[{batch_idx}/{len(trainloader)}]\t  Train time {time_cost}s  Train loss {train_loss / (batch_idx + 1)}")
+                f"[{batch_idx+1}/{len(trainloader)}]\t  Train time {time_cost}s  Train loss {train_loss / (batch_idx + 1)}")
             time_cost = datetime.datetime.now()
     return {
         "loss": float("%.3f" % (train_loss / (batch_idx + 1)))
