@@ -40,15 +40,15 @@ def parse_args():
 
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=80, type=int, help='number of epoch in training')
-    parser.add_argument('--learning_rate', default=0.1, type=float, help='learning rate in training')
+    parser.add_argument('--epoch', default=800, type=int, help='number of epoch in training')
+    parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
-    parser.add_argument('--frequency', default=5, type=int)
+    parser.add_argument('--frequency', default=3, type=int)
     parser.add_argument('--vis_frequency', default=10, type=int)
     parser.add_argument('--loss', default='l2')
-    parser.add_argument('--optimizer', default='sgd')
+    parser.add_argument('--optimizer', default='adam')
 
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
@@ -101,7 +101,7 @@ def main():
     printf(f'==> Building model: {args.model}')
     net = models.__dict__[args.model](
         imsize=args.imsize, paths=args.paths, segments=args.segments, samples=args.samples,
-        zdim=args.zdim, max_width=2, pretained_encoder=args.pretained_encoder)
+        zdim=args.zdim, pretained_encoder=args.pretained_encoder)
     if args.loss == 'l1':
         criterion = nn.L1Loss().to(device)
         printf(f"==> Using criterion L1 loss.")
@@ -153,8 +153,8 @@ def main():
     # prepare the optimizer and scheduler.
     if args.optimizer == "sgd":
         printf("==> Using SGD optimizer")
-        optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate,
-                                    momentum=0.9, weight_decay=args.weight_decay)
+        optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate, momentum=0.9,
+                                    weight_decay=args.weight_decay)
     else:
         printf("==> Using Adam optimizer")
         optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
@@ -169,24 +169,20 @@ def main():
         printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         train_out = train(net, train_loader, optimizer, criterion, device)  # {"loss"}
         test_out = validate(net, test_loader, criterion, device)  # {"loss"}
-        if (epoch+1)%args.vis_frequency ==0 or epoch==args.epoch-1 :
+        if (epoch + 1) % args.vis_frequency == 0 or epoch == args.epoch - 1:
             visualize(net, test_loader, device, epoch)
         scheduler.step()
 
+        is_best = False
         if test_out["loss"] < best_test_loss:
             best_test_loss = test_out["loss"]
             is_best = True
-        else:
-            is_best = False
 
         save_model(net, epoch, path=args.checkpoint, is_best=is_best, best_test_loss=best_test_loss,
                    test_loss=test_out["loss"], optimizer=optimizer.state_dict())
         logger.append([epoch, optimizer.param_groups[0]['lr'], train_out["loss"], test_out["loss"]])
 
-        printf(f"Train loss:{train_out['loss']} Test loss:{test_out['loss']} [best test loss:{best_test_loss}]")
-        # printf(f"==> saving visualized images ... \n\n")
-        # img_save_path = args.checkpoint +'/epoch'+str(epoch+1)
-        # visualize(net, train_loader, device, img_save_path, nrow=8)
+        printf(f"Train loss:{train_out['loss']} Test loss:{test_out['loss']} [best test loss:{best_test_loss}]\n")
 
     logger.close()
 

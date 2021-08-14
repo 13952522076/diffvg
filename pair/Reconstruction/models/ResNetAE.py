@@ -1,6 +1,5 @@
 #!/bin/env python
-"""Train a AE Fashion-MNIST.
-"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,15 +8,15 @@ from torchvision.models import resnet50
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from .backbone import old_resnet18
+from .backbone import old_resnet50
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
 class Encoder(nn.Module):
     def __init__(self, zdim=2048, pretrained=False):
         super(Encoder, self).__init__()
-        net = old_resnet18()
-        net.fc = nn.Linear(512, zdim)  # for resnet50, should be 2048
+        net = old_resnet50()
+        net.fc = nn.Linear(2048, zdim)  # for resnet50, should be 2048
         self.net = net
 
     def forward(self, x):
@@ -67,6 +66,7 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
                   None,
                   *scene_args)
     return img
+
 
 class ResNetAE(nn.Module):
     def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048, pretained_encoder=True, **kwargs):
@@ -123,7 +123,7 @@ class ResNetAE(nn.Module):
     def forward(self, x):
         b, _, _, _ = x.size()
         z= self.encoder(x)
-        predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
+        predict = self.predictor(z)  # ["points" 2paths(3segments), "colors" 4paths]
         predict_points = (predict["points"]).view(b, self.paths, -1, 2)
         predict_colors = (predict["colors"]).view(b, self.paths, 4)
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
