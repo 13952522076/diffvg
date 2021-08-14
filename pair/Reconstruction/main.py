@@ -35,8 +35,8 @@ def parse_args():
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
 
     # data path
-    parser.add_argument('--train_data', default="../realimage/data/full_emoji", metavar='PATH')
-    parser.add_argument('--test_data', default="../realimage/data/full_emoji", metavar='PATH')
+    parser.add_argument('--train_data', default="../realimage/data/full_emoji/", metavar='PATH')
+    parser.add_argument('--test_data', default="../realimage/data/full_emoji/", metavar='PATH')
 
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
@@ -232,6 +232,7 @@ def visualize(net, testloader, device, epoch):
     renderpath = os.path.join(args.visualize, f"epoch_{epoch}_render.png")
     with torch.no_grad():
         data, label = next(iter(testloader))
+        print(data.shape)
         data, label = data.to(device), label.to(device)
         net.module.visualize(data, inputpath=inputpath, svgpath=svgpath, renderpath=renderpath)
     printf(f"Finish visualization of epoch {epoch}.")
