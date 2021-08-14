@@ -65,8 +65,8 @@ def main(args):
         # print(f"points value is: {points}")
         # points = torch.rand([num_segments*3, 2])  # instead from p0=   to points = torch.tensor(points)
 
-        points[:, 0] *= canvas_width
-        points[:, 1] *= canvas_height
+        points[:,:, 0] *= canvas_width
+        points[:,:, 1] *= canvas_height
         points = torch.nn.Parameter(points)
         points_vars.append(points)
         path = pydiffvg.Path(num_control_points=num_control_points,
