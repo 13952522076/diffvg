@@ -35,8 +35,8 @@ def parse_args():
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
 
     # data path
-    parser.add_argument('--train_data', default="../realimage/data/full_emoji/", metavar='PATH')
-    parser.add_argument('--test_data', default="../realimage/data/full_emoji/", metavar='PATH')
+    parser.add_argument('--train_data', default="../data/emoji_rgb/train/", metavar='PATH')
+    parser.add_argument('--test_data', default="../data/emoji_rgb/validate/", metavar='PATH')
 
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
