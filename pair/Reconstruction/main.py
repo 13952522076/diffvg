@@ -1,6 +1,6 @@
 """
 python main.py --learning_rate 0.001 --model ResNetAE --loss l2 --optimizer adam --msg demo1
-python main.py --learning_rate 0.001 --model ViTAE --loss l2 --optimizer adam --msg demo1 --paths 197 --zdim 384
+python main.py --msg demo1
 """
 import argparse
 import os
@@ -40,13 +40,13 @@ def parse_args():
 
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=800, type=int, help='number of epoch in training')
+    parser.add_argument('--epoch', default=1000, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
     parser.add_argument('--frequency', default=3, type=int)
-    parser.add_argument('--vis_frequency', default=10, type=int)
+    parser.add_argument('--vis_frequency', default=50, type=int)
     parser.add_argument('--loss', default='l2')
     parser.add_argument('--optimizer', default='adam')
 
