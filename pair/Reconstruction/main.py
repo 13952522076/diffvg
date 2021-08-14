@@ -199,7 +199,7 @@ def train(net, trainloader, optimizer, criterion, device):
         loss.backward()
         optimizer.step()
         train_loss += loss.item()
-        if batch_idx > 1 and batch_idx % args.frequency == 0:
+        if (batch_idx+1) % args.frequency == 0:
             time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
             printf(
                 f"[{batch_idx}/{len(trainloader)}]\t  Train time {time_cost}s  Train loss {train_loss / (batch_idx + 1)}")
