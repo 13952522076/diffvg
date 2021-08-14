@@ -146,6 +146,7 @@ def main():
     ])
     train_dataset = ImageFolder(root=args.train_data, transform=train_transform)
     test_dataset = ImageFolder(root=args.test_data, transform=test_transform)
+    printf(f"==> Loading {len(train_dataset)} training images, {len(test_dataset)} testing images.")
     train_loader = DataLoader(train_dataset, num_workers=args.workers,
                               batch_size=args.batch_size, shuffle=True, pin_memory=False)
     test_loader = DataLoader(test_dataset, num_workers=args.workers,
