@@ -45,7 +45,8 @@ def parse_args():
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
-    parser.add_argument('--frequency', default=5, type=int, help='workers')
+    parser.add_argument('--frequency', default=5, type=int)
+    parser.add_argument('--vis_frequency', default=10, type=int)
     parser.add_argument('--loss', default='l2')
     parser.add_argument('--optimizer', default='sgd')
 
@@ -59,8 +60,6 @@ def parse_args():
     parser.add_argument('--max_width', default=2, type=int)
     parser.add_argument('--pretained_encoder', dest='pretained_encoder', action='store_true')
 
-
-
     return parser.parse_args()
 
 
@@ -71,7 +70,7 @@ os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 time_str = str(datetime.datetime.now().strftime('-%Y%m%d%H%M%S'))
 message = time_str if args.msg is None else "-" + args.msg
 args.checkpoint = 'checkpoints/' + args.model + message
-args.visualize = 'checkpoints/' + args.model + message +'/visualize'
+args.visualize = 'checkpoints/' + args.model + message + '/visualize'
 if not os.path.isdir(args.checkpoint):
     mkdir_p(args.checkpoint)
 if not os.path.isdir(args.visualize):
@@ -91,7 +90,6 @@ def printf(str):
 
 
 def main():
-
     if args.seed is not None:
         set_seed(args.seed)
         printf(f'==> fixing the random seed to: {args.seed}')
@@ -148,10 +146,12 @@ def main():
     test_dataset = ImageFolder(root=args.test_data, transform=test_transform)
     printf(f"==> Loading {len(train_dataset)} training images, {len(test_dataset)} testing images.")
     train_loader = DataLoader(train_dataset, num_workers=args.workers,
-                              batch_size=args.batch_size, shuffle=True, pin_memory=False)
+                              batch_size=args.batch_size, shuffle=True, pin_memory=False, drop_last=True)
     test_loader = DataLoader(test_dataset, num_workers=args.workers,
-                             batch_size=args.batch_size, shuffle=False, pin_memory=False)
-    if args.optimizer =="sgd":
+                             batch_size=8, shuffle=False, pin_memory=False)
+
+    # prepare the optimizer and scheduler.
+    if args.optimizer == "sgd":
         printf("==> Using SGD optimizer")
         optimizer = torch.optim.SGD(net.parameters(), lr=args.learning_rate,
                                     momentum=0.9, weight_decay=args.weight_decay)
@@ -160,17 +160,17 @@ def main():
         optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
     if optimizer_dict is not None:
         optimizer.load_state_dict(optimizer_dict)
-    scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate/100, last_epoch=start_epoch - 1)
+    scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate / 100, last_epoch=start_epoch - 1)
+
     # init save images
-    # visualize(net, train_loader, device, args.checkpoint +'/epoch-0', nrow=8)
     visualize(net, test_loader, device, "init")
-    logger.close()
-    return 0
+
     for epoch in range(start_epoch, args.epoch):
         printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         train_out = train(net, train_loader, optimizer, criterion, device)  # {"loss"}
         test_out = validate(net, test_loader, criterion, device)  # {"loss"}
-        visualize(net, test_loader, device, epoch)
+        if (epoch+1)%args.vis_frequency ==0 or epoch==args.epoch-1 :
+            visualize(net, test_loader, device, epoch)
         scheduler.step()
 
         if test_out["loss"] < best_test_loss:
@@ -179,7 +179,7 @@ def main():
         else:
             is_best = False
 
-        save_model(net, epoch, path=args.checkpoint, is_best=is_best, best_test_loss = best_test_loss,
+        save_model(net, epoch, path=args.checkpoint, is_best=is_best, best_test_loss=best_test_loss,
                    test_loss=test_out["loss"], optimizer=optimizer.state_dict())
         logger.append([epoch, optimizer.param_groups[0]['lr'], train_out["loss"], test_out["loss"]])
 
@@ -188,7 +188,7 @@ def main():
         # img_save_path = args.checkpoint +'/epoch'+str(epoch+1)
         # visualize(net, train_loader, device, img_save_path, nrow=8)
 
-    # logger.close()
+    logger.close()
 
 
 def train(net, trainloader, optimizer, criterion, device):
@@ -226,6 +226,7 @@ def validate(net, testloader, criterion, device):
         "loss": float("%.3f" % (test_loss / (batch_idx + 1)))
     }
 
+
 def visualize(net, testloader, device, epoch):
     net.eval()
     inputpath = os.path.join(args.visualize, f"epoch_{epoch}_input.png")
@@ -237,7 +238,6 @@ def visualize(net, testloader, device, epoch):
         data, label = data.to(device), label.to(device)
         net.module.visualize(data, inputpath=inputpath, svgpath=svgpath, renderpath=renderpath)
     printf(f"Finish visualization of epoch {epoch}.")
-
 
 
 if __name__ == '__main__':

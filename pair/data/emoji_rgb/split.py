@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import random
-valite_number = 20
+valite_number = 32
 
 # determined
 np.random.seed(42)
