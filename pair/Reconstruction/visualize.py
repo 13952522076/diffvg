@@ -25,7 +25,7 @@ def parse_args():
     parser.add_argument('--msg', type=str, help='message after checkpoint')
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
     parser.add_argument('--image', type=str, help='the test image')
-    parser.add_argument('--which', type=str, default="best", choices=["best", "last"])
+    parser.add_argument('--which', type=str, default="best", choices=["best", "last", "none"])
 
     # training
     parser.add_argument('--loss', default='l2')
@@ -77,11 +77,14 @@ def main():
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
 
-    which_checkpoint = args.which + "_checkpoint.pth"
-    print(f"==> loading {which_checkpoint} from {args.checkpoint}")
-    checkpoint_path = os.path.join(args.checkpoint, "last_checkpoint.pth")
-    checkpoint = torch.load(checkpoint_path)
-    net.load_state_dict(checkpoint['net'])
+    if args.which == "none":
+        print("!!! Loading no checkpoint, the output is random.!!!")
+    else:
+        which_checkpoint = args.which + "_checkpoint.pth"
+        print(f"==> loading {which_checkpoint} from {args.checkpoint}")
+        checkpoint_path = os.path.join(args.checkpoint, "last_checkpoint.pth")
+        checkpoint = torch.load(checkpoint_path)
+        net.load_state_dict(checkpoint['net'])
 
     print('==> Preparing data..')
     test_transform = transforms.Compose([

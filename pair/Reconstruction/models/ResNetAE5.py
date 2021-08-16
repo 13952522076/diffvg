@@ -1,5 +1,5 @@
 """
-Based on ResNetAE, detail the initialization of points.
+Based on ResNetAE, change the points to 2 * paths * (segments * 3)
 """
 
 import torch
@@ -33,7 +33,7 @@ class Predictor(nn.Module):
         self.point_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),
+            nn.Linear(zdim, 2 * paths * (segments * 3)),
             nn.Tanh()
         )
         self.color_predictor = nn.Sequential(

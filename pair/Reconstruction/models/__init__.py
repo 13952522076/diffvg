@@ -5,3 +5,5 @@ from .ResNetAE3 import ResNetAE3
 from .ResNetAE4 import ResNetAE4
 from .SEResNet50AE import SEResNet50AE
 from .SEResNet101AE import SEResNet101AE
+
+from .ResNetAE5 import ResNetAE5
