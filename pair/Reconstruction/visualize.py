@@ -1,10 +1,8 @@
 """
-python main.py --learning_rate 0.001 --model ResNetAE --loss l2 --optimizer adam --msg demo1
-python visualize.py --model ResNetAE --msg demo1
+python visualize.py --model ResNetAE --msg demo1 --image ../data/train/0/240px-Emoji_u1f60d.svg.png
 """
 import argparse
 import os
-import logging
 import datetime
 import torch
 import torch.nn as nn
@@ -13,18 +11,10 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
-from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import CosineAnnealingLR
-import numpy as np
-from torchvision.datasets.mnist import FashionMNIST, MNIST
 from torchvision import transforms
-from torchvision.datasets import ImageFolder
-import torchvision.utils as vutils
-from tqdm import tqdm
 import models as models
 from PIL import Image
-import matplotlib.pyplot as plt
-from helper import mkdir_p, save_model, save_args, set_seed, Logger
+from helper import mkdir_p
 
 
 def parse_args():
@@ -37,21 +27,8 @@ def parse_args():
     parser.add_argument('--image', type=str, help='the test image')
     parser.add_argument('--which', type=str, default="best", choices=["best", "last"])
 
-    # data path
-    parser.add_argument('--train_data', default="../data/emoji_rgb/train/", metavar='PATH')
-    parser.add_argument('--test_data', default="../data/emoji_rgb/validate/", metavar='PATH')
-
     # training
-    parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=1000, type=int, help='number of epoch in training')
-    parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
-    parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
-    parser.add_argument('--seed', type=int, help='random seed')
-    parser.add_argument('--workers', default=4, type=int, help='workers')
-    parser.add_argument('--frequency', default=3, type=int)
-    parser.add_argument('--vis_frequency', default=50, type=int)
     parser.add_argument('--loss', default='l2')
-    parser.add_argument('--optimizer', default='adam')
 
     # models
     # imsize = 28, paths = 4, segments = 5, samples = 2, zdim = 1024, stroke_width = None
