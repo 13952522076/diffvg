@@ -83,5 +83,33 @@ CUDA_VISIBLE_DEVICES=0 nohup python main.py --learning_rate 0.001 --model ViTAE 
 CUDA_VISIBLE_DEVICES=1 nohup python main.py --learning_rate 0.001 --model ViTAE --loss l2 --optimizer adam --msg demo2_epoch50 --paths 197 --zdim 384 --epoch 50 > nohup/ViTAE_demo2.out &
 
 
-CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE --msg demo1 > nohup/ResNetAE_demo1.out &
+CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE4 --msg demo1 > nohup/ResNetAE4_demo1.out &
 CUDA_VISIBLE_DEVICES=1 nohup python main.py --model ResNetAE --msg sgd_lr0.1 --learning_rate 0.1 --optimizer sgd > nohup/ResNetAE_sgd_lr0.1.out &
+
+
+CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE --zdim 512 --msg zdim512 > nohup/ResNetAE_zdim512.out &
+CUDA_VISIBLE_DEVICES=1 nohup python main.py --model ResNetAE --zdim 1024 --msg zdim1024 > nohup/ResNetAE_zdim1024.out &
+CUDA_VISIBLE_DEVICES=2 nohup python main.py --model ResNetAE --zdim 1536 --msg zdim1536 > nohup/ResNetAE_zdim1536.out &
+CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNetAE --zdim 3096 --msg zdim3096 > nohup/ResNetAE_zdim3096.out &
+
+
+CUDA_VISIBLE_DEVICES=2 nohup python main.py --model ResNetAE --paths 256 --msg path256 > nohup/ResNetAE_path256.out &
+CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNetAE --paths 196 --msg path196 > nohup/ResNetAE_path196.out &
+
+
+
+CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE --loss l1 --msg loss_l1 > nohup/ResNetAE_loss_l1.out &
+CUDA_VISIBLE_DEVICES=1 nohup python main.py --model ResNetAE --learning_rate 0.01 --msg lr0.01 > nohup/ResNetAE_lr0.01.out &
+CUDA_VISIBLE_DEVICES=2 nohup python main.py --model ResNetAE --learning_rate 0.05 --msg lr0.05 > nohup/ResNetAE_lr0.05.out &
+CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNetAE --epoch 1500 --msg epoch100 > nohup/ResNetAE_epoch1500.out &
+
+
+
+CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE --segments 4 --msg segments4 > nohup/ResNetAE_segments4.out &
+CUDA_VISIBLE_DEVICES=1 nohup python main.py --model ResNetAE --segments 5 --msg segments5 > nohup/ResNetAE_segments5.out &
+CUDA_VISIBLE_DEVICES=2 nohup python main.py --model ResNetAE --learning_rate 0.0005 --msg lr0.0005 > nohup/ResNetAE_lr0.0005.out &
+CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNetAE --learning_rate 0.0005 --msg lr0.0005 > nohup/ResNetAE_lr0.0005.out &
+
+
+
+
