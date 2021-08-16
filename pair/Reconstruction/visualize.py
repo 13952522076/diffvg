@@ -95,7 +95,7 @@ def main():
 
     net.eval()
     basename = os.path.basename(args.image)
-    filename = os.path.split(basename)[0]
+    filename = os.path.splitext(basename)[0]
     print(f"basename is {basename}, filename is{filename}")
 
     with torch.no_grad():
