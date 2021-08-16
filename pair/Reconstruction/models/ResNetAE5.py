@@ -1,6 +1,7 @@
 """
-Based on ResNetAE, release the backbone to SE_ResNet50.
+Based on ResNetAE, detail the initialization of points.
 """
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,14 +10,14 @@ from torchvision.models import resnet50
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from .backbone import se_resnet50
+from .backbone import old_resnet50
 pydiffvg.set_use_gpu(torch.cuda.is_available())
 
 
 class Encoder(nn.Module):
     def __init__(self, zdim=2048, pretrained=False):
         super(Encoder, self).__init__()
-        net = se_resnet50()
+        net = old_resnet50()
         net.fc = nn.Linear(2048, zdim)  # for resnet50, should be 2048
         self.net = net
 
@@ -40,6 +41,7 @@ class Predictor(nn.Module):
             nn.ReLU(inplace=True),
             nn.Linear(zdim, paths * 4),  # color will be clamped to range [0,1]
             nn.Sigmoid()
+
         )
 
 
@@ -69,9 +71,9 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
     return img
 
 
-class SEResNet50AE(nn.Module):
+class ResNetAE5(nn.Module):
     def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048, pretained_encoder=True, **kwargs):
-        super(SEResNet50AE, self).__init__()
+        super(ResNetAE5, self).__init__()
         self.encoder = Encoder(zdim, pretrained=pretained_encoder)
         self.segments = segments
         self.paths = paths
@@ -151,4 +153,6 @@ class SEResNet50AE(nn.Module):
         if renderpath is not None:
             pydiffvg.imwrite(img.cpu(), renderpath, gamma=1.0)
         if svgpath is not None:
+            for group in shape_groups:
+                group.fill_color.data.clamp_(0.0, 1.0)
             pydiffvg.save_svg(svgpath, self.imsize, self.imsize, shapes, shape_groups)

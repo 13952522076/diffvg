@@ -1,4 +1,6 @@
-#!/bin/env python
+"""
+Based on ResNetAE, release the backbone to SE_ResNet101.
+"""
 
 import torch
 import torch.nn as nn
