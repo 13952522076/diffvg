@@ -34,7 +34,7 @@ class Predictor(nn.Module):
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
             nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),  # [b, self.paths, -1, 2]
-            nn.Tanh()
+            # nn.Tanh()
         )
         self.color_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
