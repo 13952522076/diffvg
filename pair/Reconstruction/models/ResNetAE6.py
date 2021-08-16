@@ -148,8 +148,10 @@ class ResNetAE6(nn.Module):
         shapes, shape_groups = shapes_batch[0], shape_groups_batch[0]
 
         img = render(self.imsize, self.imsize, shapes, shape_groups, samples=self.samples)
+        print(f"original image shape: {img.shape}")
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3,
                                                           device=pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+        print(f"new image shape: {img.shape}")
         if renderpath is not None:
             pydiffvg.imwrite(img.cpu(), renderpath, gamma=1.0)
         if svgpath is not None:
