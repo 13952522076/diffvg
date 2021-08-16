@@ -29,6 +29,7 @@ class Predictor(nn.Module):
     def __init__(self, zdim=2048, paths=512, segments=2, im_size=224.0):
         super(Predictor, self).__init__()
         self.im_size = im_size
+        self.paths = paths
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
         self.point_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
@@ -46,12 +47,13 @@ class Predictor(nn.Module):
 
 
     def forward(self, x):  # [b,z_dim]
+        b = x.size()[0]
         points = self.point_predictor(x)
         points = points * (self.im_size // 2) + self.im_size // 2
         colors = self.color_predictor(x)
         return {
-            "points": points,
-            "colors": colors
+            "points": points.view(b, self.paths, -1, 2),
+            "colors": colors.view(b, self.paths, 4)
         }
 
 
@@ -127,23 +129,21 @@ class ResNetAE6(nn.Module):
         b, _, _, _ = x.size()
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
-        predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        predict_points = (predict["points"])
+        predict_colors = (predict["colors"])
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
         out = self.decoder(shapes_batch, shape_groups_batch)
 
         return out
 
     def visualize(self, x, svgpath='demo.svg', inputpath='input.png', renderpath='render.png'):
-
-        b, _, _, _ = x.size()
         if inputpath is not None:
             first_img = (x[0]).permute(1, 2, 0).cpu().numpy()
             plt.imsave(inputpath, first_img)
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
-        predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        predict_points = (predict["points"])
+        predict_colors = (predict["colors"])
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
         shapes, shape_groups = shapes_batch[0], shape_groups_batch[0]
 
