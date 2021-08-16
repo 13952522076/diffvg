@@ -150,6 +150,8 @@ class ResNetAE(nn.Module):
         if renderpath is not None:
             pydiffvg.imwrite(img.cpu(), renderpath, gamma=1.0)
         if svgpath is not None:
+            for group in shape_groups:
+                group.fill_color.data.clamp_(0.0, 1.0)
             pydiffvg.save_svg(svgpath, self.imsize, self.imsize, shapes, shape_groups)
 
 

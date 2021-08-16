@@ -1,5 +1,5 @@
 """
-python visualize.py --model ResNetAE --msg demo1 --image ../data/train/0/240px-Emoji_u1f60d.svg.png
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResNetAE --msg demo1 --image ../data/emoji_rgb/train/0/240px-Emoji_u1f60d.svg.png
 """
 import argparse
 import os
@@ -96,6 +96,7 @@ def main():
     net.eval()
     basename = os.path.basename(args.image)
     filename = os.path.split(basename)[0]
+    print(f"basename is {basename}, filename is{filename}")
 
     with torch.no_grad():
         out = net(data)
