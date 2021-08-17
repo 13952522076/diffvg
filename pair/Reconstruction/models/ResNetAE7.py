@@ -1,4 +1,5 @@
 """
+Based on ResNetAE6, enlarge the radius, radius * offset + anchor.
 Based on ResNetAE, initialization, predictor two subnetworks, offset and anchor.
 """
 
@@ -28,7 +29,7 @@ class Encoder(nn.Module):
 class Predictor(nn.Module):
     def __init__(self, zdim=2048, paths=512, segments=2, im_size=224.0):
         super(Predictor, self).__init__()
-        self.radius = 0.05
+        self.radius = 0.5
         self.paths = paths
         self.im_size = im_size
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
@@ -82,9 +83,9 @@ def render(canvas_width, canvas_height, shapes, shape_groups, samples=2):
     return img
 
 
-class ResNetAE6(nn.Module):
+class ResNetAE7(nn.Module):
     def __init__(self, imsize=224, paths=512, segments=3, samples=2, zdim=2048, pretained_encoder=True, **kwargs):
-        super(ResNetAE6, self).__init__()
+        super(ResNetAE7, self).__init__()
         self.encoder = Encoder(zdim, pretrained=pretained_encoder)
         self.segments = segments
         self.paths = paths
