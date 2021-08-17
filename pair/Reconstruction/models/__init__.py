@@ -7,4 +7,5 @@ from .SEResNet50AE import SEResNet50AE
 from .SEResNet101AE import SEResNet101AE
 
 from .ResNetAE5 import ResNetAE5
-from .ResNetAE6 import ResNetAE6
+from .FineResNetAE import FineResNetAE
+from .ResNeXtAE import ResNeXtAE
