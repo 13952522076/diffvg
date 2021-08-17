@@ -1,5 +1,6 @@
 """
-Based on ResNetAE6, enlarge the radius, radius * offset + anchor.
+Based on ResNetAE6, enlarge the radius, radius * offset + anchor,
+and add temp to anchor, making init path close to center.
 Based on ResNetAE, initialization, predictor two subnetworks, offset and anchor.
 """
 
