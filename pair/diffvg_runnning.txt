@@ -109,11 +109,12 @@ CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE --segments 4 --msg 
 CUDA_VISIBLE_DEVICES=1 nohup python main.py --model ResNetAE --segments 5 --msg segments5 > nohup/ResNetAE_segments5.out &
 CUDA_VISIBLE_DEVICES=2 nohup python main.py --model ResNetAE --learning_rate 0.0005 --msg lr0.0005 > nohup/ResNetAE_lr0.0005.out &
 CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNetAE --batch_size 16 --msg bs16 > nohup/ResNetAE_bs16.out &
-
+CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE5 --msg demo1 > nohup/ResNetAE5_demo1.out &
 
 
 To DO:
-CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE5 --msg demo1 > nohup/ResNetAE5_demo1.out &
 
+CUDA_VISIBLE_DEVICES=1 nohup python main.py --model FineResNetAE --msg demo1 > nohup/FineResNetAE_demo1.out &
+CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNeXtAE --msg demo1 > nohup/ResNeXtAE_demo1.out &
 
 

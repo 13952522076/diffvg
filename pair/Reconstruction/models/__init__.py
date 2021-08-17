@@ -9,3 +9,4 @@ from .SEResNet101AE import SEResNet101AE
 from .ResNetAE5 import ResNetAE5
 from .FineResNetAE import FineResNetAE
 from .ResNeXtAE import ResNeXtAE
+from .ResNetAE6 import ResNetAE6
