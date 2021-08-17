@@ -28,14 +28,23 @@ class Encoder(nn.Module):
 class Predictor(nn.Module):
     def __init__(self, zdim=2048, paths=512, segments=2, im_size=224.0):
         super(Predictor, self).__init__()
+        self.radius = 0.05
         self.im_size = im_size
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
-        self.point_predictor = nn.Sequential(
+        self.point_offset_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
             nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),
             nn.Tanh()
         )
+
+        self.anchor_predictor = nn.Sequential(
+            nn.Linear(zdim, zdim),
+            nn.ReLU(inplace=True),
+            nn.Linear(zdim, 2 * paths),
+            nn.Tanh()
+        )
+
         self.color_predictor = nn.Sequential(
             nn.Linear(zdim, zdim),
             nn.ReLU(inplace=True),
@@ -43,14 +52,16 @@ class Predictor(nn.Module):
             nn.Sigmoid()
         )
 
-
     def forward(self, x):  # [b,z_dim]
-        points = self.point_predictor(x)
+        b = x.size()[0]
+        points_offset = self.point_offset_predictor(x).view(b, self.paths, -1, 2)
+        anchors = self.anchor_predictor(x).view(b, self.paths, 2).unsqueeze(dim=2)
+        points = self.radius*points_offset + anchors
         points = points * (self.im_size // 2) + self.im_size // 2
         colors = self.color_predictor(x)
         return {
             "points": points,
-            "colors": colors
+            "colors": colors.view(b, self.paths, 4)
         }
 
 
@@ -126,8 +137,8 @@ class ResNetAE6(nn.Module):
         b, _, _, _ = x.size()
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
-        predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        predict_points = (predict["points"])
+        predict_colors = (predict["colors"])
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
         out = self.decoder(shapes_batch, shape_groups_batch)
 
@@ -141,8 +152,8 @@ class ResNetAE6(nn.Module):
             plt.imsave(inputpath, first_img)
         z= self.encoder(x)
         predict = self.predictor(z)  # ["points" 2paths(3segments), "widths" paths, "colors" 4paths]
-        predict_points = (predict["points"]).view(b, self.paths, -1, 2)
-        predict_colors = (predict["colors"]).view(b, self.paths, 4)
+        predict_points = (predict["points"])
+        predict_colors = (predict["colors"])
         shapes_batch, shape_groups_batch = self.get_batch_shapes_groups(predict_points, predict_colors)
         shapes, shape_groups = shapes_batch[0], shape_groups_batch[0]
 
@@ -155,23 +166,3 @@ class ResNetAE6(nn.Module):
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
             pydiffvg.save_svg(svgpath, self.imsize, self.imsize, shapes, shape_groups)
-
-
-if __name__ == '__main__':
-    encoder = Encoder(zdim=2048, pretrained=False)
-    predictor = Predictor(zdim=2048, paths=512, segments=2, im_size=224.0)
-    input = torch.rand([1, 3, 224, 224])
-    embed_fea = encoder(input)
-    predictions = predictor(embed_fea)
-    print((predictions["points"]).shape)
-    print((predictions["colors"]).shape)
-    # print(predictor)
-
-    # test  the pipeline
-    img = torch.rand([2, 3, 224,224],device=pydiffvg.get_device())
-    model = ResNetAE(imsize=224, paths=512, segments=3, samples=2, zdim=2048,
-                 pretained_encoder=True)
-    model.to("cuda")
-    out = model(img)
-    print(f"out shape is: {out.shape}")
-    model.visualize(img, svgpath='demo.svg', inputpath='input.png', renderpath='render.png')
