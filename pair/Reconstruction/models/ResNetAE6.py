@@ -29,6 +29,7 @@ class Predictor(nn.Module):
     def __init__(self, zdim=2048, paths=512, segments=2, im_size=224.0):
         super(Predictor, self).__init__()
         self.radius = 0.05
+        self.paths = paths
         self.im_size = im_size
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
         self.point_offset_predictor = nn.Sequential(
