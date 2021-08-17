@@ -34,16 +34,16 @@ class Predictor(nn.Module):
         self.im_size = im_size
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
         self.point_offset_predictor = nn.Sequential(
-            nn.Linear(zdim, zdim),
+            nn.Linear(zdim, zdim, bias=False),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths * (segments * 3 + 1)),
+            nn.Linear(zdim, 2 * paths * (segments * 3 + 1), bias=False),
             nn.Tanh()
         )
 
         self.anchor_predictor = nn.Sequential(
-            nn.Linear(zdim, zdim),
+            nn.Linear(zdim, zdim, bias=False),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths),
+            nn.Linear(zdim, 2 * paths, bias=False),
             nn.Tanh()
         )
 
