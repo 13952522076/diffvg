@@ -30,6 +30,7 @@ class Predictor(nn.Module):
     def __init__(self, zdim=2048, paths=512, segments=2, im_size=224.0):
         super(Predictor, self).__init__()
         self.radius = 0.1
+        self.temperature = 0.9
         self.paths = paths
         self.im_size = im_size
         # self.num_control_points = torch.zeros(segments, dtype=torch.int32) + 2
@@ -43,8 +44,7 @@ class Predictor(nn.Module):
         self.anchor_predictor = nn.Sequential(
             nn.Linear(zdim, zdim, bias=False),
             nn.ReLU(inplace=True),
-            nn.Linear(zdim, 2 * paths, bias=False),
-            nn.Tanh()
+            nn.Linear(zdim, 2 * paths, bias=False)
         )
 
         self.color_predictor = nn.Sequential(
@@ -58,6 +58,7 @@ class Predictor(nn.Module):
         b = x.size()[0]
         points_offset = self.point_offset_predictor(x).view(b, self.paths, -1, 2)
         anchors = self.anchor_predictor(x).view(b, self.paths, 2).unsqueeze(dim=2)
+        anchors = torch.tanh_(anchors*self.temperature)
         points = self.radius*points_offset + anchors
         points = points * (self.im_size // 2) + self.im_size // 2
         colors = self.color_predictor(x)
