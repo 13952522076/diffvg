@@ -1,5 +1,6 @@
 """
 Based on ResNetAE, initialization, predictor two subnetworks, offset and anchor.
+Doesn't work
 """
 
 import torch
