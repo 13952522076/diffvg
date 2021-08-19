@@ -35,17 +35,18 @@ def parse_args():
     parser.add_argument('--model', default='RealAE', help='model name [default: pointnet_cls]')
 
     # data path
-    parser.add_argument('--train_data', default="../data/emoji_rgb/train/", metavar='PATH')
+    parser.add_argument('--train_data', default="../data/emoji_rgb/train_x4/", metavar='PATH')
     parser.add_argument('--test_data', default="../data/emoji_rgb/validate/", metavar='PATH')
 
     # training
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training')
-    parser.add_argument('--epoch', default=1000, type=int, help='number of epoch in training')
+    parser.add_argument('--epoch', default=500, type=int, help='number of epoch in training')
     parser.add_argument('--learning_rate', default=0.001, type=float, help='learning rate in training')
+    parser.add_argument('--min_learning_rate', default=0.0001, type=float, help='learning rate in training')
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='decay rate')
     parser.add_argument('--seed', type=int, help='random seed')
     parser.add_argument('--workers', default=4, type=int, help='workers')
-    parser.add_argument('--frequency', default=3, type=int)
+    parser.add_argument('--frequency', default=6, type=int)
     parser.add_argument('--vis_frequency', default=50, type=int)
     parser.add_argument('--loss', default='l2')
     parser.add_argument('--optimizer', default='adam')
@@ -160,7 +161,7 @@ def main():
         optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
     if optimizer_dict is not None:
         optimizer.load_state_dict(optimizer_dict)
-    scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.learning_rate / 100, last_epoch=start_epoch - 1)
+    scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.min_learning_rate, last_epoch=start_epoch - 1)
 
     # init save images
     visualize(net, test_loader, device, "init")
