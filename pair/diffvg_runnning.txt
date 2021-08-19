@@ -113,10 +113,18 @@ CUDA_VISIBLE_DEVICES=0 nohup python main.py --model ResNetAE5 --msg demo1 > nohu
 
 
 To DO:
+CUDA_VISIBLE_DEVICES=0 nohup python train.py --model ResMLPAE --msg train1 --paths 196 --zdim 384 > nohup/ResMLPAE_train1.out &
+CUDA_VISIBLE_DEVICES=2 nohup python train.py --model ConvResMLPAE --msg train1 --paths 196 --zdim 384 > nohup/ConvResMLPAE_train1.out &
+CUDA_VISIBLE_DEVICES=3 nohup python train.py --model ResNeXtAE --msg train1 > nohup/ResNeXtAE_train1.out &
+
 
 CUDA_VISIBLE_DEVICES=1 nohup python main.py --model ResMLPAE --msg demo1 --paths 196 --zdim 384 > nohup/ResMLPAE_demo1.out &
 CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ConvResMLPAE --msg demo1 --paths 196 --zdim 384 > nohup/ConvResMLPAE_demo1.out &
 CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNeXtAE --msg demo1 > nohup/ResNeXtAE_demo1.out &
 
 
-python visualize.py --model ResMLPAE --msg demo1 --image ../data/emoji_rgb/train/0/240px-Emoji_u1f60d.svg.png --which none --paths 196 --zdim 384
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResMLPAE --msg demo1 --image ../data/emoji_rgb/train/0/240px-Emoji_u1f60b.svg.png --which best --paths 196 --zdim 384
+
+
+
+CUDA_VISIBLE_DEVICES=0 python painterly_rendering.py ..pair/data/emoji_rgb/train/0/240px-Emoji_u1f60b.svg.png --num_paths 128 --use_blob
