@@ -123,7 +123,24 @@ CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ConvResMLPAE --msg demo1 --p
 CUDA_VISIBLE_DEVICES=3 nohup python main.py --model ResNeXtAE --msg demo1 > nohup/ResNeXtAE_demo1.out &
 
 
-CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResMLPAE --msg demo1 --image ../data/emoji_rgb/train/0/240px-Emoji_u1f60b.svg.png --which best --paths 196 --zdim 384
+
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResNetAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model FineResNetAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResNeXtAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model SEResNet50AE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResMLPAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --which last --paths 196 --zdim 384
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ConvResMLPAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --which last --paths 196 --zdim 384
+
+
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResNetAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f643.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model FineResNetAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f643.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResNeXtAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f643.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model SEResNet50AE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f643.svg.png --which last
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ResMLPAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f643.svg.png --which last --paths 196 --zdim 384
+CUDA_VISIBLE_DEVICES=0 python visualize.py --model ConvResMLPAE --msg demo1 --image ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f643.svg.png --which last --paths 196 --zdim 384
+
+
+
 
 
 
