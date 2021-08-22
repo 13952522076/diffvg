@@ -15,3 +15,4 @@ from .ResMLPAE import ResMLPAE
 from .ConvResMLPAE import ConvResMLPAE
 from .ConvResMLPAE1 import ConvResMLPAE1
 from .ConvResMLPAE2 import ConvResMLPAE2
+from .ConvResMLPAE3 import ConvResMLPAE3

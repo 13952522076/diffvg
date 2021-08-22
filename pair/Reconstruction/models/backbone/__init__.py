@@ -6,3 +6,4 @@ from .resmlp import ResMLP, Aff, MLPblock
 from .conv_resmlp import ConvResMLP
 from .conv_resmlp1 import ConvResMLP1
 from .conv_resmlp2 import ConvResMLP2
+from .conv_resmlp3 import ConvResMLP3
