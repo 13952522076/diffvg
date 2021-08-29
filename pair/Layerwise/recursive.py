@@ -1,5 +1,5 @@
 """
-python recursive.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1 --use_blob
+python recursive.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1,2 --use_blob
 """
 import pydiffvg
 import torch
@@ -53,7 +53,7 @@ def main():
     target = target.permute(0, 3, 1, 2) # NHWC -> NCHW
     #target = torch.nn.functional.interpolate(target, size = [256, 256], mode = 'area')
     canvas_width, canvas_height = target.shape[3], target.shape[2]
-    num_paths = args.num_paths.split(',')[0]
+    num_paths = int(args.num_paths.split(',')[0])
     max_width = args.max_width
 
     random.seed(1234)
