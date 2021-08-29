@@ -116,7 +116,8 @@ def main():
         points_optim = torch.optim.Adam(points_vars, lr=1.0)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
         # Adam iterations.
-        for t in tqdm(range(args.num_iter)):
+        t_range = tqdm(range(args.num_iter))
+        for t in t_range:
             points_optim.zero_grad()
             color_optim.zero_grad()
             # Forward pass: render the image.
@@ -131,7 +132,7 @@ def main():
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
             loss = (img - target).pow(2).mean()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
-            t.set_postfix({'loss': loss.item()})
+            t_range.set_postfix({'loss': loss.item()})
             # Backpropagate the gradients.
             loss.backward()
 
