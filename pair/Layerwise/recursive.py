@@ -10,6 +10,7 @@ import random
 import argparse
 import math
 import errno
+from tqdm import tqdm
 
 pydiffvg.set_print_timing(False)
 gamma = 1.0
@@ -100,6 +101,7 @@ def main():
     current_path_str = ""
     old_shapes, old_shape_groups = [], []
     for num_paths in num_paths_list:
+        print(f"=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
         shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
@@ -114,7 +116,7 @@ def main():
         points_optim = torch.optim.Adam(points_vars, lr=1.0)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
         # Adam iterations.
-        for t in range(args.num_iter):
+        for t in tqdm(range(args.num_iter)):
             points_optim.zero_grad()
             color_optim.zero_grad()
             # Forward pass: render the image.
@@ -128,7 +130,7 @@ def main():
             img = img[:, :, :3]
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
             loss = (img - target).pow(2).mean()
-            print(f'iteration: {t} \t render loss: {loss.item()}')
+            # print(f'iteration: {t} \t render loss: {loss.item()}')
             # Backpropagate the gradients.
             loss.backward()
 
