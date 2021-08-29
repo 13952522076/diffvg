@@ -141,5 +141,11 @@ def main():
             pydiffvg.save_svg('results/recursive/{}_path_{}.svg'.format(filename, args.num_paths),
                               canvas_width, canvas_height, shapes, shape_groups)
 
+    old_shapes = shapes
+    old_shape_groups = shape_groups
+
+
+
+
 if __name__ == "__main__":
     main()
