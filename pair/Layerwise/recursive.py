@@ -31,28 +31,8 @@ except OSError as exc:  # Python >2.5
         else:
             raise
 
-def main():
-    args = parse_args()
-    # Use GPU if available
-    pydiffvg.set_use_gpu(torch.cuda.is_available())
 
-    basename = os.path.basename(args.target)
-    filename = os.path.splitext(basename)[0]
-    target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
-    print(f"Input image shape is: {target.shape}")
-    if target.shape[2] == 4:
-        print("Input image includes alpha channel, simply dropout alpha channel.")
-        target = target[:, :, :3]
-    target = target.pow(gamma)
-    target = target.to(pydiffvg.get_device())
-    target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
-    canvas_width, canvas_height = target.shape[3], target.shape[2]
-    num_paths_list = [int(i) for i in args.num_paths.split(',')]
-    num_paths = num_paths_list[0]
-
-    random.seed(1234)
-    torch.manual_seed(1234)
-
+def init_new_paths(num_paths, canvas_width, canvas_height):
     shapes = []
     shape_groups = []
     for i in range(num_paths):
@@ -85,19 +65,42 @@ def main():
                                                                     random.random(),
                                                                     random.random()]))
         shape_groups.append(path_group)
-
-    render = pydiffvg.RenderFunction.apply
-
     points_vars = []
     color_vars = []
     for path in shapes:
         path.points.requires_grad = True
         points_vars.append(path.points)
-
     for group in shape_groups:
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
+    return shapes, shape_groups, points_vars, color_vars
 
+def main():
+    args = parse_args()
+    # Use GPU if available
+    pydiffvg.set_use_gpu(torch.cuda.is_available())
+
+    basename = os.path.basename(args.target)
+    filename = os.path.splitext(basename)[0]
+    target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
+    print(f"Input image shape is: {target.shape}")
+    if target.shape[2] == 4:
+        print("Input image includes alpha channel, simply dropout alpha channel.")
+        target = target[:, :, :3]
+    target = target.pow(gamma)
+    target = target.to(pydiffvg.get_device())
+    target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
+    canvas_width, canvas_height = target.shape[3], target.shape[2]
+    num_paths_list = [int(i) for i in args.num_paths.split(',')]
+    num_paths = num_paths_list[0]
+
+    random.seed(1234)
+    torch.manual_seed(1234)
+
+    render = pydiffvg.RenderFunction.apply
+
+    # new shapes related stuffs.
+    shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
     # Optimize
     points_optim = torch.optim.Adam(points_vars, lr=1.0)
     color_optim = torch.optim.Adam(color_vars, lr=0.01)
