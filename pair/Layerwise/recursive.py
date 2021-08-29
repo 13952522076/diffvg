@@ -97,10 +97,10 @@ def main():
     torch.manual_seed(1234)
     render = pydiffvg.RenderFunction.apply
 
-    current_path_str = "Current"
+    current_path_str = ""
     old_shapes, old_shape_groups = [], []
     for num_paths in num_paths_list:
-        current_path_str = current_path_str+"-"+str(num_paths)
+        current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
         shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
         if len(old_shapes)>0:
@@ -123,8 +123,8 @@ def main():
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
             if t == args.num_iter - 1:
-                pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path{}_{}.png'.
-                                 format(filename, args.num_paths, current_path_str), gamma=gamma)
+                pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path{}[{}].png'.
+                                 format(filename, args.num_paths, current_path_str[:-1]), gamma=gamma)
             img = img[:, :, :3]
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
             loss = (img - target).pow(2).mean()
@@ -138,7 +138,7 @@ def main():
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
-                pydiffvg.save_svg('results/recursive/{}_path{}_{}.svg'.format(filename, args.num_paths,current_path_str),
+                pydiffvg.save_svg('results/recursive/{}_path{}[{}].svg'.format(filename, args.num_paths,current_path_str[:-1]),
                                   canvas_width, canvas_height, shapes, shape_groups)
 
         old_shapes = shapes
