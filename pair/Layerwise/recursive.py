@@ -1,5 +1,5 @@
 """
-python direct.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1 --use_blob
+python recursive.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1 --use_blob
 """
 import pydiffvg
 import torch
@@ -18,16 +18,16 @@ gamma = 1.0
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("target", help="target image path")
-    parser.add_argument("--num_paths", type=int, default=1)
+    parser.add_argument("--num_paths", type=str, default="1,2")
     parser.add_argument("--max_width", type=float, default=4.0)
     parser.add_argument("--use_lpips_loss", dest='use_lpips_loss', action='store_true')
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument("--use_blob", dest='use_blob', action='store_true')
     return parser.parse_args()
 try:
-    os.makedirs("results/direct")
+    os.makedirs("results/recursive")
 except OSError as exc:  # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir("results/direct"):
+        if exc.errno == errno.EEXIST and os.path.isdir("results/recursive"):
             pass
         else:
             raise
@@ -53,7 +53,7 @@ def main():
     target = target.permute(0, 3, 1, 2) # NHWC -> NCHW
     #target = torch.nn.functional.interpolate(target, size = [256, 256], mode = 'area')
     canvas_width, canvas_height = target.shape[3], target.shape[2]
-    num_paths = args.num_paths
+    num_paths = args.num_paths.split(',')[0]
     max_width = args.max_width
 
     random.seed(1234)
@@ -184,7 +184,7 @@ def main():
         # Save the intermediate render.
         # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
         if t == args.num_iter - 1:
-            pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
+            pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
@@ -214,7 +214,7 @@ def main():
                 group.stroke_color.data.clamp_(0.0, 1.0)
 
         if t == args.num_iter - 1:
-            pydiffvg.save_svg('results/direct/{}_path_{}.svg'.format(filename, args.num_paths),
+            pydiffvg.save_svg('results/recursive/{}_path_{}.svg'.format(filename, args.num_paths),
                               canvas_width, canvas_height, shapes, shape_groups)
 
     # Render the final result.
@@ -226,7 +226,7 @@ def main():
     #              None,
     #              *scene_args)
     # # Save the final render.
-    # pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
+    # pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
     # Convert the intermediate renderings to a video.
     # from subprocess import call
     # call(["ffmpeg", "-framerate", "24", "-i",
