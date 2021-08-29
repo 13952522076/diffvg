@@ -40,9 +40,12 @@ def main():
     perception_loss = ttools.modules.LPIPS().to(pydiffvg.get_device())
 
     #target = torch.from_numpy(skimage.io.imread('imgs/lena.png')).to(torch.float32) / 255.0
-    basename = os.path.basename(args.image)
+    basename = os.path.basename(args.target)
     filename = os.path.splitext(basename)[0]
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
+    if target.shape[2] == 4:
+        print("Input image includes alpha channel, simply dropout alpha channel.")
+        target = target[:, :, :3]
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0)
