@@ -93,7 +93,6 @@ def main():
     target = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths_list = [int(i) for i in args.num_paths.split(',')]
-    num_paths = num_paths_list[0]
     random.seed(1234)
     torch.manual_seed(1234)
     render = pydiffvg.RenderFunction.apply
@@ -142,8 +141,8 @@ def main():
                 pydiffvg.save_svg('results/recursive/{}_path{}_{}.svg'.format(filename, args.num_paths,current_path_str),
                                   canvas_width, canvas_height, shapes, shape_groups)
 
-    old_shapes = shapes
-    old_shape_groups = shape_groups
+        old_shapes = shapes
+        old_shape_groups = shape_groups
 
 
 
