@@ -1,5 +1,5 @@
 """
-python direct.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1 --use_blob
+python direct.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f62e.svg --num_paths 12 --use_blob
 """
 import pydiffvg
 import torch
@@ -183,8 +183,8 @@ def main():
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         # Save the intermediate render.
         # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
-        if t == args.num_iter - 1:
-            pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
+        # if t == args.num_iter - 1:
+        #     pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
