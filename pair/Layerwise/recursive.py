@@ -30,6 +30,16 @@ except OSError as exc:  # Python >2.5
         else:
             raise
 
+def load_image(args):
+    target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
+    print(f"Input image shape is: {target.shape}")
+    if target.shape[2] == 4:
+        print("Input image includes alpha channel, simply dropout alpha channel.")
+        target = target[:, :, :3]
+    target = target.pow(gamma)
+    target = target.to(pydiffvg.get_device())
+    target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
+    return target
 
 def init_new_paths(num_paths, canvas_width, canvas_height):
     shapes = []
@@ -74,32 +84,33 @@ def init_new_paths(num_paths, canvas_width, canvas_height):
         color_vars.append(group.fill_color)
     return shapes, shape_groups, points_vars, color_vars
 
+
 def main():
     args = parse_args()
     # Use GPU if available
     pydiffvg.set_use_gpu(torch.cuda.is_available())
-
-    basename = os.path.basename(args.target)
-    filename = os.path.splitext(basename)[0]
-    target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
-    print(f"Input image shape is: {target.shape}")
-    if target.shape[2] == 4:
-        print("Input image includes alpha channel, simply dropout alpha channel.")
-        target = target[:, :, :3]
-    target = target.pow(gamma)
-    target = target.to(pydiffvg.get_device())
-    target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
+    filename = os.path.splitext(os.path.basename(args.target))[0]
+    target = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths_list = [int(i) for i in args.num_paths.split(',')]
     num_paths = num_paths_list[0]
-
     random.seed(1234)
     torch.manual_seed(1234)
-
     render = pydiffvg.RenderFunction.apply
+    old_shapes, old_shape_groups = [], []
 
-    # new shapes related stuffs.
+
+
+
+    # initialize new shapes related stuffs.
     shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
+    if len(old_shapes)>0:
+        for path in old_shapes:
+            path.points.requires_grad = False
+        for group in old_shape_groups:
+            group.fill_color.requires_grad = False
+    shapes = old_shapes+shapes
+    shape_groups = old_shape_groups+shape_groups
     # Optimize
     points_optim = torch.optim.Adam(points_vars, lr=1.0)
     color_optim = torch.optim.Adam(color_vars, lr=0.01)
