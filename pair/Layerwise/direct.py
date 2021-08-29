@@ -1,5 +1,5 @@
 """
-python painterly_rendering.py imgs/kitty.jpg --num_paths 1024 --use_blob
+python painterly_rendering.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1 --use_blob
 """
 import pydiffvg
 import torch
@@ -59,7 +59,7 @@ def main():
     shape_groups = []
     if args.use_blob:
         for i in range(num_paths):
-            num_segments = random.randint(3, 5)
+            num_segments = 4
             num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
             points = []
             p0 = (random.random(), random.random())
