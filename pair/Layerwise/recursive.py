@@ -11,6 +11,7 @@ import argparse
 import math
 import errno
 from tqdm import tqdm
+from torch.optim.lr_scheduler import CosineAnnealingLR
 
 pydiffvg.set_print_timing(False)
 gamma = 1.0
@@ -115,6 +116,8 @@ def main():
         # Optimize
         points_optim = torch.optim.Adam(points_vars, lr=1.0)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
+        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
+        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.001)
         # Adam iterations.
         t_range = tqdm(range(args.num_iter))
         for t in t_range:
@@ -139,6 +142,10 @@ def main():
             # Take a gradient descent step.
             points_optim.step()
             color_optim.step()
+
+            points_scheduler.step()
+            color_scheduler.step()
+
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
