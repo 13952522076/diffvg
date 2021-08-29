@@ -1,5 +1,5 @@
 """
-python recursive.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1,2 --use_blob
+python recursive.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1,2
 """
 import pydiffvg
 import torch
@@ -19,7 +19,6 @@ def parse_args():
     parser.add_argument("target", help="target image path")
     parser.add_argument("--num_paths", type=str, default="1,2")
     parser.add_argument("--num_iter", type=int, default=500)
-    parser.add_argument("--use_blob", dest='use_blob', action='store_true')
     return parser.parse_args()
 
 
