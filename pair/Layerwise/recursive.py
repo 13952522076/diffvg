@@ -97,49 +97,50 @@ def main():
     random.seed(1234)
     torch.manual_seed(1234)
     render = pydiffvg.RenderFunction.apply
+
+    current_path_str = "Current"
     old_shapes, old_shape_groups = [], []
+    for num_paths in num_paths_list:
+        current_path_str = current_path_str+"-"+str(num_paths)
+        # initialize new shapes related stuffs.
+        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
+        if len(old_shapes)>0:
+            for path in old_shapes:
+                path.points.requires_grad = False
+            for group in old_shape_groups:
+                group.fill_color.requires_grad = False
+        shapes = old_shapes+shapes
+        shape_groups = old_shape_groups+shape_groups
+        # Optimize
+        points_optim = torch.optim.Adam(points_vars, lr=1.0)
+        color_optim = torch.optim.Adam(color_vars, lr=0.01)
+        # Adam iterations.
+        for t in range(args.num_iter):
+            points_optim.zero_grad()
+            color_optim.zero_grad()
+            # Forward pass: render the image.
+            scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
+            img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
+            # Compose img with white background
+            img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+            if t == args.num_iter - 1:
+                pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path{}_{}.png'.
+                                 format(filename, args.num_paths, current_path_str), gamma=gamma)
+            img = img[:, :, :3]
+            img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
+            loss = (img - target).pow(2).mean()
+            print(f'iteration: {t} \t render loss: {loss.item()}')
+            # Backpropagate the gradients.
+            loss.backward()
 
-
-
-
-    # initialize new shapes related stuffs.
-    shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
-    if len(old_shapes)>0:
-        for path in old_shapes:
-            path.points.requires_grad = False
-        for group in old_shape_groups:
-            group.fill_color.requires_grad = False
-    shapes = old_shapes+shapes
-    shape_groups = old_shape_groups+shape_groups
-    # Optimize
-    points_optim = torch.optim.Adam(points_vars, lr=1.0)
-    color_optim = torch.optim.Adam(color_vars, lr=0.01)
-    # Adam iterations.
-    for t in range(args.num_iter):
-        points_optim.zero_grad()
-        color_optim.zero_grad()
-        # Forward pass: render the image.
-        scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
-        img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
-        # Compose img with white background
-        img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
-        if t == args.num_iter - 1:
-            pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
-        img = img[:, :, :3]
-        img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
-        loss = (img - target).pow(2).mean()
-        print(f'iteration: {t} \t render loss: {loss.item()}')
-        # Backpropagate the gradients.
-        loss.backward()
-
-        # Take a gradient descent step.
-        points_optim.step()
-        color_optim.step()
-        for group in shape_groups:
-            group.fill_color.data.clamp_(0.0, 1.0)
-        if t == args.num_iter - 1:
-            pydiffvg.save_svg('results/recursive/{}_path_{}.svg'.format(filename, args.num_paths),
-                              canvas_width, canvas_height, shapes, shape_groups)
+            # Take a gradient descent step.
+            points_optim.step()
+            color_optim.step()
+            for group in shape_groups:
+                group.fill_color.data.clamp_(0.0, 1.0)
+            if t == args.num_iter - 1:
+                pydiffvg.save_svg('results/recursive/{}_path{}_{}.svg'.format(filename, args.num_paths,current_path_str),
+                                  canvas_width, canvas_height, shapes, shape_groups)
 
     old_shapes = shapes
     old_shape_groups = shape_groups
