@@ -12,7 +12,7 @@ import argparse
 import math
 import errno
 
-pydiffvg.set_print_timing(True)
+pydiffvg.set_print_timing(False)
 gamma = 1.0
 
 def parse_args():
@@ -43,6 +43,7 @@ def main():
     basename = os.path.basename(args.target)
     filename = os.path.splitext(basename)[0]
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
+    print(f"Input image shape is: {target.shape}")
     if target.shape[2] == 4:
         print("Input image includes alpha channel, simply dropout alpha channel.")
         target = target[:, :, :3]
@@ -163,7 +164,7 @@ def main():
     color_optim = torch.optim.Adam(color_vars, lr=0.01)
     # Adam iterations.
     for t in range(args.num_iter):
-        print('iteration:', t)
+
         points_optim.zero_grad()
         if len(stroke_width_vars) > 0:
             width_optim.zero_grad()
@@ -182,6 +183,8 @@ def main():
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         # Save the intermediate render.
         # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
+        if t == args.num_iter - 1:
+            pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
@@ -190,7 +193,7 @@ def main():
             loss = perception_loss(img, target) + (img.mean() - target.mean()).pow(2)
         else:
             loss = (img - target).pow(2).mean()
-        print('render loss:', loss.item())
+        print(f'iteration: {t} \t render loss: {loss.item()}')
 
         # Backpropagate the gradients.
         loss.backward()
@@ -210,20 +213,20 @@ def main():
             for group in shape_groups:
                 group.stroke_color.data.clamp_(0.0, 1.0)
 
-        # if t % 10 == 0 or t == args.num_iter - 1:
-        #     pydiffvg.save_svg('results/painterly_rendering/iter_{}.svg'.format(t),
-        #                       canvas_width, canvas_height, shapes, shape_groups)
+        if t == args.num_iter - 1:
+            pydiffvg.save_svg('results/direct/{}_path_{}.svg'.format(filename, args.num_paths),
+                              canvas_width, canvas_height, shapes, shape_groups)
 
     # Render the final result.
-    img = render(target.shape[1], # width
-                 target.shape[0], # height
-                 2,   # num_samples_x
-                 2,   # num_samples_y
-                 0,   # seed
-                 None,
-                 *scene_args)
-    # Save the final render.
-    pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
+    # img = render(target.shape[1], # width
+    #              target.shape[0], # height
+    #              2,   # num_samples_x
+    #              2,   # num_samples_y
+    #              0,   # seed
+    #              None,
+    #              *scene_args)
+    # # Save the final render.
+    # pydiffvg.imwrite(img.cpu(), 'results/direct/{}_path_{}.png'.format(filename, args.num_paths), gamma=gamma)
     # Convert the intermediate renderings to a video.
     # from subprocess import call
     # call(["ffmpeg", "-framerate", "24", "-i",
