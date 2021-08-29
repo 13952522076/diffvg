@@ -148,7 +148,7 @@ def main():
         old_shapes = shapes
         old_shape_groups = shape_groups
 
-
+    print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
 
 
 if __name__ == "__main__":
