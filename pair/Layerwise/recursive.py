@@ -104,10 +104,10 @@ def main():
         # initialize new shapes related stuffs.
         shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
         if len(old_shapes)>0:
-            for path in old_shapes:
-                path.points.requires_grad = False
-            for group in old_shape_groups:
-                group.fill_color.requires_grad = False
+            for old_path in old_shapes:
+                old_path.points.requires_grad = False
+            for old_group in old_shape_groups:
+                old_group.fill_color.requires_grad = False
         shapes = old_shapes+shapes
         shape_groups = old_shape_groups+shape_groups
         # Optimize
