@@ -131,6 +131,7 @@ def main():
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
             loss = (img - target).pow(2).mean()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
+            t.set_postfix({'loss': loss.item()})
             # Backpropagate the gradients.
             loss.backward()
 
