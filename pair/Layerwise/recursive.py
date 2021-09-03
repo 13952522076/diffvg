@@ -107,21 +107,28 @@ def main():
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
         shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
+        old_points_vars = []
+        old_color_vars = []
         if len(old_shapes)>0:
             for old_path in old_shapes:
                 if args.free:
                     old_path.points.requires_grad = True
+                    old_points_vars.append(old_path.points)
                 else:
                     old_path.points.requires_grad = False
             for old_group in old_shape_groups:
                 if args.free:
                     old_group.fill_color.requires_grad = True
+                    old_color_vars.append(old_group.fill_color)
+
                 else:
                     old_group.fill_color.requires_grad = False
 
         shapes = old_shapes+shapes
         shape_groups = old_shape_groups+shape_groups
         # Optimize
+        points_vars = old_points_vars + points_vars
+        color_vars = old_color_vars + color_vars
         points_optim = torch.optim.Adam(points_vars, lr=1.0)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
