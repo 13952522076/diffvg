@@ -157,8 +157,11 @@ def main():
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
-                pydiffvg.save_svg('results/recursive/{}_path{}[{}].svg'.format(filename, args.num_paths,current_path_str[:-1]),
-                                  canvas_width, canvas_height, shapes, shape_groups)
+                save_name = 'results/recursive/{}_path{}[{}]'.format(filename, args.num_paths,current_path_str[:-1])
+                if args.free:
+                    save_name+='-free'
+                save_name+='.svg'
+                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
         old_shapes = shapes
         old_shape_groups = shape_groups
