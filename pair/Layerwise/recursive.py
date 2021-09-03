@@ -1,5 +1,5 @@
 """
-python recursive.py ../data/emoji_rgb/validate/0/Emoji_u1f640.svg.png --num_paths 1,2
+python recursive.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_KitKat_1f60f.svg.png --num_paths 3,3,3,3
 """
 import pydiffvg
 import torch
@@ -21,6 +21,7 @@ def parse_args():
     parser.add_argument("target", help="target image path")
     parser.add_argument("--num_paths", type=str, default="1,2")
     parser.add_argument("--num_iter", type=int, default=500)
+    parser.add_argument('--free', action='store_true')
     return parser.parse_args()
 
 
@@ -108,9 +109,16 @@ def main():
         shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
         if len(old_shapes)>0:
             for old_path in old_shapes:
-                old_path.points.requires_grad = False
+                if args.free:
+                    old_path.points.requires_grad = True
+                else:
+                    old_path.points.requires_grad = False
             for old_group in old_shape_groups:
-                old_group.fill_color.requires_grad = False
+                if args.free:
+                    old_group.fill_color.requires_grad = True
+                else:
+                    old_group.fill_color.requires_grad = False
+
         shapes = old_shapes+shapes
         shape_groups = old_shape_groups+shape_groups
         # Optimize
