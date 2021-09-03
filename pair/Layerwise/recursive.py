@@ -20,6 +20,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("target", help="target image path")
     parser.add_argument("--num_paths", type=str, default="1,2")
+    parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
     return parser.parse_args()
@@ -44,11 +45,11 @@ def load_image(args):
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
     return target
 
-def init_new_paths(num_paths, canvas_width, canvas_height):
+def init_new_paths(num_paths, canvas_width, canvas_height, args):
     shapes = []
     shape_groups = []
     for i in range(num_paths):
-        num_segments = 4
+        num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
         points = []
         p0 = (random.random(), random.random())
@@ -106,7 +107,7 @@ def main():
         print(f"=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height)
+        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height, args)
         old_points_vars = []
         old_color_vars = []
         if len(old_shapes)>0:
@@ -164,7 +165,8 @@ def main():
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
-                save_name = 'results/recursive/{}_path{}[{}]'.format(filename, args.num_paths,current_path_str[:-1])
+                save_name = 'results/recursive/{}_path{}[{}]-segments{}'.\
+                    format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
                 if args.free:
                     save_name+='-free'
                 save_name+='.svg'
