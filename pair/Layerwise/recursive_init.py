@@ -66,6 +66,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args):
             p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
             points.append(p1)
             points.append(p2)
+            print(f"new path shape is {points.shape}")
             if j < num_segments - 1:
                 points.append(p3)
                 p0 = p3
