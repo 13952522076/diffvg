@@ -95,7 +95,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=Non
                                          fill_color = torch.tensor([random.random(),
                                                                     random.random(),
                                                                     random.random(),
-                                                                    random.random()]))
+                                                                    1.0]))
         shape_groups.append(path_group)
     points_vars = []
     color_vars = []
