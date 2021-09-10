@@ -187,7 +187,7 @@ def main():
         gt_pool = adaptive_avg_pool2d(target, args.pool_size)
         region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0).reshape(-1)
         print(f'loss shape is {region_loss.shape}')
-        sorted, indices = torch.sort(region_loss, dim=0, descending="True")
+        sorted, indices = torch.sort(region_loss, dim=0, descending=True)
         indices = indices[:num_paths]
         indices_w = indices//(args.pool_size-1)
         indices_h = indices%(args.pool_size-1)
