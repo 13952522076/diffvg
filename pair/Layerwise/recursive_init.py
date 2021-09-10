@@ -50,7 +50,7 @@ def load_image(args):
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
     return target
 
-def init_new_paths(num_paths, canvas_width, canvas_height, args):
+def init_new_paths(num_paths, canvas_width, canvas_height, args, norm_postion=None):
     shapes = []
     shape_groups = []
     for i in range(num_paths):
@@ -70,7 +70,9 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args):
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
-        print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
+        if norm_postion is not None:
+            points = points-points.mean(dim=0, keepdim=True) + norm_postion
+        # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
         path = pydiffvg.Path(num_control_points = num_control_points,
@@ -103,17 +105,18 @@ def main():
     target = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths_list = [int(i) for i in args.num_paths.split(',')]
-    random.seed(1234)
-    torch.manual_seed(1234)
+    # random.seed(1234)
+    # torch.manual_seed(1234)
     render = pydiffvg.RenderFunction.apply
 
     current_path_str = ""
     old_shapes, old_shape_groups = [], []
+    norm_postion=None
     for num_paths in num_paths_list:
         print(f"=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height, args)
+        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height, args, norm_postion)
         old_points_vars = []
         old_color_vars = []
         if len(old_shapes)>0:
@@ -203,7 +206,9 @@ def main():
         indices = indices[:num_paths]
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
         indices_w = indices%(args.pool_size)
-        print(f"Top {num_paths} losses are {torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)}")
+        norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
+        norm_postion = (norm_postion.float()+0.5)/(args.pool_size.float())
+        # print(f"Top {num_paths} losses are {torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)}")
 
 
 
