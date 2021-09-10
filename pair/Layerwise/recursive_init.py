@@ -132,7 +132,7 @@ def main():
 
         shapes = old_shapes+shapes
         shape_groups = old_shape_groups+shape_groups
-        save_name = 'results/recursive/{}_path{}[{}]-segments{}'.\
+        save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
             format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
         if args.free:
             save_name+='-free'
@@ -155,13 +155,13 @@ def main():
             img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
-            if t == 0:
-                save_name = 'results/recursive/{}_path{}[{}]-segments{}'.\
-                    format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
-                if args.free:
-                    save_name+='-free'
-                save_name+='.svg'
-                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+            # if t == 0:
+            #     save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
+            #         format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
+            #     if args.free:
+            #         save_name+='-free'
+            #     save_name+='.svg'
+            #     pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
             #     pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path{}[{}].png'.
             #                      format(filename, args.num_paths, current_path_str[:-1]), gamma=gamma)
             img = img[:, :, :3]
@@ -182,7 +182,7 @@ def main():
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
-                save_name = 'results/recursive/{}_path{}[{}]-segments{}'.\
+                save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
                     format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
                 if args.free:
                     save_name+='-free'
