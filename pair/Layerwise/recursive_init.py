@@ -204,10 +204,10 @@ def main():
         region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0)
         sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
         indices = indices[:num_paths]
-        indices_h = torch.Tensor(torch.div(indices, args.pool_size, rounding_mode='trunc'),dtype=float)
-        indices_w = torch.Tensor(indices%(args.pool_size),dtype=float)
+        indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
+        indices_w = indices%(args.pool_size)
         norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
-        norm_postion = (norm_postion+0.5)/(args.pool_size)
+        norm_postion = float(norm_postion+0.5)/float(args.pool_size)
         print(f"Top {num_paths} losses are {torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)}")
 
 
