@@ -208,8 +208,8 @@ def main():
         indices_w = indices%(args.pool_size)
         norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
         norm_postion = norm_postion+0.5/(args.pool_size + 1e-8)
-        norm_postion.to(img.device)
-        print(f"Top {num_paths} losses are {torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)}")
+
+        print(f"Top {num_paths} losses are {norm_postion}")
 
 
 
