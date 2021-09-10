@@ -186,7 +186,9 @@ def main():
         im_pool = adaptive_avg_pool2d(img, args.pool_size)
         gt_pool = adaptive_avg_pool2d(target, args.pool_size)
         region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0)
-        print(f"Loss is {region_loss}")
+        print(f"Loss is \n{region_loss}")
+        print(f"Flatten Loss is \n{region_loss.reshape(-1)}")
+        print(f"Recover Loss is \n{region_loss.reshape(-1).reshape(args.pool_size,args.pool_size)}")
         sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
         indices = indices[:num_paths]
         indices_w = indices//(args.pool_size-1)
