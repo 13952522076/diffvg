@@ -191,8 +191,8 @@ def main():
         print(f"Recover Loss is \n{region_loss.reshape(-1).reshape(args.pool_size,args.pool_size)}")
         sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
         indices = indices[:num_paths]
-        indices_w = indices//(args.pool_size-1)
-        indices_h = indices%(args.pool_size-1)
+        indices_w = indices//(args.pool_size)
+        indices_h = indices%(args.pool_size)
         print(f"Top {num_paths} losses are {torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)}")
 
 
