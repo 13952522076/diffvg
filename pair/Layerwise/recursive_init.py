@@ -50,9 +50,20 @@ def load_image(args):
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
     return target
 
-def init_new_paths(num_paths, canvas_width, canvas_height, args, norm_postion=None):
+def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=None):
     shapes = []
     shape_groups = []
+
+    # change path init location
+    if region_loss is not None:
+        sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
+        indices = indices[:num_paths]
+        indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
+        indices_w = indices%(args.pool_size)
+        norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
+        norm_postion = (norm_postion+0.5)/(args.pool_size + 1e-8)
+
+
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
@@ -70,8 +81,8 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, norm_postion=No
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
-        if norm_postion is not None:
-            points = points-points.mean(dim=0, keepdim=True) + norm_postion.to(points.device)
+        if region_loss is not None:
+            points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
@@ -112,11 +123,12 @@ def main():
     current_path_str = ""
     old_shapes, old_shape_groups = [], []
     norm_postion=None
+    region_loss = None
     for num_paths in num_paths_list:
         print(f"=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height, args, norm_postion)
+        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss)
         old_points_vars = []
         old_color_vars = []
         if len(old_shapes)>0:
@@ -202,12 +214,7 @@ def main():
         im_pool = adaptive_avg_pool2d(img, args.pool_size)
         gt_pool = adaptive_avg_pool2d(target, args.pool_size)
         region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0)
-        sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
-        indices = indices[:num_paths]
-        indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
-        indices_w = indices%(args.pool_size)
-        norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
-        norm_postion = (norm_postion+0.5)/(args.pool_size + 1e-8)
+
 
         # print(f"Top {num_paths} losses are {norm_postion}")
 
