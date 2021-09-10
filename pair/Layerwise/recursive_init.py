@@ -192,7 +192,7 @@ def main():
         indices_w = indices//(args.pool_size-1)
         indices_h = indices%(args.pool_size-1)
         print(f"Loss is {region_loss}")
-        print(f"Top {num_paths} losses are {torch.cat([indices_w.unsequeeze(dim=-1), indices_h.unsequeeze(dim=-1)], dim=-1)}")
+        print(f"Top {num_paths} losses are {torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)}")
 
 
 
