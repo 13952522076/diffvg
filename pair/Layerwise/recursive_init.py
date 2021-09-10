@@ -95,7 +95,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=Non
                                          fill_color = torch.tensor([random.random(),
                                                                     random.random(),
                                                                     random.random(),
-                                                                    1.0]))
+                                                                    random.random()]))
         shape_groups.append(path_group)
     points_vars = []
     color_vars = []
@@ -116,8 +116,8 @@ def main():
     target = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths_list = [int(i) for i in args.num_paths.split(',')]
-    # random.seed(1234)
-    # torch.manual_seed(1234)
+    random.seed(1234)
+    torch.manual_seed(1234)
     render = pydiffvg.RenderFunction.apply
 
     current_path_str = ""
