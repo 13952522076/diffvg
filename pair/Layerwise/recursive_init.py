@@ -132,6 +132,12 @@ def main():
 
         shapes = old_shapes+shapes
         shape_groups = old_shape_groups+shape_groups
+        save_name = 'results/recursive/{}_path{}[{}]-segments{}'.\
+            format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
+        if args.free:
+            save_name+='-free'
+        save_name+='-init.svg'
+        pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = old_points_vars + points_vars
         color_vars = old_color_vars + color_vars
@@ -149,7 +155,13 @@ def main():
             img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
-            # if t == args.num_iter - 1:
+            if t == 0:
+                save_name = 'results/recursive/{}_path{}[{}]-segments{}'.\
+                    format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
+                if args.free:
+                    save_name+='-free'
+                save_name+='.svg'
+                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
             #     pydiffvg.imwrite(img.cpu(), 'results/recursive/{}_path{}[{}].png'.
             #                      format(filename, args.num_paths, current_path_str[:-1]), gamma=gamma)
             img = img[:, :, :3]
@@ -186,14 +198,11 @@ def main():
         im_pool = adaptive_avg_pool2d(img, args.pool_size)
         gt_pool = adaptive_avg_pool2d(target, args.pool_size)
         region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0)
-        print(f"Loss is \n{region_loss}")
-        print(f"Flatten Loss is \n{region_loss.reshape(-1)}")
-        print(f"Recover Loss is \n{region_loss.reshape(-1).reshape(args.pool_size,args.pool_size)}")
         sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
         indices = indices[:num_paths]
-        indices_w = indices//(args.pool_size)
-        indices_h = indices%(args.pool_size)
-        print(f"Top {num_paths} losses are {torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)}")
+        indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
+        indices_w = indices%(args.pool_size)
+        print(f"Top {num_paths} losses are {torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)}")
 
 
 
