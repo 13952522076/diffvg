@@ -70,7 +70,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args):
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
-        print(f"new path shape is {points.shape}, max value: {max(points)}, min value: {min(points)}")
+        print(f"new path shape is {points.shape}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
         path = pydiffvg.Path(num_control_points = num_control_points,
