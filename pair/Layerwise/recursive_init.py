@@ -12,6 +12,7 @@ import math
 import errno
 from tqdm import tqdm
 from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.nn.functional import adaptive_avg_pool2d
 
 pydiffvg.set_print_timing(False)
 gamma = 1.0
@@ -23,6 +24,10 @@ def parse_args():
     parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
+    parser.add_argument('--pool_size', type=int, default=7, help="the pooled image size for next path initialization")
+
+
+
     return parser.parse_args()
 
 
@@ -172,8 +177,24 @@ def main():
                 save_name+='.svg'
                 pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
+
+
         old_shapes = shapes
         old_shape_groups = shape_groups
+
+        # calculate the position of max loss region.
+        im_pool = adaptive_avg_pool2d(img, args.pool_size)
+        gt_pool = adaptive_avg_pool2d(target, args.pool_size)
+        region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0).reshape(-1)
+        sorted, indices = torch.sort(region_loss, descending="True")
+        indices = indices[:num_paths]
+        indices_w = indices//(args.pool_size-1)
+        indices_h = indices%(args.pool_size-1)
+        print(f"Loss is {region_loss}")
+        print(f"Top {num_paths} losses are {torch.cat([indices_w.unsequeeze(dim=-1), indices_h.unsequeeze(dim=-1)], dim=-1)}")
+
+
+
 
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
 
