@@ -19,7 +19,7 @@ gamma = 1.0
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("target", help="target image path")
-    parser.add_argument("--num_paths", type=str, default="1,2")
+    parser.add_argument("--num_paths", type=str, default="1,1,1")
     parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
@@ -27,9 +27,9 @@ def parse_args():
 
 
 try:
-    os.makedirs("results/recursive")
+    os.makedirs("results/recursive_init")
 except OSError as exc:  # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir("results/recursive"):
+        if exc.errno == errno.EEXIST and os.path.isdir("results/recursive_init"):
             pass
         else:
             raise
