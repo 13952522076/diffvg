@@ -207,7 +207,7 @@ def main():
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
         indices_w = indices%(args.pool_size)
         norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
-        norm_postion = (norm_postion.float()+0.5)/(args.pool_size.float())
+        norm_postion = (norm_postion.long()+0.5)/(args.pool_size.long())
         # print(f"Top {num_paths} losses are {torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)}")
 
 
