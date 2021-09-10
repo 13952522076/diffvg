@@ -71,7 +71,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, norm_postion=No
                 p0 = p3
         points = torch.tensor(points)
         if norm_postion is not None:
-            points = points-points.mean(dim=0, keepdim=True) + norm_postion
+            points = points-points.mean(dim=0, keepdim=True) + norm_postion.to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
@@ -207,9 +207,9 @@ def main():
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
         indices_w = indices%(args.pool_size)
         norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
-        norm_postion = norm_postion+0.5/(args.pool_size + 1e-8)
+        norm_postion = (norm_postion+0.5)/(args.pool_size + 1e-8)
 
-        print(f"Top {num_paths} losses are {norm_postion}")
+        # print(f"Top {num_paths} losses are {norm_postion}")
 
 
 
