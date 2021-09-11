@@ -62,6 +62,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=Non
         indices_w = indices%(args.pool_size)
         norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
         norm_postion = (norm_postion+0.5)/(args.pool_size + 1e-8)
+        print(f"norm_position equals: {norm_postion}")
 
 
     for i in range(num_paths):
