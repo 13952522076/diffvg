@@ -147,7 +147,9 @@ def main():
 
                 else:
                     old_group.fill_color.requires_grad = False
-
+        if len(old_shapes) >0:
+            print(f"old shapes first path points is: {(old_shapes[0]).points}")
+            print(f"new shapes first path points is: {(shapes[0]).points}")
         shapes = [*old_shapes, *shapes]
         shape_groups = [*old_shape_groups, *shape_groups]
         save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
