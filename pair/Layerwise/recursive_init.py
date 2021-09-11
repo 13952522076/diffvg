@@ -157,6 +157,8 @@ def main():
         if args.free:
             save_name+='-free'
         save_name+='-init.svg'
+        for shap in shapes:
+            print(shap.points)
         pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
