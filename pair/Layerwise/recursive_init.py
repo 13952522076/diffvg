@@ -97,6 +97,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=Non
                                                                     random.random(),
                                                                     random.random()]))
         shape_groups.append(path_group)
+
     points_vars = []
     color_vars = []
     for path in shapes:
@@ -122,7 +123,7 @@ def main():
 
     current_path_str = ""
     old_shapes, old_shape_groups = [], []
-    norm_postion=None
+
     region_loss = None
     for num_paths in num_paths_list:
         print(f"=> Adding {num_paths} paths ...")
