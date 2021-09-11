@@ -203,7 +203,7 @@ def main():
                     format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
                 if args.free:
                     save_name+='-free'
-                save_name+='.svg'
+                save_name+='-init.svg'
                 pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
 
