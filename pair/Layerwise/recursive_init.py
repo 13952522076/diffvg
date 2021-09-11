@@ -148,8 +148,8 @@ def main():
                 else:
                     old_group.fill_color.requires_grad = False
 
-        shapes = old_shapes+shapes
-        shape_groups = old_shape_groups+shape_groups
+        shapes = [*old_shapes, *shapes]
+        shape_groups = [*old_shape_groups, *shape_groups]
         save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
             format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
         if args.free:
@@ -157,8 +157,8 @@ def main():
         save_name+='-init.svg'
         pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
-        points_vars = old_points_vars + points_vars
-        color_vars = old_color_vars + color_vars
+        points_vars = [*old_points_vars, *points_vars]
+        color_vars = [*old_color_vars, *color_vars]
         points_optim = torch.optim.Adam(points_vars, lr=1.0)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
