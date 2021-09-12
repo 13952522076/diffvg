@@ -6,6 +6,7 @@ import torch
 import os
 import skimage
 import skimage.io
+import matplotlib.pyplot as plt
 import random
 import argparse
 import math
@@ -25,7 +26,7 @@ def parse_args():
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
     parser.add_argument('--pool_size', type=int, default=7, help="the pooled image size for next path initialization")
-
+    parser.add_argument('--save_loss', action='store_true')
 
 
     return parser.parse_args()
@@ -39,6 +40,7 @@ except OSError as exc:  # Python >2.5
         else:
             raise
 
+
 def load_image(args):
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
     print(f"Input image shape is: {target.shape}")
@@ -49,6 +51,7 @@ def load_image(args):
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
     return target
+
 
 def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, pixel_loss=None):
     shapes = []
@@ -111,9 +114,21 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         color_vars.append(group.fill_color)
     return shapes, shape_groups, points_vars, color_vars
 
-def plot_loss_map(predict, target, args):
-    loss = (predict-target)**2
 
+def plot_loss_map(pixel_loss, args,savepath="./"):
+    _, _, H, W = pixel_loss.size()
+    region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
+    region_loss = region_loss.squeeze(dim=0).squeeze(dim=0)
+    region_loss = torch.softmax(region_loss.view(-1),dim=0).reshape(args.pool_size, args.pool_size)
+    pixel_loss = pixel_loss.squeeze(dim=0).squeeze(dim=0)
+    pixel_loss = torch.softmax(pixel_loss.view(-1),dim=0).reshape(H,W)
+    plt.imshow(pixel_loss, cmap='Reds')
+    plt.colorbar()
+    plt.savefig(savepath+"-loss_pixel.pdf", dpi=800)
+    plt.clf()
+    plt.imshow(region_loss, cmap='Reds')
+    plt.colorbar()
+    plt.savefig(savepath+"-loss_region.pdf", dpi=800)
 
 
 
@@ -226,7 +241,12 @@ def main():
 
         # calculate the pixel loss
         pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
-
+        if args.save_loss:
+            save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
+                    format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
+            if args.free:
+                    save_name+='-free'
+            plot_loss_map(pixel_loss, args, savepath=save_name)
 
         # print(f"Top {num_paths} losses are {norm_postion}")
 
