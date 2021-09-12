@@ -245,6 +245,7 @@ def main():
         # calculate the pixel loss
         pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
         loss_weight = torch.softmax(pixel_loss.reshape(1,1,-1),dim=-1).reshape_as(pixel_loss)
+        loss_weight = loss_weight.clone().detach()
         if args.save_loss:
             save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
                     format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
