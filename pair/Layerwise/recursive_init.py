@@ -212,7 +212,7 @@ def main():
             #                      format(filename, args.num_paths, current_path_str[:-1]), gamma=gamma)
             img = img[:, :, :3]
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
-            loss = (img - target).pow(2).mean()
+            loss = (img - target).pow(2).mean(dim=1).mean()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item()})
             # Backpropagate the gradients.
