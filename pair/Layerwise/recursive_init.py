@@ -50,12 +50,13 @@ def load_image(args):
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
     return target
 
-def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, region_loss=None):
+def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, pixel_loss=None):
     shapes = []
     shape_groups = []
 
     # change path init location
-    if region_loss is not None:
+    if pixel_loss is not None:
+        region_loss = adaptive_avg_pool2d(pixel_loss. args.pool_size)
         sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
         indices = indices[:num_paths]
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
@@ -82,7 +83,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
-        if region_loss is not None:
+        if pixel_loss is not None:
             points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
@@ -109,6 +110,11 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
     return shapes, shape_groups, points_vars, color_vars
+
+def plot_loss_map(predict, target, args):
+    loss = (predict-target)**2
+
+
 
 
 def main():
@@ -218,10 +224,8 @@ def main():
         old_shapes = shapes
         old_shape_groups = shape_groups
 
-        # calculate the position of max loss region.
-        im_pool = adaptive_avg_pool2d(img, args.pool_size)
-        gt_pool = adaptive_avg_pool2d(target, args.pool_size)
-        region_loss = ((im_pool-gt_pool)**2).sum(dim=1).sqrt_().squeeze(dim=0)
+        # calculate the pixel loss
+        pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
 
 
         # print(f"Top {num_paths} losses are {norm_postion}")
