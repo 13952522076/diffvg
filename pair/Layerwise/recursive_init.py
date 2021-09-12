@@ -125,10 +125,11 @@ def plot_loss_map(pixel_loss, args,savepath="./"):
     plt.imshow(pixel_loss, cmap='Reds')
     plt.colorbar()
     plt.savefig(savepath+"-loss_pixel.pdf", dpi=800)
-    plt.clf()
+    plt.close()
     plt.imshow(region_loss, cmap='Reds')
     plt.colorbar()
     plt.savefig(savepath+"-loss_region.pdf", dpi=800)
+    plt.close()
 
 
 
