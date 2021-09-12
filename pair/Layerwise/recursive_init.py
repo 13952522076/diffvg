@@ -246,7 +246,8 @@ def main():
             save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
                     format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
             if args.free:
-                    save_name+='-free'
+                save_name+='-free'
+            save_name+=f'-i{t}'
             plot_loss_map(pixel_loss, args, savepath=save_name)
 
         # print(f"Top {num_paths} losses are {norm_postion}")
