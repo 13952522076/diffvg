@@ -1,5 +1,5 @@
 """
-python recursive_init.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_KitKat_1f60f.svg.png --num_paths 1,1,1,1,1
+python recursive_init.py demo.png --num_paths 1,1,1,1,1
 """
 import pydiffvg
 import torch
