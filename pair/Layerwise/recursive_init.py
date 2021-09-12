@@ -50,7 +50,7 @@ def load_image(args):
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
     return target
 
-def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=None):
+def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, region_loss=None):
     shapes = []
     shape_groups = []
 
@@ -62,7 +62,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=Non
         indices_w = indices%(args.pool_size)
         norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
         norm_postion = (norm_postion+0.5)/(args.pool_size + 1e-8)
-        print(f"norm_position equals: {norm_postion}")
+        # print(f"norm_position equals: {norm_postion}")
 
 
     for i in range(num_paths):
@@ -92,7 +92,8 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss=Non
                              stroke_width = torch.tensor(1.0),
                              is_closed = True)
         shapes.append(path)
-        path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
+        # !!!!!!problem is here. the shape group shape_ids is wrong
+        path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]),
                                          fill_color = torch.tensor([random.random(),
                                                                     random.random(),
                                                                     random.random(),
@@ -130,7 +131,8 @@ def main():
         print(f"=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars = init_new_paths(num_paths, canvas_width, canvas_height, args, region_loss)
+        shapes, shape_groups, points_vars, color_vars = init_new_paths(
+            num_paths, canvas_width, canvas_height, args, len(old_shapes), region_loss)
         old_points_vars = []
         old_color_vars = []
         if len(old_shapes)>0:
@@ -147,9 +149,9 @@ def main():
 
                 else:
                     old_group.fill_color.requires_grad = False
-        if len(old_shapes) >0:
-            print(f"old shapes first path points is: {(old_shapes[0]).points}")
-            print(f"new shapes first path points is: {(shapes[0]).points}")
+        # if len(old_shapes) >0:
+        #     print(f"old shapes first path points is: {(old_shapes[0]).points}")
+        #     print(f"new shapes first path points is: {(shapes[0]).points}")
         shapes = [*old_shapes, *shapes]
         shape_groups = [*old_shape_groups, *shape_groups]
         save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
@@ -157,8 +159,8 @@ def main():
         if args.free:
             save_name+='-free'
         save_name+='-init.svg'
-        for shap in shapes:
-            print(shap.points)
+        # for shap in shapes:
+        #     print(shap.points)
         pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
