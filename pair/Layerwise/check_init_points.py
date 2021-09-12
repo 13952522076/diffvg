@@ -110,6 +110,11 @@ def main():
         1, 240, 240, args, 0, None)
     save_name = 'check.svg'
     pydiffvg.save_svg(save_name, 240, 240, shapes, shape_groups)
+
+    for path in shapes:
+        print(f"path point: {path.points}")
+        # points_vars.append(path.points)
+
     # Optimize
     points_vars = [*points_vars]
     color_vars = [*color_vars]
