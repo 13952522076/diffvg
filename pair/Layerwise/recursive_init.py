@@ -176,6 +176,7 @@ def main():
         #     print(f"old shapes first path points is: {(old_shapes[0]).points}")
         #     print(f"new shapes first path points is: {(shapes[0]).points}")
         shapes = [*old_shapes, *shapes]
+        print(f"combined shapes are: {shapes}")
         shape_groups = [*old_shape_groups, *shape_groups]
         save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
             format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
