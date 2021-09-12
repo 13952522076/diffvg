@@ -149,6 +149,7 @@ def main():
     old_shapes, old_shape_groups = [], []
 
     region_loss = None
+    loss_weight = 1.0/(canvas_width*canvas_height)
     for num_paths in num_paths_list:
         print(f"=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
@@ -212,7 +213,8 @@ def main():
             #                      format(filename, args.num_paths, current_path_str[:-1]), gamma=gamma)
             img = img[:, :, :3]
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
-            loss = (img - target).pow(2).mean(dim=1).mean()
+            loss = (img - target).pow(2).mean(dim=1,keepdim=True)
+            loss = (loss*loss_weight).sum()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item()})
             # Backpropagate the gradients.
@@ -242,6 +244,7 @@ def main():
 
         # calculate the pixel loss
         pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
+        loss_weight = torch.softmax(pixel_loss.reshape(1,1,-1),dim=-1).reshape(pixel_loss)
         if args.save_loss:
             save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
                     format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
