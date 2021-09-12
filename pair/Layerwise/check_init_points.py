@@ -113,7 +113,7 @@ def main():
     # Optimize
     points_vars = [*points_vars]
     color_vars = [*color_vars]
-
+    print(f"control points are: {points_vars}")
     print(f"\nDone!\n")
 
 
