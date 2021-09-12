@@ -113,12 +113,13 @@ def main():
 
     for path in shapes:
         print(f"path point: {path.points}")
+        print(f"path point shape is: {path.points.shape}")
         # points_vars.append(path.points)
 
     # Optimize
     points_vars = [*points_vars]
     color_vars = [*color_vars]
-    print(f"control points are: {points_vars}")
+    # print(f"control points are: {points_vars}")
     print(f"\nDone!\n")
 
 
