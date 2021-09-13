@@ -59,7 +59,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
 
     # change path init location
     if pixel_loss is not None:
-        region_loss = adaptive_avg_pool2d(pixel_loss. args.pool_size)
+        region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
         sorted, indices = torch.sort(region_loss.reshape(-1), dim=0, descending=True)
         indices = indices[:num_paths]
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
