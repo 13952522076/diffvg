@@ -250,7 +250,8 @@ def main():
         # calculate the pixel loss
         pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
         region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
-        loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
+        # loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
+        loss_weight = region_loss/region_loss.sum()
         print(f"softmax loss weight is: \n{loss_weight}")
         loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
         loss_weight = loss_weight/(loss_weight.sum())
