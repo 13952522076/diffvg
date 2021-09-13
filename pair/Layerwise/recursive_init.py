@@ -73,8 +73,12 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
         points = []
+        if pixel_loss is not None:
+            p0 = (norm_postion[i]).to(points.device)
+        else:
+            p0 = (random.random(), random.random())
         # p0 = (random.random(), random.random())
-        p0 = norm_postion[i]
+        # p0 = norm_postion[i]
         points.append(p0)
         for j in range(num_segments):
             radius = 0.05
@@ -87,8 +91,8 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
-        if pixel_loss is not None:
-            points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
+        # if pixel_loss is not None:
+        #     points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
