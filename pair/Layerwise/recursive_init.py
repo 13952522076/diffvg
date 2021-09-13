@@ -253,7 +253,7 @@ def main():
         loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
         print(f"softmax loss weight is: \n{loss_weight}")
         loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
-        loss_weight = loss_weight/sum(loss_weight)
+        loss_weight = loss_weight/(loss_weight.sum())
         # print(f"loss_weight shape is {loss_weight.shape}")
         # print(f"loss_weight is {loss_weight}")
         loss_weight = loss_weight.clone().detach()
