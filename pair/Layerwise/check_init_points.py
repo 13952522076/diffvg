@@ -4,8 +4,6 @@ python check_init_points.py demo.png --num_paths 1,1,1,1,1
 import pydiffvg
 import torch
 import os
-import skimage
-import skimage.io
 import matplotlib.pyplot as plt
 import random
 import argparse
@@ -107,7 +105,7 @@ def main():
     print(f"=> check init path ...")
     # initialize new shapes related stuffs.
     shapes, shape_groups, points_vars, color_vars = init_new_paths(
-        1, 240, 240, args, 0, None)
+        3, 240, 240, args, 0, None)
     save_name = 'check.svg'
     pydiffvg.save_svg(save_name, 240, 240, shapes, shape_groups)
 
