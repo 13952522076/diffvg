@@ -181,7 +181,6 @@ def main():
         #     print(f"old shapes first path points is: {(old_shapes[0]).points}")
         #     print(f"new shapes first path points is: {(shapes[0]).points}")
         shapes = [*old_shapes, *shapes]
-        print(f"combined shapes are: {shapes}")
         shape_groups = [*old_shape_groups, *shape_groups]
         save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
             format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
@@ -252,10 +251,11 @@ def main():
         pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
         region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
         loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
+        print(f"softmax loss weight is: \n{loss_weight}")
         loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
         loss_weight = loss_weight/sum(loss_weight)
-        print(f"loss_weight shape is {loss_weight.shape}")
-        print(f"loss_weight is {loss_weight}")
+        # print(f"loss_weight shape is {loss_weight.shape}")
+        # print(f"loss_weight is {loss_weight}")
         loss_weight = loss_weight.clone().detach()
         if args.save_loss:
             print("start saving loss heatmap...")
