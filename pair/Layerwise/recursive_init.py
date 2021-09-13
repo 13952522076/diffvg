@@ -73,7 +73,8 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
         points = []
-        p0 = (random.random(), random.random())
+        # p0 = (random.random(), random.random())
+        p0 = norm_postion[i]
         points.append(p0)
         for j in range(num_segments):
             radius = 0.05
