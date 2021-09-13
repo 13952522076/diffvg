@@ -219,7 +219,7 @@ def main():
             img = img[:, :, :3]
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
             # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
-            loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
+            loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
             loss = (loss*loss_weight).sum()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item()})
