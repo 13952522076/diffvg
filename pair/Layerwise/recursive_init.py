@@ -131,11 +131,11 @@ def plot_loss_map(pixel_loss, args,savepath="./"):
     pixel_loss = torch.softmax(pixel_loss.view(-1),dim=0).reshape(H,W).cpu().detach().numpy()
     plt.imshow(pixel_loss, cmap='Reds')
     plt.colorbar()
-    plt.savefig(savepath+"-loss_pixel.pdf", dpi=800)
+    plt.savefig(savepath+"-loss_pixel.png", dpi=800)
     plt.close()
     plt.imshow(region_loss, cmap='Reds')
     plt.colorbar()
-    plt.savefig(savepath+"-loss_region.pdf", dpi=800)
+    plt.savefig(savepath+"-loss_region.png", dpi=800)
     plt.close()
 
 
