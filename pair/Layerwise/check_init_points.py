@@ -106,11 +106,11 @@ def main():
     # initialize new shapes related stuffs.
 
     pixel_loss = torch.rand([1,1,240,240])
-    pixel_loss[0,0,2,3]=100
-    pixel_loss[0,0,120,120]=100
-    pixel_loss[0,0,239,239]=100
+    pixel_loss[0,0,2,200]=100
+    # pixel_loss[0,0,120,120]=100
+    # pixel_loss[0,0,239,239]=100
     shapes, shape_groups, points_vars, color_vars = init_new_paths(
-        3, 240, 240, args, 0, pixel_loss)
+        1, 240, 240, args, 0, pixel_loss)
     save_name = 'check.svg'
     pydiffvg.save_svg(save_name, 240, 240, shapes, shape_groups)
 
