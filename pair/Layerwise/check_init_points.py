@@ -115,7 +115,7 @@ def main():
     for path in shapes:
         print(f"path point: {path.points}")
         print(f"path point shape is: {path.points.shape}")
-        path.points = path.points-path.points.mean(dim=0,keepdim=True)+0.5
+        path.points = path.points-path.points.mean(dim=0,keepdim=True)+120
         new_shapes.append(path)
         # points_vars.append(path.points)
     pydiffvg.save_svg("check2.svg", 240, 240, new_shapes, shape_groups)
