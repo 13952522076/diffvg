@@ -156,7 +156,7 @@ def main():
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
     for num_paths in num_paths_list:
-        print(f"=> Adding {num_paths} paths ...")
+        print(f"\n=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
         shapes, shape_groups, points_vars, color_vars = init_new_paths(
@@ -256,12 +256,14 @@ def main():
         loss_weight = loss_weight/sum(loss_weight)
         loss_weight = loss_weight.clone().detach()
         if args.save_loss:
+            print("start saving loss heatmap...")
             save_name = 'results/recursive_init/{}_path{}[{}]-segments{}'.\
                     format(filename, args.num_paths,current_path_str[:-1], args.num_segments)
             if args.free:
                 save_name+='-free'
             save_name+=f'-i{t}'
             plot_loss_map(pixel_loss, args, savepath=save_name)
+            print("end saving loss heatmap...")
 
         # print(f"Top {num_paths} losses are {norm_postion}")
 
