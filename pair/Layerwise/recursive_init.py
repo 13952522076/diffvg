@@ -1,5 +1,5 @@
 """
-python recursive_init.py demo.png --num_paths 1,1,1,1 --save_loss
+python recursive_init.py demo.png --num_paths 1,1,1,1 --save_loss --pool_size 12
 """
 import pydiffvg
 import torch
@@ -25,6 +25,7 @@ def parse_args():
     parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
+    # Please ensure that image resolution is divisible by pool_size; otherwise the performance would drop a lot.
     parser.add_argument('--pool_size', type=int, default=7, help="the pooled image size for next path initialization")
     parser.add_argument('--save_loss', action='store_true')
 
