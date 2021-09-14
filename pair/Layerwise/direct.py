@@ -1,5 +1,5 @@
 """
-python direct.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f62e.svg --num_paths 12 --use_blob
+python direct.py demo.png --num_paths 23 --use_blob
 """
 import pydiffvg
 import torch
