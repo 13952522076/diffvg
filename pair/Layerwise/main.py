@@ -30,6 +30,7 @@ def parse_args():
     parser.add_argument('--save_loss', action='store_true')
     parser.add_argument('--save_init', action='store_true')
     parser.add_argument('--save_image', action='store_true')
+    parser.add_argument('--print_weight', action='store_true')
     parser.add_argument('--save_folder', metavar='DIR', default="output")
 
     return parser.parse_args()
@@ -248,7 +249,8 @@ def main():
         pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
         region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
         loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
-        print(f"softmax loss weight is: \n{loss_weight}")
+        if args.print_weight:
+            print(f"softmax loss weight is: \n{loss_weight}")
         loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
         loss_weight = loss_weight/(loss_weight.sum())
         loss_weight = loss_weight.clone().detach()
