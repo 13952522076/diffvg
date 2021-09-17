@@ -213,6 +213,10 @@ def main():
             img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+            if (t == args.num_iter - 1) and args.save_image:
+                    save_name = os.path.join(save_path, f"{current_path_str[:-1]}.png")
+                    pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
+
             img = img[:, :, :3]
             img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
             # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
@@ -235,9 +239,7 @@ def main():
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
                 pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
-                if args.save_image:
-                    save_name = os.path.join(save_path, f"{current_path_str[:-1]}.png")
-                    pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
+
 
         old_shapes = shapes
         old_shape_groups = shape_groups
