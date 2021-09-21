@@ -131,8 +131,9 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 points.append((w0, h0))
                 points.append((w0+1/3*(w1-w0), h0+1/3*(h1-h0)))
                 points.append((w0+2/3*(w1-w0), h0+2/3*(h1-h0)))
-            points.append(pts[-1])
 
+            points.append(pts[-1])
+            print(f"\n\n\nthe points are: {points}\n\n\n")
             # points.append((0,1))
             # points.append((c,1))
             # points.append((1,c))
