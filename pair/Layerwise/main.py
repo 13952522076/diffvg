@@ -1,5 +1,5 @@
 """
-python main.py demo.png --num_paths 1,1,1,1 --save_loss --pool_size 12
+python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug
 """
 import pydiffvg
 import torch
@@ -93,6 +93,26 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         p0 = (random.random(), random.random())
         # p0 = norm_postion[i]
         points.append(p0)
+        if num_segments == 4:
+            c = 0.551915024494
+            radius = 0.05
+            points.append((0,1))
+            points.append((c,1))
+            points.append((1,c))
+            points.append((1,0))
+            points.append((1,-c))
+            points.append((c,-1))
+            points.append((0,-1))
+            points.append((-c,-1))
+            points.append((-1,-c))
+            points.append((-1,0))
+            points.append((-1,c))
+            points.append((-c,1))
+            points.append((0,1))
+
+            points = points * radius
+            points = points + (random.random(), random.random())
+
         for j in range(num_segments):
             radius = 0.05
             p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))

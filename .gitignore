@@ -10,7 +10,7 @@ __pycache__
 .DS_Store
 
 .idea/
-
+venv/*
 #pair/data
 #pair/redering/images_resized/
 #pair/Reconstruction/main.py

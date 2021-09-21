@@ -24,6 +24,12 @@ export CXX=/shared/centos7/gcc/8.1.0/bin/g++
 conda activate im2vec
 
 
+PA
+module load cuda/11.0
+module load gcc/5.5.0
+export HDF5_USE_FILE_LOCKING='FALSE'
+export CUDA_HOME="/shared/centos7/cuda/11.0"
+sh tool/train.sh s3dis pointnet2_paconv
 
 
 nohup python main.py --batch_size 64 --epoch 80 --learning_rate 0.001 --frequency 200 --paths 8 --segments 5 --zdim 1024 --msg bs64-e80-lr001-path8-seg5-zdim1024 > nohup/bs64-e80-lr001-path8-seg5-zdim1024.out &

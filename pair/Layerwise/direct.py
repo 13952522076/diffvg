@@ -1,5 +1,5 @@
 """
-python direct.py demo.png --num_paths 23 --use_blob
+python direct.py finger.png --num_paths 40 --use_blob
 """
 import pydiffvg
 import torch
