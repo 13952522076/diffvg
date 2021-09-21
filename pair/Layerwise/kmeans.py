@@ -59,9 +59,10 @@ def main():
 
     # index the max pool position
     index_colors = (target/(2.24*2)).int()
+    print(f"the index_colors are: {index_colors}")
     index_colors = index_colors.squeeze(dim=0).sum(dim=0,keepdim=False)  # [H,W]
     unique_colors = torch.unique(index_colors, return_counts=True)
-    print(unique_colors)
+    print(f"the unique_colors are: {unique_colors}")
 
 
     random.seed(1234)
