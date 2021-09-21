@@ -4,6 +4,7 @@ python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 
 import pydiffvg
 import torch
 import os
+import numpy as np
 import skimage
 import skimage.io
 import matplotlib.pyplot as plt
@@ -109,19 +110,43 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
             points = []
             c = 0.551915024494
             radius = 0.01
-            points.append((0,1))
-            points.append((c,1))
-            points.append((1,c))
-            points.append((1,0))
-            points.append((1,-c))
-            points.append((c,-1))
-            points.append((0,-1))
-            points.append((-c,-1))
-            points.append((-1,-c))
-            points.append((-1,0))
-            points.append((-1,c))
-            points.append((-c,1))
-            points.append((0,1))
+            # circle
+            # points.append((0,1))
+            # points.append((c,1))
+            # points.append((1,c))
+            # points.append((1,0))
+            # points.append((1,-c))
+            # points.append((c,-1))
+            # points.append((0,-1))
+            # points.append((-c,-1))
+            # points.append((-1,-c))
+            # points.append((-1,0))
+            # points.append((-1,c))
+            # points.append((-c,1))
+            # points.append((0,1))
+
+            # rect
+            pts = [[np.cos(i*np.pi), np.cos(i*np.pi)] for i in np.arange(2, num_segments)]
+            for (w0, h0), (w1, h1) in zip(pts[:-1], pts[1:]):
+                points.append((w0, h0))
+                points.append((w0+1/3*(w1-w0), h0+1/3*(h1-h0)))
+                points.append((w0+2/3*(w1-w0), h0+2/3*(h1-h0)))
+            points.append((w1, h1))
+
+            # points.append((0,1))
+            # points.append((c,1))
+            # points.append((1,c))
+            # points.append((1,0))
+            # points.append((1,-c))
+            # points.append((c,-1))
+            # points.append((0,-1))
+            # points.append((-c,-1))
+            # points.append((-1,-c))
+            # points.append((-1,0))
+            # points.append((-1,c))
+            # points.append((-c,1))
+            # points.append((0,1))
+
             points = torch.tensor(points)
 
             points = points * radius
@@ -224,8 +249,8 @@ def main():
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
-        points_optim = torch.optim.Adam(points_vars, lr=0.1)
-        color_optim = torch.optim.Adam(color_vars, lr=0.001)
+        points_optim = torch.optim.Adam(points_vars, lr=1)
+        color_optim = torch.optim.Adam(color_vars, lr=0.01)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
         color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.001)
         # Adam iterations.
