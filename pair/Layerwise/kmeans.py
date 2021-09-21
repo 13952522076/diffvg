@@ -58,7 +58,7 @@ def main():
 
 
     # index the max pool position
-    index_colors = torch.IntTensor(target/(2.24*2))
+    index_colors = (target/(2.24*2)).int()
     index_colors = index_colors.squeeze(dim=0).sum(dim=0,keepdim=False)  # [H,W]
     unique_colors = torch.unique(index_colors, return_counts=True)
     print(unique_colors)
