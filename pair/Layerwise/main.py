@@ -93,7 +93,20 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         p0 = (random.random(), random.random())
         # p0 = norm_postion[i]
         points.append(p0)
+        for j in range(num_segments):
+            radius = 0.05
+            p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+            p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+            p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+            points.append(p1)
+            points.append(p2)
+            if j < num_segments - 1:
+                points.append(p3)
+                p0 = p3
+        points = torch.tensor(points)
+
         if num_segments == 4:
+            points = []
             c = 0.551915024494
             radius = 0.05
             points.append((0,1))
@@ -109,21 +122,12 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
             points.append((-1,c))
             points.append((-c,1))
             points.append((0,1))
+            points = torch.tensor(points)
 
             points = points * radius
-            points = points + (random.random(), random.random())
+            points = points + torch.tensor((random.random(), random.random()))
 
-        for j in range(num_segments):
-            radius = 0.05
-            p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-            p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-            p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-            points.append(p1)
-            points.append(p2)
-            if j < num_segments - 1:
-                points.append(p3)
-                p0 = p3
-        points = torch.tensor(points)
+
         if pixel_loss is not None:
             points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
