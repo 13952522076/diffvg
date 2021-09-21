@@ -126,7 +126,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
             # points.append((0,1))
 
             # rect
-            pts = [(np.cos(i*np.pi), np.cos(i*np.pi)) for i in np.arange(2, step=2/num_segments)]
+            pts = [(np.cos(i*np.pi), np.cos(i*np.pi)) for i in np.linspace(0,2,num=num_segments,endpoint=False)]
             for (w0, h0), (w1, h1) in zip(pts[:-1], pts[1:]):
                 points.append((w0, h0))
                 points.append((w0+1/3*(w1-w0), h0+1/3*(h1-h0)))
