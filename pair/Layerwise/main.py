@@ -1,5 +1,5 @@
 """
-python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug
+python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug --free
 """
 import pydiffvg
 import torch
@@ -105,27 +105,27 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 p0 = p3
         points = torch.tensor(points)
 
-        if num_segments == 4:
-            points = []
-            c = 0.551915024494
-            radius = 0.05
-            points.append((0,1))
-            points.append((c,1))
-            points.append((1,c))
-            points.append((1,0))
-            points.append((1,-c))
-            points.append((c,-1))
-            points.append((0,-1))
-            points.append((-c,-1))
-            points.append((-1,-c))
-            points.append((-1,0))
-            points.append((-1,c))
-            points.append((-c,1))
-            points.append((0,1))
-            points = torch.tensor(points)
-
-            points = points * radius
-            points = points + torch.tensor((random.random(), random.random()))
+        # if num_segments == 4:
+        #     points = []
+        #     c = 0.551915024494
+        #     radius = 0.03
+        #     points.append((0,1))
+        #     points.append((c,1))
+        #     points.append((1,c))
+        #     points.append((1,0))
+        #     points.append((1,-c))
+        #     points.append((c,-1))
+        #     points.append((0,-1))
+        #     points.append((-c,-1))
+        #     points.append((-1,-c))
+        #     points.append((-1,0))
+        #     points.append((-1,c))
+        #     points.append((-c,1))
+        #     points.append((0,1))
+        #     points = torch.tensor(points)
+        #
+        #     points = points * radius
+        #     points = points + torch.tensor((random.random(), random.random()))
 
 
         if pixel_loss is not None:
