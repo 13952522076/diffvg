@@ -58,7 +58,7 @@ def main():
 
 
     # index the max pool position
-    index_colors = (target*50).int()
+    index_colors = (target*100).int()
     print(f"the index_colors are: {index_colors}")
     index_colors = index_colors.squeeze(dim=0).sum(dim=0,keepdim=False)  # [H,W]
     unique_colors = torch.unique(index_colors, return_counts=True)
