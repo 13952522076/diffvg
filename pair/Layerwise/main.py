@@ -1,5 +1,8 @@
 """
 python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug --free
+
+
+python main.py demo.png --num_paths 1,1 --pool_size 40 --save_folder video --free --save_video
 """
 import pydiffvg
 import torch
@@ -31,6 +34,7 @@ def parse_args():
     parser.add_argument('--save_loss', action='store_true')
     parser.add_argument('--save_init', action='store_true')
     parser.add_argument('--save_image', action='store_true')
+    parser.add_argument('--save_video', action='store_true')
     parser.add_argument('--print_weight', action='store_true')
     parser.add_argument('--save_folder', metavar='DIR', default="output")
 
@@ -50,6 +54,12 @@ def make_save_path(args):
                 pass
             else:
                 raise
+    if args.save_video:
+        try:
+            os.makedirs(os.path.join(save_path,'videos'))
+            os.makedirs(os.path.join(save_path,'images'))
+        except OSError as exc:  # Python >2.5
+            pass
     return save_path
 
 
@@ -87,12 +97,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
         points = []
-        # if pixel_loss is not None:
-        #     p0 = (norm_postion[i]).to(points.device)
-        # else:
-        #     p0 = (random.random(), random.random())
         p0 = (random.random(), random.random())
-        # p0 = norm_postion[i]
         points.append(p0)
         for j in range(num_segments):
             radius = 0.05
@@ -105,54 +110,6 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
-
-        if num_segments == 4:
-            points = []
-            c = 0.551915024494
-            radius = 0.01
-            # circle
-            # points.append((0,1))
-            # points.append((c,1))
-            # points.append((1,c))
-            # points.append((1,0))
-            # points.append((1,-c))
-            # points.append((c,-1))
-            # points.append((0,-1))
-            # points.append((-c,-1))
-            # points.append((-1,-c))
-            # points.append((-1,0))
-            # points.append((-1,c))
-            # points.append((-c,1))
-            # points.append((0,1))
-
-            # rect
-            pts = [(np.cos(i*np.pi), np.cos(i*np.pi)) for i in np.linspace(0,2,num=num_segments,endpoint=False)]
-            for (w0, h0), (w1, h1) in zip(pts[:-1], pts[1:]):
-                points.append((w0, h0))
-                points.append((w0+1/3*(w1-w0), h0+1/3*(h1-h0)))
-                points.append((w0+2/3*(w1-w0), h0+2/3*(h1-h0)))
-
-            points.append(pts[-1])
-            print(f"\n\n\nthe points are: {points}\n\n\n")
-            # points.append((0,1))
-            # points.append((c,1))
-            # points.append((1,c))
-            # points.append((1,0))
-            # points.append((1,-c))
-            # points.append((c,-1))
-            # points.append((0,-1))
-            # points.append((-c,-1))
-            # points.append((-1,-c))
-            # points.append((-1,0))
-            # points.append((-1,c))
-            # points.append((-c,1))
-            # points.append((0,1))
-
-            points = torch.tensor(points)
-
-            points = points * radius
-            points = points + torch.tensor((random.random(), random.random()))
-
 
         if pixel_loss is not None:
             points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
@@ -264,6 +221,9 @@ def main():
             img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+            if args.save_video:
+                save_name = os.path.join(save_path,"images", f"{current_path_str[:-1]}-{t}.png")
+                pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
             if (t == args.num_iter - 1) and args.save_image:
                     save_name = os.path.join(save_path, f"{current_path_str[:-1]}.png")
                     pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
