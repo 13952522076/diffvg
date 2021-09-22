@@ -8,6 +8,7 @@ import pydiffvg
 import torch
 import os
 import numpy as np
+import cv2
 import skimage
 import skimage.io
 import matplotlib.pyplot as plt
@@ -268,6 +269,18 @@ def main():
             print("saving loss heatmap...")
             save_name = os.path.join(save_path, current_path_str[:-1])
             plot_loss_map(pixel_loss, args, savepath=save_name)
+        if args.save_video:
+            print("saving iteration video...")
+            img_array = []
+            for i in range(0, args.num_iter):
+                filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{t}.png")
+                img = cv2.imread(filename)
+                img_array.append(img)
+            videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.mp4")
+            out = cv2.VideoWriter(videoname,cv2.VideoWriter_fourcc(*'DIVX'), 24, (canvas_width, canvas_height))
+            for i in range(len(img_array)):
+                out.write(img_array[i])
+            out.release()
 
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
 
