@@ -275,8 +275,8 @@ def main():
             for ii in range(0, args.num_iter):
                 filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
                 img = cv2.imread(filename)
-                cv2.putText(img, f"Path:{current_path_str[:-1]} | Iteration:{ii}", (10,10),
-                    cv2.FONT_HERSHEY_SIMPLEX,1,(0, 255, 255),  2, cv2.LINE_4)
+                cv2.putText(img, f"Path:{current_path_str[:-1]} | Iteration:{ii}", (50,50),
+                    cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),  1)
                 img_array.append(img)
             videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.avi")
             out = cv2.VideoWriter(videoname,cv2.VideoWriter_fourcc(*'XVID'), 20.0, (canvas_width, canvas_height))
