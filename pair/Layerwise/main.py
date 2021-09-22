@@ -19,6 +19,8 @@ import errno
 from tqdm import tqdm
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.nn.functional import adaptive_avg_pool2d
+import warnings
+warnings.filterwarnings("ignore")
 
 pydiffvg.set_print_timing(False)
 gamma = 1.0
