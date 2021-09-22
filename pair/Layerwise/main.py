@@ -275,8 +275,8 @@ def main():
             for ii in range(0, args.num_iter):
                 filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
                 img = cv2.imread(filename)
-                cv2.putText(img, f"Path:{current_path_str[:-1]} | Iteration:{ii}", (50,50),
-                    cv2.FONT_HERSHEY_SIMPLEX,0.3,(255,0,0),  1)
+                cv2.putText(img, f"Path:{current_path_str[:-1]} | Iteration:{ii}", (10,10),
+                    cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),  1)
                 img_array.append(img)
             videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.mp4")
             out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (canvas_width, canvas_height))
@@ -285,7 +285,9 @@ def main():
             out.release()
 
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
-
+    if args.save_video:
+        filename = os.path.join(save_path, "images")
+        os.system(f"rm -rf {filename}")
 
 if __name__ == "__main__":
     main()
