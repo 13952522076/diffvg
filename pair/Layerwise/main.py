@@ -272,14 +272,15 @@ def main():
         if args.save_video:
             print("saving iteration video...")
             img_array = []
-            for i in range(0, args.num_iter):
-                filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{t}.png")
+            for ii in range(0, args.num_iter):
+                filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
                 img = cv2.imread(filename)
+                cv2.putText(img, f"Path:{current_path_str[:-1]} | Iteration:{ii}")
                 img_array.append(img)
             videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.mp4")
             out = cv2.VideoWriter(videoname,cv2.VideoWriter_fourcc(*'MP4V'), 24, (canvas_width, canvas_height))
-            for i in range(len(img_array)):
-                out.write(img_array[i])
+            for iii in range(len(img_array)):
+                out.write(img_array[iii])
             out.release()
 
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
