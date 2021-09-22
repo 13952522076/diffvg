@@ -277,7 +277,7 @@ def main():
                 img = cv2.imread(filename)
                 img_array.append(img)
             videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.mp4")
-            out = cv2.VideoWriter(videoname,cv2.VideoWriter_fourcc(*'DIVX'), 24, (canvas_width, canvas_height))
+            out = cv2.VideoWriter(videoname,cv2.VideoWriter_fourcc(*'MP4V'), 24, (canvas_width, canvas_height))
             for i in range(len(img_array)):
                 out.write(img_array[i])
             out.release()
