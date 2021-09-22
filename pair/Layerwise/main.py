@@ -278,8 +278,8 @@ def main():
                 cv2.putText(img, f"Path:{current_path_str[:-1]} | Iteration:{ii}", (50,50),
                     cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),  1)
                 img_array.append(img)
-            videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.avi")
-            out = cv2.VideoWriter(videoname,cv2.VideoWriter_fourcc(*'XVID'), 20.0, (canvas_width, canvas_height))
+            videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.mp4")
+            out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'MP4V'), 20.0, (canvas_width, canvas_height))
             for iii in range(len(img_array)):
                 out.write(img_array[iii])
             out.release()
