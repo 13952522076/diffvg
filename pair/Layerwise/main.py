@@ -180,7 +180,9 @@ def main():
 
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
+    loss_matrix = []
     for num_paths in num_paths_list:
+        loss_list = []
         print(f"\n=> Adding {num_paths} paths ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
@@ -237,6 +239,7 @@ def main():
             # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
             loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
             loss = (loss*loss_weight).sum()
+            loss_list.append(loss.item())
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item()})
             # Backpropagate the gradients.
@@ -255,7 +258,7 @@ def main():
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
                 pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
-
+        loss_matrix.append(loss_list)
         old_shapes = shapes
         old_shape_groups = shape_groups
 
@@ -289,6 +292,25 @@ def main():
 
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
     if args.save_video:
+        print("saving all video...")
+        img_array = []
+        current_path_str = ""
+        i=0
+        for num_paths in num_paths_list:
+            current_path_str = current_path_str+str(num_paths)+","
+            for ii in range(0, args.num_iter):
+                filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
+                img = cv2.imread(filename)
+                cv2.putText(img, f"Path:{current_path_str[:-1]} \nIteration:{ii} \nLoss:{loss_matrix[i][ii]:.4f}",
+                            (10,10), cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),  1)
+                img_array.append(img)
+            i+=1
+        videoname = os.path.join(save_path, "videos", f"all.mp4")
+        out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (canvas_width, canvas_height))
+        for iii in range(len(img_array)):
+            out.write(img_array[iii])
+        out.release()
+
         filename = os.path.join(save_path, "images")
         os.system(f"rm -rf {filename}")
 
