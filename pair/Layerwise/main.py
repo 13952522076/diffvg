@@ -113,6 +113,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 points.append(p3)
                 p0 = p3
         points = torch.tensor(points)
+        print(f"init points are: {points}")
 
         if pixel_loss is not None:
             points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
