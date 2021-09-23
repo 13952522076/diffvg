@@ -301,12 +301,8 @@ def main():
             for ii in range(0, args.num_iter):
                 filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
                 img = cv2.imread(filename)
-                cv2.putText(img, f"Path:{current_path_str[:-1]}",
-                            (10,10), cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),  1)
-                cv2.putText(img, f"Iteration:{ii}",
-                            (10,30), cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),  1)
-                cv2.putText(img, f"Loss:{loss_matrix[i][ii]:.5f}",
-                            (10,50), cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),  1)
+                cv2.putText(img, f"{current_path_str[:-1]}| Iter:{ii}| Loss:{loss_matrix[i][ii]:.5f}",
+                            (10,10), cv2.FONT_HERSHEY_SIMPLEX,0.3,(255,0,0),  1)
                 img_array.append(img)
             i+=1
         videoname = os.path.join(save_path, "videos", f"all.mp4")
