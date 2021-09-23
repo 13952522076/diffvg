@@ -380,3 +380,23 @@ Advantages: 1) small file size 2) infinite SR 3) editable (most important)
 first path always 8 / all paths are initialized to cicle /learn a number of segments / gradient color /  edge information edge can also estimate the number of segments/  corse to fine loss map / structure first, color next/ fair comparable ,equal iters, pre-processing segments(kmeans,center), initial paths/ 
 
 overall optimization, some are leart.
+
+
+_________________________________
+Save every iteration as video
+Segments number vs the "8" shape problem.
+Not must be circle.
+Clustered by pixel supervise using clsutered label mask.
+Keep in mind: super pixel
+rect issues
+----------------------------
+Learn segmentation nubmer something using deep module. (need discussion)/
+predict the hyperparameter, rather than the result.
+
+
+First, we are working on the twisted shape problem this week (which makes a path like shape "8"). Currently, it could not be simply solved by initializing the path to a circle.  We will look into the details.
+
+Also, we tested the scheduled pooling size (corase to fine) that linearly increase the loose map size. This solution shows better performance than fixed pool size (no matter the size is intialized to small or big).
+
+Next week we will mainly try to solve the twisted shape problem, and we will consider the cluster by pixel supervision using clustered label mask which could provide better drawing steps.
+
