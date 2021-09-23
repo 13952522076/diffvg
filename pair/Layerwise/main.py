@@ -302,7 +302,7 @@ def main():
                 filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
                 img = cv2.imread(filename)
                 cv2.putText(img, f"{current_path_str[:-1]}| Iter:{ii}| Loss:{loss_matrix[i][ii]:.5f}",
-                            (10,10), cv2.FONT_HERSHEY_SIMPLEX,0.3,(255,0,0),  1)
+                            (10,10), cv2.FONT_HERSHEY_SIMPLEX,0.4,(255,0,0),  1)
                 img_array.append(img)
             i+=1
         videoname = os.path.join(save_path, "videos", f"all.mp4")
