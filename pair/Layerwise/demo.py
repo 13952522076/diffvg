@@ -2,17 +2,21 @@ import numpy as np
 import torch
 import random
 import matplotlib.pyplot as plt
-# points = []
-# pts = [(np.cos(i*np.pi), np.cos(i*np.pi)) for i in np.linspace(0,2,num=4,endpoint=False)]
-# for (w0, h0), (w1, h1) in zip(pts[:-1], pts[1:]):
-#     points.append((w0, h0))
-#     points.append((w0+1/3*(w1-w0), h0+1/3*(h1-h0)))
-#     points.append((w0+2/3*(w1-w0), h0+2/3*(h1-h0)))
-#
-# points.append(pts[-1])
-# points = torch.tensor(points)
-# print(f"\n\n\nthe points are: {points}\n\n\n")
-# print(points.shape)
+points = []
+p0 = (random.random(), random.random())
+points.append(p0)
+for j in range(4):
+    radius = 0.05
+    p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+    p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+    p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+    points.append(p1)
+    points.append(p2)
+    if j < 4 - 1:
+        points.append(p3)
+        p0 = p3
+points = torch.tensor(points)
+print(points)
 
 
 def get_bezier_circle(radius=1, segments=4, bias=None):
@@ -36,7 +40,7 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
         points.append(m2_point)
         points.append(m3_point)
     points = torch.tensor(points)
-    points[-1,:]+=random.random()
+    points = points[:-1,:]
     points = (points+torch.tensor(bias).unsqueeze(dim=0))*radius
     print(points.shape)
     return points
