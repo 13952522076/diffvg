@@ -143,7 +143,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         # points = torch.tensor(points)
 
         # circle points initialization
-        points = get_bezier_circle(radius=0.01, segments=num_segments, bias=(random.random(), random.random()))
+        points = get_bezier_circle(radius=0.005, segments=num_segments, bias=(random.random(), random.random()))
 
 
 

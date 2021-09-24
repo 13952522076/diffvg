@@ -16,6 +16,7 @@ for j in range(4):
         points.append(p3)
         p0 = p3
 points = torch.tensor(points)
+print(points.shape)
 # print(points)
 
 
