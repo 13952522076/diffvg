@@ -44,6 +44,32 @@ def parse_args():
     return parser.parse_args()
 
 
+def get_bezier_circle(radius=1, segments=4, bias=None):
+    points = []
+    if bias is None:
+        bias = (random.random(), random.random())
+    m_point = (1.0, 0.0)
+    points.append(m_point)
+    m1_point_angle = np.degrees(4/3*np.tan(np.pi/(2*segments)))
+    m1_point_radius = np.sqrt(1+ ( 4/3*np.tan(np.pi/(2*segments)))**2)
+    m3_point_angle = 360/segments
+    for i in range(0, segments):
+        m1_point = (m1_point_radius*np.cos(np.deg2rad(i*m3_point_angle+m1_point_angle)),
+                    m1_point_radius*np.sin(np.deg2rad(i*m3_point_angle+m1_point_angle)))
+        m2_point_angle = m3_point_angle-m1_point_angle
+        m2_point = (m1_point_radius*np.cos(np.deg2rad(i*m3_point_angle+m2_point_angle)),
+                    m1_point_radius*np.sin(np.deg2rad(i*m3_point_angle+m2_point_angle)))
+        m3_point = (np.cos(np.deg2rad(i*m3_point_angle+m3_point_angle)),
+                    np.sin(np.deg2rad(i*m3_point_angle+m3_point_angle)))
+        points.append(m1_point)
+        points.append(m2_point)
+        points.append(m3_point)
+    points = torch.tensor(points)
+    points = points*radius+torch.tensor(bias).unsqueeze(dim=0)
+    return points
+
+    # print(points.shape)
+
 def make_save_path(args):
     filename = os.path.splitext(os.path.basename(args.target))[0]
     detail_folder = args.num_paths+"Seg"+str(args.num_segments)+"Iter"+str(args.num_iter)+"Pool"+str(args.pool_size)
@@ -99,21 +125,27 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
     for i in range(num_paths):
         num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
-        points = []
-        p0 = (random.random(), random.random())
-        points.append(p0)
-        for j in range(num_segments):
-            radius = 0.05
-            p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-            p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-            p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-            points.append(p1)
-            points.append(p2)
-            if j < num_segments - 1:
-                points.append(p3)
-                p0 = p3
-        points = torch.tensor(points)
-        # print(f"init points are: {points}")
+        # original point initialization
+        # points = []
+        # p0 = (random.random(), random.random())
+        # points.append(p0)
+        # for j in range(num_segments):
+        #     radius = 0.05
+        #     p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+        #     p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+        #     p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+        #     points.append(p1)
+        #     points.append(p2)
+        #     if j < num_segments - 1:
+        #         points.append(p3)
+        #         p0 = p3
+        # points = torch.tensor(points)
+
+        # circle points initialization
+        points = get_bezier_circle(radius=0.05, segments=num_segments, bias=(random.random(), random.random()))
+
+
+
 
         if pixel_loss is not None:
             points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
