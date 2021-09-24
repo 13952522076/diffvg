@@ -68,10 +68,9 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
     points = torch.tensor(points)
     points = points[:-1,:]
     points += 1
-    points = (points+torch.tensor(bias).unsqueeze(dim=0))*radius
+    points = (points)*radius + torch.tensor(bias).unsqueeze(dim=0)
     return points
 
-    # print(points.shape)
 
 def make_save_path(args):
     filename = os.path.splitext(os.path.basename(args.target))[0]
@@ -145,7 +144,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         # points = torch.tensor(points)
 
         # circle points initialization
-        points = get_bezier_circle(radius=0.05, segments=num_segments, bias=(random.random(), random.random()))
+        points = get_bezier_circle(radius=0.03, segments=num_segments, bias=(random.random(), random.random()))
 
 
 

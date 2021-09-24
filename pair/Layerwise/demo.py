@@ -44,20 +44,36 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
     points = torch.tensor(points)
     points = points[:-1,:]
     points += 1
-    points = (points+torch.tensor(bias).unsqueeze(dim=0))*radius
-    print(points.shape)
+    points = (points)*radius + torch.tensor(bias).unsqueeze(dim=0)
     return points
 
-    print(points.shape)
-
-points = get_bezier_circle(radius=0.05, segments=10, bias=(0., 0.))
+points = get_bezier_circle(radius=0.03, segments=8, bias=None)
 points = points*240
 
 points = points.numpy()
 
-plt.plot(points[:,0],points[:,1], 'o',color='b')
-for i in range(0, len(points[:,0])):
-    plt.annotate(i+1, (points[i,0], points[i,1]))
+# plt.plot(points[:,0],points[:,1], 'o',color='b')
+# for i in range(0, len(points[:,0])):
+#     plt.annotate(i+1, (points[i,0], points[i,1]))
+#
+# plt.show()
+# print(points)
 
-plt.show()
-print(points)
+file = open('demodemo.svg', 'w')
+file.write('<?xml version="1.0" ?>\n')
+file.write('<svg height="240" version="1.1" width="240" xmlns="http://www.w3.org/2000/svg">\n')
+file.write('<defs/>\n')
+file.write('<g>\n')
+path_str = '<path d="M '
+path_str+=f'{points[0][0]} {points[0][1]} '
+for i in range(1, len(points)):
+    if i%3==1:
+       path_str+='C '
+    path_str+=f'{points[i][0]} {points[i][1]} '
+path_str+=f'{points[0][0]} {points[0][1]} '
+path_str += '" fill="rgb(106, 255, 255)" opacity="1.0" stroke-width="2.0"/>'
+file.write(f'{path_str}\n')
+file.write('</g>\n')
+file.write('</svg>')
+file.close()
+
