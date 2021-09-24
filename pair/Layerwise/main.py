@@ -65,6 +65,8 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
         points.append(m2_point)
         points.append(m3_point)
     points = torch.tensor(points)
+    points[-1,0]+=random.random()
+    points[-1,1]+=random.random()
     points = (points+torch.tensor(bias).unsqueeze(dim=0))*radius
     return points
 
