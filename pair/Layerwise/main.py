@@ -152,6 +152,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
+        print(f"init points are: {points}")
         path = pydiffvg.Path(num_control_points = num_control_points,
                              points = points,
                              stroke_width = torch.tensor(1.0),
