@@ -65,7 +65,7 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
         points.append(m2_point)
         points.append(m3_point)
     points = torch.tensor(points)
-    points = points*radius+torch.tensor(bias).unsqueeze(dim=0)
+    points = (points+torch.tensor(bias).unsqueeze(dim=0))*radius
     return points
 
     # print(points.shape)
@@ -142,7 +142,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         # points = torch.tensor(points)
 
         # circle points initialization
-        points = get_bezier_circle(radius=0.01, segments=num_segments, bias=(random.random(), random.random()))
+        points = get_bezier_circle(radius=0.03, segments=num_segments, bias=(random.random(), random.random()))
 
 
 
