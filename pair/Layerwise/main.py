@@ -125,7 +125,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
 
     for i in range(num_paths):
         num_segments = args.num_segments
-        num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 3
+        num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 1
 
         #### original point initialization
         # points = []
