@@ -43,7 +43,7 @@ def parse_args():
     parser.add_argument('--print_weight', action='store_true')
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
-    parser.add_argument('--circle_init_radius', type=float, default=0.03)
+    parser.add_argument('--circle_init_radius', type=float)
 
     return parser.parse_args()
 
