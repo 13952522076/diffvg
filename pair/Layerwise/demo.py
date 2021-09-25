@@ -17,7 +17,8 @@ for j in range(4):
         p0 = p3
 points = torch.tensor(points)
 print(points.shape)
-# print(points)
+print(points)
+print(points.dtype)
 
 
 def get_bezier_circle(radius=1, segments=4, bias=None):
@@ -45,9 +46,15 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
     points = points[:-1,:]
     points += 1
     points = (points)*radius + torch.tensor(bias).unsqueeze(dim=0)
+    points = points.type(torch.FloatTensor)
     return points
 
 points = get_bezier_circle(radius=0.03, segments=8, bias=None)
+print(points.shape)
+print(points)
+print(points.dtype)
+
+
 points = points*240
 
 points = points.numpy()

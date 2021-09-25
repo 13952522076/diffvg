@@ -68,6 +68,7 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
     points = torch.tensor(points)
     points = points[:-1,:]
     points = (points)*radius + torch.tensor(bias).unsqueeze(dim=0)
+    points = points.type(torch.FloatTensor)
     return points
 
 
