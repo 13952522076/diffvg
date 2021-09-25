@@ -40,6 +40,8 @@ def parse_args():
     parser.add_argument('--save_video', action='store_true')
     parser.add_argument('--print_weight', action='store_true')
     parser.add_argument('--save_folder', metavar='DIR', default="output")
+    parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
+    parser.add_argument('--circle_init_radius', type=float, default=0.03)
 
     return parser.parse_args()
 
@@ -77,6 +79,9 @@ def make_save_path(args):
     detail_folder = args.num_paths+"Seg"+str(args.num_segments)+"Iter"+str(args.num_iter)+"Pool"+str(args.pool_size)
     if args.free:
         detail_folder+="Free"
+    detail_folder+=args.initial
+    if args.initial=='circle' and args.circle_init_radius is not None:
+        detail_folder+=str(args.circle_init_radius)
     save_path = os.path.join(args.save_folder, filename, detail_folder)
     try:
         os.makedirs(save_path)
@@ -129,23 +134,29 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
 
         #### original point initialization
-        # points = []
-        # p0 = (random.random(), random.random())
-        # points.append(p0)
-        # for j in range(num_segments):
-        #     radius = 0.05
-        #     p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-        #     p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-        #     p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-        #     points.append(p1)
-        #     points.append(p2)
-        #     if j < num_segments - 1:
-        #         points.append(p3)
-        #         p0 = p3
-        # points = torch.tensor(points)
+        if args.initial=="random":
+            points = []
+            p0 = (random.random(), random.random())
+            points.append(p0)
+            for j in range(num_segments):
+                radius = 0.05
+                p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+                p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+                p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+                points.append(p1)
+                points.append(p2)
+                if j < num_segments - 1:
+                    points.append(p3)
+                    p0 = p3
+            points = torch.tensor(points)
 
         # circle points initialization
-        points = get_bezier_circle(radius=0.03, segments=num_segments, bias=(random.random(), random.random()))
+        else:
+            radius = args.circle_init_radius
+            if radius is None:
+                radius = np.random.uniform(low=0.01, high=0.08)
+            print(f"radius {str(args.circle_init_radius)} for circle initialization")
+            points = get_bezier_circle(radius=radius, segments=num_segments, bias=(random.random(), random.random()))
 
 
 
@@ -154,7 +165,6 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
-        print(f"init points are: {points}")
         path = pydiffvg.Path(num_control_points = num_control_points,
                              points = points,
                              stroke_width = torch.tensor(1.0),
@@ -218,7 +228,7 @@ def main():
     loss_matrix = []
     for num_paths in num_paths_list:
         loss_list = []
-        print(f"\n=> Adding {num_paths} paths ...")
+        print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
         shapes, shape_groups, points_vars, color_vars = init_new_paths(
