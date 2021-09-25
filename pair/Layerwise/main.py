@@ -129,29 +129,23 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
 
         #### original point initialization
-        points = []
-        p0 = (random.random(), random.random())
-        points.append(p0)
-        for j in range(num_segments):
-            radius = 0.05
-            p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
-            p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
-            p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
-            points.append(p1)
-            points.append(p2)
-            if j < num_segments - 1:
-                points.append(p3)
-                p0 = p3
-        points = torch.tensor(points)
-        points[:, 0] *= canvas_width
-        points[:, 1] *= canvas_height
-        print(f"init points are: {points}")
-        print(f"original points shape is: {points.shape}")
-        print(points)
+        # points = []
+        # p0 = (random.random(), random.random())
+        # points.append(p0)
+        # for j in range(num_segments):
+        #     radius = 0.05
+        #     p1 = (p0[0] + radius * (random.random() - 0.5), p0[1] + radius * (random.random() - 0.5))
+        #     p2 = (p1[0] + radius * (random.random() - 0.5), p1[1] + radius * (random.random() - 0.5))
+        #     p3 = (p2[0] + radius * (random.random() - 0.5), p2[1] + radius * (random.random() - 0.5))
+        #     points.append(p1)
+        #     points.append(p2)
+        #     if j < num_segments - 1:
+        #         points.append(p3)
+        #         p0 = p3
+        # points = torch.tensor(points)
 
         # circle points initialization
         points = get_bezier_circle(radius=0.03, segments=num_segments, bias=(random.random(), random.random()))
-        print(f"circle points shape is: {points.shape}")
 
 
 
