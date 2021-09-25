@@ -157,7 +157,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
             radius = args.circle_init_radius
             if radius is None:
                 radius = np.random.uniform(low=0.01, high=0.2)
-            print(f"radius {str(args.circle_init_radius)} for circle initialization")
+            print(f"radius {radius} for circle initialization")
             points = get_bezier_circle(radius=radius, segments=num_segments, bias=(random.random(), random.random()))
 
 
