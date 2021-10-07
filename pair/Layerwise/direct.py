@@ -1,4 +1,7 @@
 """
+This file will directly optimize n paths. That is, the original diffvg.
+
+Use case:
 python direct.py finger.png --num_paths 40 --use_blob
 """
 import pydiffvg

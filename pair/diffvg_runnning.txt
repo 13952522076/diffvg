@@ -402,24 +402,44 @@ Next week we will mainly try to solve the twisted shape problem, and we will con
 
 
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.03
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle --circle_init_radius 0.01
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.02
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle --circle_init_radius 0.03
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.04
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle --circle_init_radius 0.05
 
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.05
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle --circle_init_radius 0.1
 
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.06
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle --circle_init_radius 0.3
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle --circle_init_radius 0.5
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial circle
 
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial random
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 4 --initial random
+
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 8 --initial circle
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 12 --initial circle
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 16 --initial circle
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 20 --initial circle
+
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 8 --initial random
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 12 --initial random
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 16 --initial random
+
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 20 --initial random
+
+
 
 
 

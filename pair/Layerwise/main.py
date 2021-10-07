@@ -1,4 +1,11 @@
 """
+This is the main file or our proposed method.
+Given an input image, we will progressively reconstruct it using svg Bezier path.
+
+This will generate a folder named {args.save_folder}/{filename}/{details}
+
+Here are some use cases:
+
 python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug --free
 
 
