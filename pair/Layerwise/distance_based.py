@@ -338,7 +338,7 @@ def main():
             else:
                 assert num_paths ==1, "Distance-based loss current only support 1 path each time."
                 x_position = torch.range(start=0, end=1, step=1.0/canvas_width).unsqueeze(dim=0).repeat(canvas_height,1)
-                y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(canvas_width,1)
+                y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(1,canvas_width)
                 x_position = (x_position[:,:-1]).unsqueeze(dim=-1)
                 y_position = (y_position[:-1, :]).unsqueeze(dim=-1)
                 position = torch.cat([x_position,y_position],dim=-1)
