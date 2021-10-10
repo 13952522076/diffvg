@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python distance_based.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python distance_based.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 1.0
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -126,6 +126,7 @@ def load_image(args):
 def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, pixel_loss=None):
     shapes = []
     shape_groups = []
+    norm_position = None
 
     # change path init location
     if pixel_loss is not None:
@@ -332,16 +333,19 @@ def main():
 
         if args.use_distance:
             print(f"Use distance loss in loss_weight.")
-            assert num_paths ==1, "Distance-based loss current only support 1 path each time."
-            x_position = torch.range(start=0, end=1, step=1.0/canvas_width).unsqueeze(dim=0).repeat(canvas_height,1)
-            y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(canvas_width,1)
-            x_position = (x_position[:,:-1]).unsqueeze(dim=-1)
-            y_position = (y_position[:-1, :]).unsqueeze(dim=-1)
-            position = torch.cat([x_position,y_position],dim=-1)
-            distance = position-norm_position.unsqueeze(dim=0)
-            distance = args.distance_temp * (distance**2).sum(dim=-1, keepdim=False).sqrt()
-            distance = 1.0-torch.sigmoid(distance)
-            print(f"Distance shape is: {distance.shape}, min value: {distance.min()} max value: {distance.max()}")
+            if norm_position is None:
+                print(f"norm_position is None")
+            else:
+                assert num_paths ==1, "Distance-based loss current only support 1 path each time."
+                x_position = torch.range(start=0, end=1, step=1.0/canvas_width).unsqueeze(dim=0).repeat(canvas_height,1)
+                y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(canvas_width,1)
+                x_position = (x_position[:,:-1]).unsqueeze(dim=-1)
+                y_position = (y_position[:-1, :]).unsqueeze(dim=-1)
+                position = torch.cat([x_position,y_position],dim=-1)
+                distance = position-norm_position.unsqueeze(dim=0)
+                distance = args.distance_temp * (distance**2).sum(dim=-1, keepdim=False).sqrt()
+                distance = 1.0-torch.sigmoid(distance)
+                print(f"Distance shape is: {distance.shape}, min value: {distance.min()} max value: {distance.max()}")
 
 
 
