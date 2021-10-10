@@ -347,7 +347,8 @@ def main():
                 distance = args.distance_temp * (distance**2).sum(dim=-1, keepdim=False).sqrt()
                 distance = 1.0-torch.sigmoid(distance)
                 print(f"Distance shape is: {distance.shape}, min value: {distance.min()} max value: {distance.max()}")
-
+                print("Update loss_weight...")
+                loss_weight = loss_weight*(distance.view_as(loss_weight))
 
 
         if args.save_loss:
