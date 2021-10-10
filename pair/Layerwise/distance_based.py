@@ -341,7 +341,7 @@ def main():
                 y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(1,canvas_width)
                 x_position = (x_position[:,:-1]).unsqueeze(dim=-1)
                 y_position = (y_position[:-1, :]).unsqueeze(dim=-1)
-                position = torch.cat([x_position,y_position],dim=-1)
+                position = torch.cat([x_position,y_position],dim=-1).to(norm_position.device)
                 distance = position-norm_position.unsqueeze(dim=0)
                 distance = args.distance_temp * (distance**2).sum(dim=-1, keepdim=False).sqrt()
                 distance = 1.0-torch.sigmoid(distance)
