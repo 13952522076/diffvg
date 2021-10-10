@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main.py distance_based.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python distance_based.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -134,11 +134,11 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         indices = indices[:num_paths]
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
         indices_w = indices%(args.pool_size)
-        # norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
+        # norm_position = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
         # [w,h] for diffvg
-        norm_postion = torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)
-        norm_postion = (norm_postion+0.5)/(args.pool_size)
-        print(f"norm_position equals: {norm_postion}")
+        norm_position = torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)
+        norm_position = (norm_position+0.5)/(args.pool_size)
+        print(f"norm_position equals: {norm_position}")
 
 
     for i in range(num_paths):
@@ -173,7 +173,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
 
 
         if pixel_loss is not None:
-            points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
+            points = points-points.mean(dim=0, keepdim=True) + (norm_position[i]).to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
@@ -198,7 +198,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
     for group in shape_groups:
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
-    return shapes, shape_groups, points_vars, color_vars
+    return shapes, shape_groups, points_vars, color_vars, norm_position
 
 
 def plot_loss_map(pixel_loss, args,savepath="./"):
@@ -243,7 +243,7 @@ def main():
         print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars = init_new_paths(
+        shapes, shape_groups, points_vars, color_vars, norm_position = init_new_paths(
             num_paths, canvas_width, canvas_height, args, len(old_shapes), region_loss)
         old_points_vars = []
         old_color_vars = []
@@ -329,8 +329,19 @@ def main():
         loss_weight = loss_weight/(loss_weight.sum())
         loss_weight = loss_weight.clone().detach()
 
+
         if args.use_distance:
             print(f"Use distance loss in loss_weight.")
+            assert num_paths ==1, "Distance-based loss current only support 1 path each time."
+            x_position = torch.range(start=0, end=1, step=1.0/canvas_width).unsqueeze(dim=0).repeat(canvas_height,1)
+            y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(canvas_width,1)
+            x_position = (x_position[:,:-1]).unsqueeze(dim=-1)
+            y_position = (y_position[:-1, :]).unsqueeze(dim=-1)
+            position = torch.cat([x_position,y_position],dim=-1)
+            distance = position-norm_position.unsqueeze(dim=0)
+            distance = args.distance_temp * (distance**2).sum(dim=-1, keepdim=False).sqrt()
+            distance = 1.0-torch.sigmoid(distance)
+            print(f"Distance shape is: {distance.shape}, min value: {distance.min()} max value: {distance.max()}")
 
 
 
