@@ -329,6 +329,7 @@ def main():
         loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
         loss_weight = loss_weight/(loss_weight.sum())
         loss_weight = loss_weight.clone().detach()
+        print(f"loss_weight shape is {loss_weight.shape}")
 
 
         if args.use_distance:
