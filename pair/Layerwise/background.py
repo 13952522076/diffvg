@@ -270,7 +270,7 @@ def main():
             background_image = 0.8*torch.ones(canvas_height, canvas_width, 4, device = pydiffvg.get_device())
             img = render(canvas_width, canvas_height, 2, 2, t, background_image, *scene_args)
             # Compose img with white background
-            img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+            # img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
             if args.save_video:
                 save_name = os.path.join(save_path,"images", f"{current_path_str[:-1]}-{t}.png")
                 pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
