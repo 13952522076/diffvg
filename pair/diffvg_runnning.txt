@@ -440,6 +440,29 @@ python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder cir
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --save_init --num_segments 20 --initial random
 
 
+______test distance______
+python distance_based.py demo.png --num_paths 1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python distance_based.py demo.png --num_paths 1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 0.5
+python distance_based.py demo.png --num_paths 1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 1.0
+python distance_based.py demo.png --num_paths 1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 3.0
+python distance_based.py demo.png --num_paths 1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 5.0
+python distance_based.py demo.png --num_paths 1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 10.0
 
+
+python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 0.5
+python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 1.0
+python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 3.0
+python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 5.0
+python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 10.0
+
+
+
+________examples__________
+python main.py ../data/validate/0/240px-Emoji_u1f61d.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python main.py ../data/validate/0/240px-Emoji_u1f615.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python main.py ../data/validate/0/240px-Emoji_u1f643.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python main.py ../data/validate/0/240px-Noto_Emoji_Oreo_1f60f.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python main.py ../data/validate/0/240px-Noto_Emoji_Oreo_1f61d.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
 
 

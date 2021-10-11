@@ -1,5 +1,6 @@
 """
-python distance_based.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free --use_distance --distance_temp 1.0
+
+python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug --free
 """
 import pydiffvg
 import torch
@@ -39,9 +40,6 @@ def parse_args():
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
     parser.add_argument('--circle_init_radius', type=float)
-    parser.add_argument('--use_distance', action='store_true')
-    parser.add_argument('--distance_temp', type=float, default=1.0)
-
 
     return parser.parse_args()
 
@@ -82,8 +80,6 @@ def make_save_path(args):
     detail_folder+=args.initial
     if args.initial=='circle' and args.circle_init_radius is not None:
         detail_folder+=str(args.circle_init_radius)
-    if args.use_distance:
-        detail_folder = detail_folder + "Distance" + str(args.distance_temp)
     save_path = os.path.join(args.save_folder, filename, detail_folder)
     try:
         os.makedirs(save_path)
@@ -116,7 +112,6 @@ def load_image(args):
 def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, pixel_loss=None):
     shapes = []
     shape_groups = []
-    norm_position = None
 
     # change path init location
     if pixel_loss is not None:
@@ -125,11 +120,11 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         indices = indices[:num_paths]
         indices_h = torch.div(indices, args.pool_size, rounding_mode='trunc')
         indices_w = indices%(args.pool_size)
-        # norm_position = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
+        # norm_postion = torch.cat([indices_h.unsqueeze(dim=-1), indices_w.unsqueeze(dim=-1)], dim=-1)
         # [w,h] for diffvg
-        norm_position = torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)
-        norm_position = (norm_position+0.5)/(args.pool_size)
-        print(f"norm_position equals: {norm_position}")
+        norm_postion = torch.cat([indices_w.unsqueeze(dim=-1), indices_h.unsqueeze(dim=-1)], dim=-1)
+        norm_postion = (norm_postion+0.5)/(args.pool_size)
+        # print(f"norm_position equals: {norm_postion}")
 
 
     for i in range(num_paths):
@@ -164,7 +159,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
 
 
         if pixel_loss is not None:
-            points = points-points.mean(dim=0, keepdim=True) + (norm_position[i]).to(points.device)
+            points = points-points.mean(dim=0, keepdim=True) + (norm_postion[i]).to(points.device)
         # print(f"new path shape is {points.shape}, max val: {torch.max(points)}, min val: {torch.min(points)}")
         points[:, 0] *= canvas_width
         points[:, 1] *= canvas_height
@@ -189,7 +184,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
     for group in shape_groups:
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
-    return shapes, shape_groups, points_vars, color_vars, norm_position
+    return shapes, shape_groups, points_vars, color_vars
 
 
 def plot_loss_map(pixel_loss, args,savepath="./"):
@@ -228,13 +223,13 @@ def main():
 
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
-    loss_matrix = []  # [paths, iterations]
+    loss_matrix = []
     for num_paths in num_paths_list:
         loss_list = []
         print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
         current_path_str = current_path_str+str(num_paths)+","
         # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars, norm_position = init_new_paths(
+        shapes, shape_groups, points_vars, color_vars = init_new_paths(
             num_paths, canvas_width, canvas_height, args, len(old_shapes), region_loss)
         old_points_vars = []
         old_color_vars = []
@@ -272,8 +267,7 @@ def main():
             color_optim.zero_grad()
             # Forward pass: render the image.
             scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
-            background_image = torch.rand(canvas_height, canvas_width, 4, device = pydiffvg.get_device())
-            img = render(canvas_width, canvas_height, 2, 2, t, background_image, *scene_args)
+            img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
             if args.save_video:
@@ -320,28 +314,6 @@ def main():
         loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
         loss_weight = loss_weight/(loss_weight.sum())
         loss_weight = loss_weight.clone().detach()
-        print(f"loss_weight shape is {loss_weight.shape}")
-
-
-        if args.use_distance:
-            print(f"Use distance loss in loss_weight.")
-            if norm_position is None:
-                print(f"norm_position is None")
-            else:
-                assert num_paths ==1, "Distance-based loss current only support 1 path each time."
-                x_position = torch.range(start=0, end=1, step=1.0/canvas_width).unsqueeze(dim=0).repeat(canvas_height,1)
-                y_position = torch.range(start=0, end=1, step=1.0/canvas_height).unsqueeze(dim=1).repeat(1,canvas_width)
-                x_position = (x_position[:,:-1]).unsqueeze(dim=-1)
-                y_position = (y_position[:-1, :]).unsqueeze(dim=-1)
-                position = torch.cat([x_position,y_position],dim=-1).to(norm_position.device)
-                distance = position-norm_position.unsqueeze(dim=0)
-                distance = args.distance_temp * (distance**2).sum(dim=-1, keepdim=False).sqrt()
-                distance = 1.0-torch.sigmoid(distance)
-                print(f"Distance shape is: {distance.shape}, min value: {distance.min()} max value: {distance.max()}")
-                print("Update loss_weight...")
-                loss_weight = loss_weight*(distance.view_as(loss_weight))
-
-
         if args.save_loss:
             print("saving loss heatmap...")
             save_name = os.path.join(save_path, current_path_str[:-1])
@@ -382,8 +354,8 @@ def main():
             out.write(img_array[iii])
         out.release()
 
-        # filename = os.path.join(save_path, "images")
-        # os.system(f"rm -rf {filename}")
+        filename = os.path.join(save_path, "images")
+        os.system(f"rm -rf {filename}")
 
 if __name__ == "__main__":
     main()
