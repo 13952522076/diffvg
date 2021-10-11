@@ -17,6 +17,7 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
     root.set('width', str(width))
     root.set('height', str(height))
     if background is not None:
+        print(f"setting background to {background}")
         root.set('background', str(background))
     defs = etree.SubElement(root, 'defs')
     g = etree.SubElement(root, 'g')
