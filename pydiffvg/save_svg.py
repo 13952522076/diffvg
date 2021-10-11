@@ -10,12 +10,14 @@ def prettify(elem):
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
 
-def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False):
+def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, background=None):
     root = etree.Element('svg')
     root.set('version', '1.1')
     root.set('xmlns', 'http://www.w3.org/2000/svg')
     root.set('width', str(width))
     root.set('height', str(height))
+    if background is not None:
+        root.set('background', str(background))
     defs = etree.SubElement(root, 'defs')
     g = etree.SubElement(root, 'g')
     if use_gamma:
