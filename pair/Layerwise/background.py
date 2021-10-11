@@ -1,6 +1,6 @@
 """
 
-python main.py demo.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug --free
+python background.py demo.png --num_paths 1 --pool_size 40 --save_folder background --free --num_iter 100 --save_video
 """
 import pydiffvg
 import torch
@@ -355,8 +355,8 @@ def main():
             out.write(img_array[iii])
         out.release()
 
-        filename = os.path.join(save_path, "images")
-        os.system(f"rm -rf {filename}")
+        # filename = os.path.join(save_path, "images")
+        # os.system(f"rm -rf {filename}")
 
 if __name__ == "__main__":
     main()
