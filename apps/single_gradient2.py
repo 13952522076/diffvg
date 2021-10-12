@@ -30,7 +30,7 @@ img = render(256, # width
              None, # background_image
              *scene_args)
 # The output image is in linear RGB space. Do Gamma correction before saving the image.
-pydiffvg.imwrite(img.cpu(), 'results/single_gradient/target.png', gamma=2.2)
+pydiffvg.imwrite(img.cpu(), 'results/single_gradient2/target.png', gamma=2.2)
 target = img.clone()
 
 # Move the circle to produce initial guess
@@ -122,10 +122,10 @@ img = render(256,   # width
              None, # background_image
              *scene_args)
 # Save the images and differences.
-pydiffvg.imwrite(img.cpu(), 'results/single_gradient/final.png')
+pydiffvg.imwrite(img.cpu(), 'results/single_gradient2/final.png')
 
 # Convert the intermediate renderings to a video.
 from subprocess import call
 call(["ffmpeg", "-framerate", "24", "-i",
-    "results/single_gradient/iter_%d.png", "-vb", "20M",
-    "results/single_gradient/out.mp4"])
+    "results/single_gradient2/iter_%d.png", "-vb", "20M",
+    "results/single_gradient2/out.mp4"])
