@@ -83,6 +83,7 @@ for t in range(100):
                  *scene_args)
     # Save the intermediate render.
     pydiffvg.imwrite(img.cpu(), 'results/single_gradient/iter_{}.png'.format(t), gamma=2.2)
+    pydiffvg.save_svg('results/single_gradient/iter_{}.svg'.format(t), canvas_width, canvas_height, shapes, shape_groups)
     # Compute the loss function. Here it is L2.
     loss = (img - target).pow(2).sum()
     print('loss:', loss.item())
