@@ -225,7 +225,7 @@ def main():
     loss_weight = 1.0/(canvas_width*canvas_height)
     loss_matrix = []
     background_vars = [torch.rand([4],requires_grad=True)]
-    print(f"background_var is: {background_vars.data}")
+    print(f"background_var is: {background_vars}")
     for num_paths in num_paths_list:
         loss_list = []
         print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
@@ -300,6 +300,7 @@ def main():
             points_optim.step()
             color_optim.step()
             back_optim.step()
+            print(f"background_var is: {background_vars}")
 
             points_scheduler.step()
             color_scheduler.step()
@@ -343,7 +344,7 @@ def main():
                 out.write(img_array[iii])
             out.release()
 
-    print(f"background_var is: {background_vars.data}")
+    print(f"background_var is: {background_vars}")
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
     if args.save_video:
         print("saving all video...")
