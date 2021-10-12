@@ -259,9 +259,11 @@ def main():
             # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
-        color_vars = [*old_color_vars, *color_vars, background_var]
+        color_vars = [*old_color_vars, *color_vars]
+        background_vars = [background_var]
         points_optim = torch.optim.Adam(points_vars, lr=1)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
+        back_optim = torch.optim.Adam(background_vars, lr=0.01)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
         color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.001)
         # Adam iterations.
@@ -269,6 +271,7 @@ def main():
         for t in t_range:
             points_optim.zero_grad()
             color_optim.zero_grad()
+            back_optim.zero_grad()
             # Forward pass: render the image.
             scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
             background_image = torch.ones(canvas_height, canvas_width, 4, device = pydiffvg.get_device())
@@ -297,6 +300,7 @@ def main():
             # Take a gradient descent step.
             points_optim.step()
             color_optim.step()
+            back_optim.step()
 
             points_scheduler.step()
             color_scheduler.step()
