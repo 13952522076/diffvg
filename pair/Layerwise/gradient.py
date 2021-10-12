@@ -1,5 +1,5 @@
 """
-python gradient.py demo3.png --num_paths 1,1,1,1 --pool_size 12 --save_folder gradient --free --save_video
+python gradient.py demo3.png --num_paths 1,1,1,1 --pool_size 12 --save_folder gradient --free --save_video --gradient Linear
 """
 import pydiffvg
 import torch
@@ -178,7 +178,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                 stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
                                             [random.random(), random.random(), random.random(), random.random()]]))
         else:
-            color = pydiffvg.LinearGradient(\
+            color = pydiffvg.RadialGradient(\
                 center = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
                 radius = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
                 offsets = torch.tensor([0.0]),
