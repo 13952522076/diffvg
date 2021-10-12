@@ -224,8 +224,8 @@ def main():
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
     loss_matrix = []
-    background_var = torch.rand([4],requires_grad=True)
-    print(f"background_var is: {background_var}")
+    background_vars = [torch.rand([4],requires_grad=True)]
+    print(f"background_var is: {background_vars}")
     for num_paths in num_paths_list:
         loss_list = []
         print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
@@ -260,7 +260,6 @@ def main():
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
-        background_vars = [background_var]
         points_optim = torch.optim.Adam(points_vars, lr=1)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
         back_optim = torch.optim.Adam(background_vars, lr=0.01)
@@ -344,7 +343,7 @@ def main():
                 out.write(img_array[iii])
             out.release()
 
-    print(f"background_var is: {background_var}")
+    print(f"background_var is: {background_vars}")
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
     if args.save_video:
         print("saving all video...")
