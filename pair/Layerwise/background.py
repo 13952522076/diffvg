@@ -303,7 +303,7 @@ def main():
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
                 # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
-                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background="rgba(255, 0, 0, 0.3)")
+                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background="background: rgba(255, 0, 0, 0.3)")
 
         loss_matrix.append(loss_list)
         old_shapes = shapes
