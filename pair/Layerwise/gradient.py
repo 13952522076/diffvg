@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
     parser.add_argument('--circle_init_radius', type=float)
-    parser.add_argument('--gradient', type=str, default="linear", choices=['linear', 'radial'])
+    parser.add_argument('--gradient', type=str, default="Linear", choices=['Linear', 'Radial'])
 
     return parser.parse_args()
 
@@ -80,6 +80,7 @@ def make_save_path(args):
     detail_folder+=args.initial
     if args.initial=='circle' and args.circle_init_radius is not None:
         detail_folder+=str(args.circle_init_radius)
+    detail_folder+=str(args.gradient)
     save_path = os.path.join(args.save_folder, filename, detail_folder)
     try:
         os.makedirs(save_path)
@@ -169,12 +170,20 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                              is_closed = True)
         shapes.append(path)
         # !!!!!!problem is here. the shape group shape_ids is wrong
-        color = pydiffvg.LinearGradient(\
-            begin = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
-            end = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
-            offsets = torch.tensor([0.0, 1.0]),
-            stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
-                                        [random.random(), random.random(), random.random(), random.random()]]))
+        if args.gradient =="Linear":
+            color = pydiffvg.LinearGradient(\
+                begin = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                end = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                offsets = torch.tensor([0.0, 1.0]),
+                stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
+                                            [random.random(), random.random(), random.random(), random.random()]]))
+        else:
+            color = pydiffvg.LinearGradient(\
+                center = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                radius = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                offsets = torch.tensor([0.0]),
+                stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
+                                            [random.random(), random.random(), random.random(), random.random()]]))
         path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]),
                                          fill_color = color)
         shape_groups.append(path_group)
@@ -185,12 +194,18 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         path.points.requires_grad = True
         points_vars.append(path.points)
     for group in shape_groups:
-        group.fill_color.begin.requires_grad = True
-        group.fill_color.end.requires_grad = True
+        if args.gradient =="Linear":
+            group.fill_color.begin.requires_grad = True
+            group.fill_color.end.requires_grad = True
+            color_vars.append(group.fill_color.begin)
+            color_vars.append(group.fill_color.end)
+        else:
+            group.fill_color.center.requires_grad = True
+            group.fill_color.radius.requires_grad = True
+            color_vars.append(group.fill_color.center)
+            color_vars.append(group.fill_color.radius)
         # group.fill_color.offsets.requires_grad = True
         group.fill_color.stop_colors.requires_grad = True
-        color_vars.append(group.fill_color.begin)
-        color_vars.append(group.fill_color.end)
         # color_vars.append(group.fill_color.offsets)
         color_vars.append(group.fill_color.stop_colors)
     return shapes, shape_groups, points_vars, color_vars
@@ -251,15 +266,26 @@ def main():
                     old_path.points.requires_grad = False
             for old_group in old_shape_groups:
                 if args.free:
-                    old_group.fill_color.begin.requires_grad = True
-                    old_group.fill_color.end.requires_grad = True
+                    if args.gradient =="Linear":
+                        old_group.fill_color.begin.requires_grad = True
+                        old_group.fill_color.end.requires_grad = True
+                        old_color_vars.append(old_group.fill_color.begin)
+                        old_color_vars.append(old_group.fill_color.end)
+                    else:
+                        old_group.fill_color.center.requires_grad = True
+                        old_group.fill_color.radius.requires_grad = True
+                        old_color_vars.append(old_group.fill_color.center)
+                        old_color_vars.append(old_group.fill_color.radius)
                     old_group.fill_color.stop_colors.requires_grad = True
-                    old_color_vars.append(old_group.fill_color.begin)
-                    old_color_vars.append(old_group.fill_color.end)
+
                     old_color_vars.append(old_group.fill_color.stop_colors)
                 else:
-                    old_group.fill_color.begin.requires_grad = False
-                    old_group.fill_color.end.requires_grad = False
+                    if args.gradient =="Linear":
+                        old_group.fill_color.begin.requires_grad = False
+                        old_group.fill_color.end.requires_grad = False
+                    else:
+                        old_group.fill_color.center.requires_grad = False
+                        old_group.fill_color.radius.requires_grad = False
                     old_group.fill_color.stop_colors.requires_grad = False
 
         shapes = [*old_shapes, *shapes]
@@ -272,9 +298,9 @@ def main():
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
         points_optim = torch.optim.Adam(points_vars, lr=1)
-        color_optim = torch.optim.Adam(color_vars, lr=0.01)
+        color_optim = torch.optim.Adam(color_vars, lr=0.1)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
-        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.001)
+        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.01)
         # Adam iterations.
         t_range = tqdm(range(args.num_iter))
         for t in t_range:
