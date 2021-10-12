@@ -1,5 +1,5 @@
 """
-python gradient.py demo3.png --num_paths 1,1,1,1 --pool_size 12 --save_folder gradient --free
+python gradient.py demo3.png --num_paths 1,1,1,1 --pool_size 12 --save_folder gradient --free --save_video
 """
 import pydiffvg
 import torch
@@ -39,6 +39,7 @@ def parse_args():
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
     parser.add_argument('--circle_init_radius', type=float)
+    parser.add_argument('--gradient', type=str, default="linear", choices=['linear', 'radial'])
 
     return parser.parse_args()
 
@@ -168,11 +169,14 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                              is_closed = True)
         shapes.append(path)
         # !!!!!!problem is here. the shape group shape_ids is wrong
+        color = pydiffvg.LinearGradient(\
+            begin = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+            end = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+            offsets = torch.tensor([0.0, 1.0]),
+            stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
+                                        [random.random(), random.random(), random.random(), random.random()]]))
         path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]),
-                                         fill_color = torch.tensor([random.random(),
-                                                                    random.random(),
-                                                                    random.random(),
-                                                                    random.random()]))
+                                         fill_color = color)
         shape_groups.append(path_group)
 
     points_vars = []
@@ -181,8 +185,14 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         path.points.requires_grad = True
         points_vars.append(path.points)
     for group in shape_groups:
-        group.fill_color.requires_grad = True
-        color_vars.append(group.fill_color)
+        group.fill_color.begin.requires_grad = True
+        group.fill_color.end.requires_grad = True
+        # group.fill_color.offsets.requires_grad = True
+        group.fill_color.stop_colors.requires_grad = True
+        color_vars.append(group.fill_color.begin)
+        color_vars.append(group.fill_color.end)
+        # color_vars.append(group.fill_color.offsets)
+        color_vars.append(group.fill_color.stop_colors)
     return shapes, shape_groups, points_vars, color_vars
 
 
@@ -241,17 +251,23 @@ def main():
                     old_path.points.requires_grad = False
             for old_group in old_shape_groups:
                 if args.free:
-                    old_group.fill_color.requires_grad = True
-                    old_color_vars.append(old_group.fill_color)
+                    old_group.fill_color.begin.requires_grad = True
+                    old_group.fill_color.end.requires_grad = True
+                    old_group.fill_color.stop_colors.requires_grad = True
+                    old_color_vars.append(old_group.fill_color.begin)
+                    old_color_vars.append(old_group.fill_color.end)
+                    old_color_vars.append(old_group.fill_color.stop_colors)
                 else:
-                    old_group.fill_color.requires_grad = False
+                    old_group.fill_color.begin.requires_grad = False
+                    old_group.fill_color.end.requires_grad = False
+                    old_group.fill_color.stop_colors.requires_grad = False
 
         shapes = [*old_shapes, *shapes]
         shape_groups = [*old_shape_groups, *shape_groups]
 
         if args.save_init:
             save_name = os.path.join(save_path, f"{current_path_str[:-1]}-init.svg")
-            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+            # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
@@ -298,7 +314,7 @@ def main():
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
-                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+                # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
         loss_matrix.append(loss_list)
         old_shapes = shapes
