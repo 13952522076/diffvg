@@ -224,7 +224,7 @@ def main():
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
     loss_matrix = []
-    background_vars = [torch.rand([4],requires_grad=True)]
+    background_vars = [torch.Tensor([[[0., 0., 0., 1.]]], requires_grad=True)]
     print(f"background_var is: {background_vars}")
     for num_paths in num_paths_list:
         loss_list = []
@@ -262,19 +262,20 @@ def main():
         color_vars = [*old_color_vars, *color_vars]
         points_optim = torch.optim.Adam(points_vars, lr=1)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
-        back_optim = torch.optim.Adam(background_vars, lr=0.01)
+        bg_optim = torch.optim.Adam(background_vars, lr=0.01)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
         color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.001)
+        bg_scheduler = CosineAnnealingLR(bg_optim, args.num_iter, eta_min=0.001)
         # Adam iterations.
         t_range = tqdm(range(args.num_iter))
         for t in t_range:
             points_optim.zero_grad()
             color_optim.zero_grad()
-            back_optim.zero_grad()
+            bg_optim.zero_grad()
             # Forward pass: render the image.
             scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
             background_image = torch.ones(canvas_height, canvas_width, 4, device = pydiffvg.get_device())
-            background_image = background_image* torch.Tensor([[[1,0,0.5,1]]]).to(pydiffvg.get_device())
+            background_image = background_image* (background_vars[0]).to(pydiffvg.get_device())
             img = render(canvas_width, canvas_height, 2, 2, t, background_image, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
@@ -299,11 +300,13 @@ def main():
             # Take a gradient descent step.
             points_optim.step()
             color_optim.step()
-            back_optim.step()
+            bg_optim.step()
             print(f"background_var is: {background_vars}")
 
             points_scheduler.step()
             color_scheduler.step()
+            bg_scheduler.step()
+            (background_vars[0]).data.clamp_(0.0, 1.0)
 
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
