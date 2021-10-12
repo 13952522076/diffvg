@@ -252,7 +252,8 @@ def main():
 
         if args.save_init:
             save_name = os.path.join(save_path, f"{current_path_str[:-1]}-init.svg")
-            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background="rgba(255, 0, 0, 0.3)")
+            # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background="rgba(255, 0, 0, 0.3)")
+            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
@@ -301,7 +302,8 @@ def main():
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
-                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background="rgba(255, 0, 0, 0.3)")
+                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+                # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background="rgba(255, 0, 0, 0.3)")
 
         loss_matrix.append(loss_list)
         old_shapes = shapes
