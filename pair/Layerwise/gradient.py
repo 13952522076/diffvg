@@ -181,7 +181,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
             color = pydiffvg.RadialGradient(\
                 center = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
                 radius = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
-                offsets = torch.tensor([0.0]),
+                offsets = torch.tensor([0.0,1.0]),
                 stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
                                             [random.random(), random.random(), random.random(), random.random()]]))
         path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]),
