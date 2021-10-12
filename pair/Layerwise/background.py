@@ -224,7 +224,7 @@ def main():
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
     loss_matrix = []
-    background_vars = [torch.Tensor([[[0., 0., 0., 1.]]], requires_grad=True)]
+    background_vars = [torch.tensor([[[0., 0., 0., 1.]]], requires_grad=True)]
     print(f"background_var is: {background_vars}")
     for num_paths in num_paths_list:
         loss_list = []
