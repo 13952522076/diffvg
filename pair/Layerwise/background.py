@@ -224,6 +224,7 @@ def main():
     region_loss = None
     loss_weight = 1.0/(canvas_width*canvas_height)
     loss_matrix = []
+    background_var = torch.rand([4],requires_grad=True)
     for num_paths in num_paths_list:
         loss_list = []
         print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
@@ -233,6 +234,7 @@ def main():
             num_paths, canvas_width, canvas_height, args, len(old_shapes), region_loss)
         old_points_vars = []
         old_color_vars = []
+
         if len(old_shapes)>0:
             for old_path in old_shapes:
                 if args.free:
@@ -256,7 +258,7 @@ def main():
             # pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
-        color_vars = [*old_color_vars, *color_vars]
+        color_vars = [*old_color_vars, *color_vars, background_var]
         points_optim = torch.optim.Adam(points_vars, lr=1)
         color_optim = torch.optim.Adam(color_vars, lr=0.01)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
