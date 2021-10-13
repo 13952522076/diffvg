@@ -271,7 +271,7 @@ def main():
             # Forward pass: render the image.
             scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
             background_image = torch.ones(canvas_height, canvas_width, 4, device = pydiffvg.get_device())
-            background_vars = torch.cat([bg, torch.ones(1)], dim=-1).view(1,1,4)
+            background_vars = torch.cat([bg, torch.ones(1).to(bg.device)], dim=-1).view(1,1,4)
             background_image = background_image* (background_vars).to(pydiffvg.get_device())
             img = render(canvas_width, canvas_height, 2, 2, t, background_image, *scene_args)
             # Compose img with white background
