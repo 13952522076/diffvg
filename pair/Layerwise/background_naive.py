@@ -106,7 +106,7 @@ def load_image(args):
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
-    print(f"target first pixel color is: {target[0,:,0,0]}")
+    print(f"target first pixel color is: {target[0,:,5,5]}")
     return target
 
 
