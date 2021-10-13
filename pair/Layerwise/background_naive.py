@@ -106,7 +106,7 @@ def load_image(args):
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
-    print(f"target first pixel color is: {target[0,:,5,5]}")
+    # print(f"target first pixel color is: {target[0,:,5,5]}")
     return target
 
 
@@ -213,6 +213,7 @@ def main():
     pydiffvg.set_use_gpu(torch.cuda.is_available())
     # filename = os.path.splitext(os.path.basename(args.target))[0]
     target = load_image(args)
+    bg = target[0,:, 10, 10 ] # use [11,11] as background color.
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths_list = [int(i) for i in args.num_paths.split(',')]
     random.seed(1234)
@@ -253,7 +254,8 @@ def main():
 
         if args.save_init:
             save_name = os.path.join(save_path, f"{current_path_str[:-1]}-init.svg")
-            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+            c1,c2,c3, a0=int(bg[0]*255), int(bg[1]*255),int(bg[2]*255), 1
+            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background=f"background: rgba({c1}, {c2}, {c3}, {a0})")
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
@@ -268,7 +270,10 @@ def main():
             color_optim.zero_grad()
             # Forward pass: render the image.
             scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
-            img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
+            background_image = torch.ones(canvas_height, canvas_width, 4, device = pydiffvg.get_device())
+            background_vars = torch.cat([bg, torch.ones(1)], dim=-1).view(1,1,4)
+            background_image = background_image* (background_vars).to(pydiffvg.get_device())
+            img = render(canvas_width, canvas_height, 2, 2, t, background_image, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
             if args.save_video:
@@ -300,7 +305,8 @@ def main():
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
-                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+                c1,c2,c3, a0=int(bg[0]*255), int(bg[1]*255),int(bg[2]*255), 1
+                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups, background=f"background: rgba({c1}, {c2}, {c3}, {a0})")
 
         loss_matrix.append(loss_list)
         old_shapes = shapes
