@@ -22,6 +22,7 @@ module load gcc/8.1.0
 export CC=/shared/centos7/gcc/8.1.0/bin/gcc
 export CXX=/shared/centos7/gcc/8.1.0/bin/g++
 conda activate im2vec
+cd /scratch/ma.xu1/diffvg/pair/Layerwise/
 
 
 PA
@@ -459,10 +460,42 @@ python distance_based.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 -
 
 
 ________examples__________
-python main.py ../data/validate/0/240px-Emoji_u1f61d.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
-python main.py ../data/validate/0/240px-Emoji_u1f615.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
-python main.py ../data/validate/0/240px-Emoji_u1f643.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
-python main.py ../data/validate/0/240px-Noto_Emoji_Oreo_1f60f.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
-python main.py ../data/validate/0/240px-Noto_Emoji_Oreo_1f61d.svg.png --num_paths 1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder distance --free
+python main.py ../data/emoji_rgb/validate/0/240px-Emoji_u1f61d.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+python main.py ../data/emoji_rgb/validate/0/240px-Emoji_u1f615.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+python main.py ../data/emoji_rgb/validate/0/240px-Emoji_u1f643.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+python main.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f60f.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+python main.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_Oreo_1f61d.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+
+python main.py ../data/emoji_rgb/validate/0/240px-Emoji_u1f923.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+
+python main.py ../data/emoji_rgb/validate/0/240px-Noto_Emoji_KitKat_1f61f.svg.png --num_paths 1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+
+
+
+# demo3.png 36 cat.png 50 finger.png 61
+python main.py demo3.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --save_loss --save_init --pool_size 40 --save_folder examples --free
+
+
+python main.py cat.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder examples --free
+
+
+python main.py finger.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder examples --free
+
+
+--------------------------------------------------------------------
+circle 8 shape   color first, shape then ,iterative   [windy number]    [TODO: no color, just storke]
+distance loss  
+background demo/demo6/finger
+graident
+
+left problem: 
+8 shape problem.
+subnetwork initializaton predicton 
+
+
+Writing
+can you get an initial draft in the next week or two?
+writing is critical, 2 weeks is not enough for writing & polishing
+--------------------------------------------------------------------
 
 
