@@ -484,18 +484,37 @@ python main.py finger.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 
 --------------------------------------------------------------------
 circle 8 shape   color first, shape then ,iterative   [windy number]    [TODO: no color, just storke]
-distance loss  
-background demo/demo6/finger
+distance loss    sigmoid(temp*dis)    sign distance field  <- move heatmap follow the move
+background demo/demo6/finger   [helpful, background init from image bound]   rgb + Gin-bias
+
 graident
 
 left problem: 
-8 shape problem.
-subnetwork initializaton predicton 
+8 shape problem. [point constrat]
+subnetwork initializaton predicton  [segments number, graident or no, etc.]
+[insert segments(control points)]
+deform im2vec.
+learnable stroke
+
+Refnement steps: combine several paths together. cmposition
 
 
 Writing
 can you get an initial draft in the next week or two?
 writing is critical, 2 weeks is not enough for writing & polishing
 --------------------------------------------------------------------
+Currently, we have some problems left:
+1. How to solve the "8" shape path problem?
+some ideas are: 1) potentionally  look into the windy number in C++ codes. 2) just stroke first without  filling colors.
+2) Improved distance loss:
+instead of naive distance based loss, we can use the sign distance field to improve it.
+3) Current learnable background color does not help.
+a simple solution is to direct use corner pixel colors. Then we can consider the color bias correction as Yuqian provded above.
+4) A sub-network that predict the initializaton.
+Basically, we want to predict the segments number, gradient or not, some hyperparameters like this. We will explore how to build the sub-network.
+
+Also, a potential work is refinement step, that combines several similar paths together.
+
+Meanwhle, we will start the draft writing. 
 
 
