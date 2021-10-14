@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main.py cat.png --num_paths 1,1,1,1 --save_loss --save_init --pool_size 12 --save_folder debug --free
+python stroke.py cat.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/stroke --free
 """
 import pydiffvg
 import torch
@@ -180,8 +180,9 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
                                          fill_color = torch.tensor([random.random(),
                                                                     random.random(),
                                                                     random.random(),
-                                                                    random.random()]),
-                                         stroke_color = torch.tensor([1., 1., 1., 0.]))
+                                                                    random.random()])
+                                         )
+        path_group.stroke_color = path_group.fill_color
         shape_groups.append(path_group)
 
     points_vars = []
