@@ -11,7 +11,7 @@ python main.py demo5.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_fol
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.03
+python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
