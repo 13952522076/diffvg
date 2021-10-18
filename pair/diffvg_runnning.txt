@@ -485,7 +485,7 @@ python main.py finger.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 --------------------------------------------------------------------
 circle 8 shape   color first, shape then ,iterative   [windy number]    [TODO: no color, just storke]
 distance loss    sigmoid(temp*dis)    sign distance field  <- move heatmap follow the move
-background demo/demo6/finger   [helpful, background init from image bound]   rgb + Gin-bias
+background demo/demo6/finger   DONE[helpful, background init from image bound]   rgb + Gin-bias
 
 graident
 
@@ -495,6 +495,7 @@ subnetwork initializaton predicton  [segments number, graident or no, etc.]
 [insert segments(control points)]
 deform im2vec.
 learnable stroke
+stroke
 
 Refnement steps: combine several paths together. cmposition
 

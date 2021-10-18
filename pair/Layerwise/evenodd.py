@@ -6,7 +6,8 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python stroke.py cat.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/stroke --free
+python evenodd.py demo.png --num_paths 1,1,1,1,1 --pool_size 40 --save_folder results/evenodd_False --free --save_video
+python main.py demo.png --num_paths 1,1,1,1,1 --pool_size 40 --save_folder results/evenodd_True --free --save_video
 """
 import pydiffvg
 import torch
@@ -46,7 +47,6 @@ def parse_args():
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
     parser.add_argument('--circle_init_radius', type=float)
-    parser.add_argument('--stroke_max_width', type=int, default=10)
 
     return parser.parse_args()
 
@@ -172,17 +172,16 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         points[:, 1] *= canvas_height
         path = pydiffvg.Path(num_control_points = num_control_points,
                              points = points,
-                             stroke_width = torch.tensor(random.random()),
+                             stroke_width = torch.tensor(1.0),
                              is_closed = True)
         shapes.append(path)
         # !!!!!!problem is here. the shape group shape_ids is wrong
         path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]),
+                                         use_even_odd_rule=False,
                                          fill_color = torch.tensor([random.random(),
                                                                     random.random(),
                                                                     random.random(),
-                                                                    random.random()])
-                                         )
-        path_group.stroke_color = path_group.fill_color
+                                                                    random.random()]))
         shape_groups.append(path_group)
 
     points_vars = []
@@ -190,13 +189,9 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
     for path in shapes:
         path.points.requires_grad = True
         points_vars.append(path.points)
-        path.stroke_width.requires_grad = True
-        points_vars.append(path.stroke_width)
     for group in shape_groups:
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
-        group.stroke_color.requires_grad = True
-        color_vars.append(group.stroke_color)
     return shapes, shape_groups, points_vars, color_vars
 
 
@@ -251,20 +246,14 @@ def main():
                 if args.free:
                     old_path.points.requires_grad = True
                     old_points_vars.append(old_path.points)
-                    old_path.stroke_width.requires_grad = True
-                    old_points_vars.append(old_path.stroke_width)
                 else:
                     old_path.points.requires_grad = False
-                    old_path.stroke_width.requires_grad = False
             for old_group in old_shape_groups:
                 if args.free:
                     old_group.fill_color.requires_grad = True
                     old_color_vars.append(old_group.fill_color)
-                    old_group.stroke_color.requires_grad = True
-                    old_color_vars.append(old_group.stroke_color)
                 else:
                     old_group.fill_color.requires_grad = False
-                    old_group.stroke_color.requires_grad = False
 
         shapes = [*old_shapes, *shapes]
         shape_groups = [*old_shape_groups, *shape_groups]
@@ -316,9 +305,6 @@ def main():
 
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
-                group.stroke_color.data.clamp_(0.0, 1.0)
-            for shape in shapes:
-                shape.stroke_width.data.clamp_(0.0, args.stroke_max_width)
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
                 pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
@@ -371,7 +357,7 @@ def main():
                 img_array.append(img)
             i+=1
         videoname = os.path.join(save_path, "videos", f"all.mp4")
-        out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (canvas_width, canvas_height))
+        out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 100.0, (canvas_width, canvas_height))
         for iii in range(len(img_array)):
             out.write(img_array[iii])
         out.release()
