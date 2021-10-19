@@ -13,6 +13,7 @@ export CC=/cm/shared/utils/GCC/8.1.0/bin/gcc
 export CXX=/cm/shared/utils/GCC/8.1.0/bin/g++
 conda activate im2vec
 
+python main.py cat.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/main --free --save_video
 
 
 ##### NEU ####

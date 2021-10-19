@@ -50,7 +50,7 @@ def parse_args():
     parser.add_argument('--print_weight', action='store_true')
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
-    parser.add_argument('--circle_init_radius', type=float)
+    parser.add_argument('--circle_init_radius',  type=float)
 
     return parser.parse_args()
 
@@ -163,7 +163,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
         else:
             radius = args.circle_init_radius
             if radius is None:
-                radius = np.random.uniform(low=0.01, high=0.2)
+                radius = np.random.uniform(low=0.003, high=0.03)
             print(f"radius {radius} for circle initialization")
             points = get_bezier_circle(radius=radius, segments=num_segments, bias=(random.random(), random.random()))
 
@@ -195,6 +195,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
     for group in shape_groups:
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
+    print(f"points shape is: {(points_vars[0]).shape}")
     return shapes, shape_groups, points_vars, color_vars
 
 
