@@ -302,7 +302,7 @@ def main():
             # add xing_loss here
             xingloss = xing_loss(points_vars,scale=args.xing_weight)
 
-            t_range.set_postfix({'loss': loss.item(), 'xingloss':xingloss.sum()})
+            t_range.set_postfix({'loss': loss.item(), 'xingloss':xingloss.item()})
             # Backpropagate the gradients.
 
             loss = loss + xingloss
