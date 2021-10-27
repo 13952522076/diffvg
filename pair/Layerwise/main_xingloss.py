@@ -317,6 +317,7 @@ def main():
             color_scheduler.step()
 
             what_list = [torch.isfinite(points_var).all() for points_var in points_vars]
+            print(f"points_vars are: {points_vars}")
             print(f"what_list is {what_list}")
 
             for group in shape_groups:
