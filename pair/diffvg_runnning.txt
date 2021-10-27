@@ -16,6 +16,8 @@ conda activate im2vec
 python main.py cat.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/main --free --save_video
 
 
+
+
 ##### NEU ####
 module load cuda/11.0
 module unload gcc/5.5.0   
@@ -529,6 +531,9 @@ Prediction problem:
 3. How to train?
 	1. using ground truth or our predict result on the 200 images?
 	2. predict the results on the initializtion or each step (before add a path)?   [GT-Predict]
+
+
+
 
 
 

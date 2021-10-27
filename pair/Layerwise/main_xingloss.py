@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main_xingloss.py demo5.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/main --free --save_video
+python main_xingloss.py Balloon.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/xingloss --free --save_video
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -301,6 +301,8 @@ def main():
 
             # add xing_loss here
             xingloss = xing_loss(points_vars,scale=args.xing_weight)
+            what_list = [torch.isfinite(points_var).all() for points_var in points_vars]
+            print(f"what_list is {what_list}")
             t_range.set_postfix({'loss': loss.item(), 'xingloss': xingloss.item()})
             # Backpropagate the gradients.
 
