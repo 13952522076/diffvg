@@ -519,4 +519,16 @@ Also, a potential work is refinement step, that combines several similar paths t
 
 Meanwhle, we will start the draft writing. 
 
+____________________________________________________________________
+"8" shape problem: 1) interaction loss; 2) ratio loss 3) small sized circle.
+Prediction problem: 
+1. predict what ?
+	1) segments 2) gradient color or not? 3) number of paths (which can also be implemented by a loss threshold or max-number) 4) stroke or not?
+2. How to predict? 
+	Train a model, direct output n results.
+3. How to train?
+	1. using ground truth or our predict result on the 200 images?
+	2. predict the results on the initializtion or each step (before add a path)?   [GT-Predict]
+
+
 

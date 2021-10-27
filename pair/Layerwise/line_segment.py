@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import random
 
 import matplotlib.pyplot as plt
 # https://www.cnblogs.com/Duahanlang/archive/2013/05/11/3073434.html this one is bullshit!
@@ -28,24 +29,37 @@ for p1x in range(1,move):
                     for q1y in range(1,move):
                         for q2x in range(1,move):
                             for q2y in range(1,move):
-                                if q1x==q2x and q1y==q2y:
-                                    continue
-                                if p1x==p2x and p1y==p2y:
-                                    continue
-                                if p1x==q1x and p1y==q1y and p2x==q2x and p2y==q2y:
-                                    continue
-                                if p1x==q2x and p1y==q2y and p2x==q1x and p2y==q1y:
-                                    continue
+
+                                p1x, p1y = random.randint(1,100), random.randint(1,100)
+                                p2x, p2y = random.randint(1,100), random.randint(1,100)
+                                q1x, q1y = random.randint(1,100), random.randint(1,100)
+                                q2x, q2y = random.randint(1,100), random.randint(1,100)
+
+
+
+                                # if q1x==q2x and q1y==q2y:
+                                #     continue
+                                # if p1x==p2x and p1y==p2y:
+                                #     continue
+                                # if p1x==q1x and p1y==q1y and p2x==q2x and p2y==q2y:
+                                #     continue
+                                # if p1x==q2x and p1y==q2y and p2x==q1x and p2y==q1y:
+                                #     continue
 
                                 A = np.array([p1x, p1y])
                                 B = np.array([p2x, p2y])
                                 C = np.array([q1x, q1y])
                                 D = np.array([q2x, q2y])
 
-                                d1 = cross_mul(A, C, D)
-                                d2 = cross_mul(B, C, D)
-                                d3 = cross_mul(A, B, C)
-                                d4 = cross_mul(A, B, D)
+                                # d1 = cross_mul(A, C, D)
+                                # d2 = cross_mul(B, C, D)
+                                # d3 = cross_mul(A, B, C)
+                                # d4 = cross_mul(A, B, D)
+
+                                d1 = cross_mul(A, B, C)
+                                d2 = cross_mul(A, B, D)
+                                d3 = cross_mul(C, D, A)
+                                d4 = cross_mul(C, D, B)
 
                                 value1 = 0
                                 value2 = 0
@@ -65,7 +79,7 @@ for p1x in range(1,move):
                                     ax1.plot([q1x, q2x], [q1y, q2y])
                                     # ax2.bar(range(1), [value1])
                                     # ax2.bar(range(1), [-value2])
-                                    plt.title(f"{value1} | {value2}")
+                                    plt.title(f"{value1} | {value2} | {d1},{d2},{d3},{d4}")
                                     plt.show()
                                     # plt.close()
                                     # fig.close()
