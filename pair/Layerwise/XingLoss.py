@@ -26,8 +26,8 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         Area_CD_A = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 0])
         Area_CD_B = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 1])
 
-        condition1 = ((Area_AB_C * Area_AB_D) < 0.).float()
-        condition2 = ((Area_CD_A * Area_CD_B) < 0.).float()
+        condition1 = ((Area_AB_C * Area_AB_D) < 1e-5 ).float()
+        condition2 = ((Area_CD_A * Area_CD_B) < 1e-5 ).float()
         mask = condition1*condition2
         area_AB_1 = abs(Area_AB_C)/(abs(Area_AB_D)+ 1e-5)
         area_AB_2 = abs(Area_AB_D)/(abs(Area_AB_C)+ 1e-5)
@@ -83,6 +83,7 @@ if __name__ == "__main__":
     print(id)
 
     print(f"===> test cosine similarity ===")
+    # doesn't work
     points = torch.rand(13,2)
     point_init = points[:1,:]
     cos = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
@@ -90,3 +91,47 @@ if __name__ == "__main__":
     indx = torch.argsort(smi, dim=0, descending=True)
     points = points[indx,:]
     print(smi)
+
+    print(f"===> vis cosine similarity ===")
+    points = torch.Tensor([[0.9665, 0.4407],
+        [0.9724, 0.4446],
+        [0.9603, 0.4345],
+        [0.9202, 0.4145],
+        [0.9622, 0.4459],
+        [0.9445, 0.4152],
+        [0.9545, 0.4520],
+        [0.9857, 0.4314],
+        [0.9638, 0.4654],
+        [0.9418, 0.4613],
+        [0.9435, 0.3927],
+        [0.9455, 0.3910]])
+    points = torch.rand(14,2)
+    # sort control points by cosine-limilarity.
+    point_init = points.mean(dim=0, keepdim=True)
+    import torch.nn.functional as F
+    smi = F.cosine_similarity(torch.tensor([[1.,0.]]), points-point_init, dim=1, eps=1e-6)
+    print(f"smi is {smi}")
+    indx = torch.argsort(smi, dim=0, descending=False)
+    print(points)
+    print(indx)
+    points = points[indx,:]
+    print(points)
+    smi = F.cosine_similarity(point_init, points, dim=1, eps=1e-6)
+    print(smi)
+
+
+    x_list = []
+    y_list = []
+    labels = []
+    for i in range(0, points.shape[0]):
+        x_list.append(points[i,0])
+        y_list.append(points[i,1])
+        labels.append(i)
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.scatter(x_list, y_list)
+    ax.scatter([point_init[0,0]], [point_init[0,1]])
+    ax.plot(x_list, y_list)
+    for i, txt in enumerate(labels):
+        ax.annotate(txt, (x_list[i], y_list[i]))
+    plt.show()
