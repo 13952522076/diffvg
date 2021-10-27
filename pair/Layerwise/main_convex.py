@@ -164,6 +164,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
             smi = cos(point_init, points)
             indx = torch.argsort(smi, dim=0, descending=True)
             points = points[indx,:]
+            print(points)
 
 
         # circle points initialization
