@@ -93,6 +93,7 @@ def make_save_path(args):
     detail_folder+=args.initial
     if args.initial=='circle' and args.circle_init_radius is not None:
         detail_folder+=str(args.circle_init_radius)
+    detail_folder = detail_folder+"Xweight"+str(args.xing_weight)
     save_path = os.path.join(args.save_folder, filename, detail_folder)
     try:
         os.makedirs(save_path)
