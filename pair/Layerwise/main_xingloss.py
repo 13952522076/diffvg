@@ -302,9 +302,8 @@ def main():
             # add xing_loss here
             xingloss = xing_loss(points_vars,scale=args.xing_weight)
 
-            t_range.set_postfix({'loss': loss.item()})
+            t_range.set_postfix({'loss': loss.item(), 'xingloss':xingloss.sum()})
             # Backpropagate the gradients.
-            print(f"previously, points_vars are: {points_vars}")
 
             loss = loss + xingloss
             loss.backward()
@@ -316,9 +315,6 @@ def main():
             points_scheduler.step()
             color_scheduler.step()
 
-            what_list = [torch.isfinite(points_var).all() for points_var in points_vars]
-            print(f"points_vars are: {points_vars}")
-            print(f"what_list is {what_list}")
 
             for group in shape_groups:
                 group.fill_color.data.clamp_(0.0, 1.0)
