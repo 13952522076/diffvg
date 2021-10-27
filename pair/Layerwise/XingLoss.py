@@ -29,14 +29,14 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         condition1 = ((Area_AB_C * Area_AB_D) <= 10).float()
         condition2 = ((Area_CD_A * Area_CD_B) <= 10).float()
         mask = condition1*condition2
-        area_AB_1 = (abs(Area_AB_C)+10)/(abs(Area_AB_D)+ 1e-5)
-        area_AB_2 = (abs(Area_AB_D)+10)/(abs(Area_AB_C)+ 1e-5)
+        area_AB_1 = (abs(Area_AB_C)+ 1e-5)/(abs(Area_AB_D)+ 1e-5)
+        area_AB_2 = (abs(Area_AB_D)+ 1e-5)/(abs(Area_AB_C)+ 1e-5)
         area_AB,_ = torch.cat([area_AB_1.unsqueeze(dim=-1),area_AB_2.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
         area_AB = torch.clip(area_AB, 0.0, 1.0)
         area_AB = torch.nan_to_num(area_AB, nan=0.0)
 
-        area_CD_1 = (abs(Area_CD_A)+10)/(abs(Area_CD_B)+ 1e-5)
-        area_CD_2 = (abs(Area_CD_B)+10)/(abs(Area_CD_A)+ 1e-5)
+        area_CD_1 = (abs(Area_CD_A)+ 1e-5)/(abs(Area_CD_B)+ 1e-5)
+        area_CD_2 = (abs(Area_CD_B)+ 1e-5)/(abs(Area_CD_A)+ 1e-5)
         area_CD, _ = torch.cat([area_CD_1.unsqueeze(dim=-1),area_CD_2.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
         area_CD = torch.clip(area_CD, 0.0, 1.0)
         area_CD = torch.nan_to_num(area_CD, nan=0.0)
