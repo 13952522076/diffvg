@@ -75,3 +75,18 @@ if __name__ == "__main__":
     d = torch.Tensor([[-1, 1]])
     print(triangle_area(a, b, c))
     print(triangle_area(a, b, d))
+
+
+    a =torch.rand(3,2)
+    v,id = a.min(dim=-1)
+    print(v)
+    print(id)
+
+    print(f"===> test cosine similarity ===")
+    points = torch.rand(13,2)
+    point_init = points[:1,:]
+    cos = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
+    smi = cos(point_init, points)
+    indx = torch.argsort(smi, dim=0, descending=True)
+    points = points[indx,:]
+    print(smi)
