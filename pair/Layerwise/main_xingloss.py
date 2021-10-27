@@ -304,7 +304,7 @@ def main():
 
             t_range.set_postfix({'loss': loss.item()})
             # Backpropagate the gradients.
-
+            print(f"previously, points_vars are: {points_vars}")
 
             loss = loss + xingloss
             loss.backward()
