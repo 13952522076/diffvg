@@ -26,8 +26,8 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         Area_CD_A = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 0])
         Area_CD_B = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 1])
 
-        condition1 = ((Area_AB_C * Area_AB_D) < 0.).float()
-        condition2 = ((Area_CD_A * Area_CD_B) < 0.).float()
+        condition1 = ((Area_AB_C * Area_AB_D) > 0.).float()
+        condition2 = ((Area_CD_A * Area_CD_B) > 0.).float()
         mask = condition1*condition2
         area_AB_1 = abs(Area_AB_C)/(abs(Area_AB_D)+1e-5)
         area_AB_2 = abs(Area_AB_D)/(abs(Area_AB_C)+1e-5)
@@ -66,8 +66,11 @@ if __name__ == "__main__":
     b = torch.transpose(a, 0, 1)
     print(b)
 
-    c = torch.Tensor([[0, 0]])
-    b = torch.Tensor([[0, 3]])
-    a = torch.Tensor([[4, 0]])
-    print(triangle_area(a, b, c))
+    
     """
+    a = torch.Tensor([[0, 0]])
+    b = torch.Tensor([[0, 3]])
+    c = torch.Tensor([[1, 1]])
+    d = torch.Tensor([[-1, 1]])
+    print(triangle_area(a, b, c))
+    print(triangle_area(a, b, d))
