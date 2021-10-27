@@ -307,7 +307,7 @@ def main():
             # Backpropagate the gradients.
 
 
-            loss = loss + xingloss
+            # loss = loss + xingloss
             loss.backward()
 
             # Take a gradient descent step.
