@@ -44,7 +44,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         area_loss = area_loss*mask
         area_loss = area_loss.sum()/((x.shape[0]-2)**2)
 
-        loss += area_loss
+        loss += area_loss*scale
 
     return loss / (len(x_list))
 
