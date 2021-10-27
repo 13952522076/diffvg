@@ -26,8 +26,8 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         Area_CD_A = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 0])
         Area_CD_B = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 1])
 
-        condition1 = ((Area_AB_C * Area_AB_D) <= 10).float()
-        condition2 = ((Area_CD_A * Area_CD_B) <= 10).float()
+        condition1 = ((Area_AB_C * Area_AB_D) <= 1e-5).float()
+        condition2 = ((Area_CD_A * Area_CD_B) <= 1e-5).float()
         mask = condition1*condition2
         area_AB_1 = (abs(Area_AB_C)+ 1e-5)/(abs(Area_AB_D)+ 1e-5)
         area_AB_2 = (abs(Area_AB_D)+ 1e-5)/(abs(Area_AB_C)+ 1e-5)
