@@ -43,6 +43,8 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
 
         area_loss, _ = torch.cat([area_AB.unsqueeze(dim=-1),area_CD.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
         area_loss = area_loss*mask
+        print(f"mask is: {mask}")
+        print(f"area_loss is: {area_loss}")
         area_loss = area_loss.sum()/((x.shape[0]-2)**2)
 
         loss += area_loss*scale
