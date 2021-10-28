@@ -32,10 +32,12 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
 
         Tensor_X = Area_AB_C*Area_AB_D
         Tensor_Y = Area_CD_A*Area_CD_B
-        angel = torch.atan2(Tensor_X+ 1e-5,Tensor_Y)
+        angel = torch.atan2(Tensor_X,Tensor_Y)
         angel = -angel-1.5708
         angel_loss = angel*mask
-        angel_loss = angel_loss.sum()/((x.shape[0]-2)**2)
+        angel_loss = torch.triu(angel_loss, diagonal=2)  # ignore low tringle and self, and connected segments.
+        # angel_loss = angel_loss.sum()/((x.shape[0]-2)*(x.shape[0]-2)*0.5)
+        angel_loss = angel_loss.sum()
         loss += angel_loss*scale
 
     return loss / (len(x_list))
@@ -135,16 +137,16 @@ if __name__ == "__main__":
     # print(d)
 
 
-    a = torch.Tensor([[0.,-1.]])
-    b = torch.tensor([[-0.5,-0.5]])
-    import torch.nn.functional as F
-    sim = torch.cosine_similarity(a, b, dim=1, eps=1e-6)
-    print(sim)
-    inner_product = (a * b).sum(dim=1)
-    a_norm = a.pow(2).sum(dim=1).pow(0.5)
-    b_norm = b.pow(2).sum(dim=1).pow(0.5)
-    cos = inner_product / (2 * a_norm * b_norm)
-    angle = torch.acos(cos)
-    print(cos)
-    print(torch.atan2(torch.Tensor([-0.0001]),torch.Tensor([-1.])))
-
+    # a = torch.Tensor([[0.,-1.]])
+    # b = torch.tensor([[-0.5,-0.5]])
+    # import torch.nn.functional as F
+    # sim = torch.cosine_similarity(a, b, dim=1, eps=1e-6)
+    # print(sim)
+    # inner_product = (a * b).sum(dim=1)
+    # a_norm = a.pow(2).sum(dim=1).pow(0.5)
+    # b_norm = b.pow(2).sum(dim=1).pow(0.5)
+    # cos = inner_product / (2 * a_norm * b_norm)
+    # angle = torch.acos(cos)
+    # print(cos)
+    # print(torch.atan2(torch.Tensor([-0.0001]),torch.Tensor([-1.])))
+    #
