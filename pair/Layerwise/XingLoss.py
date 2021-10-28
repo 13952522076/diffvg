@@ -31,6 +31,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         mask = condition1*condition2  # mask is without gradient.
 
         Tensor_X = Area_AB_C*Area_AB_D
+        print(f"TensorX max: {Tensor_X.max()}, min: {Tensor_X.min()}")
         Tensor_Y = Area_CD_A*Area_CD_B
         angel = torch.atan2(Tensor_X+ 1e-5,Tensor_Y)
         angel = -angel-1.0
