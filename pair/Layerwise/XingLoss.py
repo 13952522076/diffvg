@@ -32,10 +32,11 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         Tensor_X = Area_AB_C*Area_AB_D
         Tensor_Y = Area_CD_A*Area_CD_B
         angel = torch.atan2(Tensor_X + 1e-5,Tensor_Y+ 1e-5)
-        mask2 = torch.tanh(angel+1.5708)
-        mask2 = torch.relu(-mask2)
-        mask2 = torch.triu(mask2, diagonal=2)
+        # mask2 = torch.tanh(angel+1.5708)
+        # mask2 = torch.relu(-mask2)
+        # mask2 = torch.triu(mask2, diagonal=2)
         # print(mask2)
+
 
 
         mask = condition1*condition2  # mask is without gradient.
@@ -54,7 +55,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         area_loss, _ = torch.cat([area_AB.unsqueeze(dim=-1),area_CD.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
 
 
-        area_loss = area_loss*mask +mask2.sum()
+        area_loss = area_loss*mask
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
         area_loss = area_loss.sum()/((x.shape[0]-2)**2)
