@@ -35,7 +35,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         ], dim=-1)
         # areas can describe the distance bwtween one point and a segment.
         four_areas = four_areas.min(dim=-1, keepdim=False)[0]
-        four_areas = torch.relu(-torch.log(four_areas + 1e-5))
+        four_areas = torch.relu(-torch.log(four_areas/100. + 1e-4))
 
         # Tensor_X = Area_AB_C*Area_AB_D
         # Tensor_Y = Area_CD_A*Area_CD_B
@@ -62,7 +62,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
 
 
         mask = torch.triu(mask, diagonal=2) # remove self and connected segments
-        area_loss = ( four_areas/100.) * mask
+        area_loss = ( four_areas) * mask
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
         area_loss = area_loss.sum() / ((x.shape[0] - 2) ** 2)
