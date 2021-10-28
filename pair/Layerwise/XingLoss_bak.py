@@ -26,23 +26,34 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         Area_CD_A = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 0])
         Area_CD_B = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 1])
 
-        condition1 = ((Area_AB_C * Area_AB_D) < 0.).float()
-        condition2 = ((Area_CD_A * Area_CD_B) < 0.).float()
+        condition1 = ((Area_AB_C * Area_AB_D) <= 0.).float()
+        condition2 = ((Area_CD_A * Area_CD_B) <= 0.).float()
         mask = condition1*condition2  # mask is without gradient.
+        area_AB_1 = (abs(Area_AB_C))/(abs(Area_AB_D)+ 1e-5)
+        area_AB_2 = (abs(Area_AB_D))/(abs(Area_AB_C)+ 1e-5)
+        area_AB,_ = torch.cat([area_AB_1.unsqueeze(dim=-1),area_AB_2.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
+        area_AB = torch.clip(area_AB, 0.0, 1.0)
+        area_AB = torch.nan_to_num(area_AB, nan=0.0)
 
-        Tensor_X = Area_AB_C*Area_AB_D
-        Tensor_Y = Area_CD_A*Area_CD_B
-        angel = torch.atan2(Tensor_X+ 1e-5,Tensor_Y)
-        angel = -angel-1.5708
-        angel_loss = angel*mask
-        angel_loss = angel_loss.sum()/((x.shape[0]-2)**2)
-        loss += angel_loss*scale
+        area_CD_1 = (abs(Area_CD_A))/(abs(Area_CD_B)+ 1e-5)
+        area_CD_2 = (abs(Area_CD_B))/(abs(Area_CD_A)+ 1e-5)
+        area_CD, _ = torch.cat([area_CD_1.unsqueeze(dim=-1),area_CD_2.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
+        area_CD = torch.clip(area_CD, 0.0, 1.0)
+        area_CD = torch.nan_to_num(area_CD, nan=0.0)
+
+        area_loss, _ = torch.cat([area_AB.unsqueeze(dim=-1),area_CD.unsqueeze(dim=-1)],dim=-1).min(dim=-1)
+        area_loss = area_loss*mask
+        # print(f"mask is: {mask}")
+        # print(f"area_loss is: {area_loss}")
+        area_loss = area_loss.sum()/((x.shape[0]-2)**2)
+
+        loss += area_loss*scale
 
     return loss / (len(x_list))
 
 
 if __name__ == "__main__":
-    x = torch.rand([6, 2],requires_grad=True)
+    x = torch.rand([6, 2])
     scale = 0.001
     y = xing_loss([x], scale)
     print(y)
