@@ -32,7 +32,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
 
         Tensor_X = Area_AB_C*Area_AB_D
         Tensor_Y = Area_CD_A*Area_CD_B
-        angel = torch.atan2(Tensor_X,Tensor_Y)
+        angel = torch.atan2(Tensor_X+ 1e-5,Tensor_Y)
         angel = -angel-1.5708
         angel_loss = angel*mask
         angel_loss = torch.triu(angel_loss, diagonal=2)  # ignore low tringle and self, and connected segments.
@@ -48,6 +48,13 @@ if __name__ == "__main__":
     scale = 0.001
     y = xing_loss([x], scale)
     print(y)
+
+    x = torch.rand([6, 2],requires_grad=True)
+    scale = 0.001
+    points_optim = torch.optim.Adam([x], lr=1)
+
+    y = xing_loss([x], scale)
+
     """
     a = torch.Tensor([0., 0.])
     b = torch.Tensor([0., 3.])
