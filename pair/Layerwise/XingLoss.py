@@ -34,6 +34,8 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         angel = torch.atan2(Tensor_X + 1e-5,Tensor_Y+ 1e-5)
         mask2 = torch.tanh(angel+1.5708)
         mask2 = torch.relu(-mask2)
+        mask2 = torch.triu(mask2, diagonal=2)
+        print(mask2)
 
 
         mask = condition1*condition2  # mask is without gradient.
@@ -64,7 +66,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
 
 if __name__ == "__main__":
     x = torch.rand([6, 2])
-    scale = 0.001
+    scale = 0.5
     y = xing_loss([x], scale)
     print(y)
 
