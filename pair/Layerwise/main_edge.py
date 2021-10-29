@@ -293,7 +293,6 @@ def main():
 
             #### start save edge ###
             edge_groups = []
-            print(f"previous : {shape_groups[0].fill_color}")
             for shape_group in shape_groups:
                 edge_groups.append(
                     pydiffvg.ShapeGroup(shape_ids = shape_group.shape_ids,
@@ -301,8 +300,6 @@ def main():
                                         stroke_color = torch.tensor([1., 1., 1., 1.])
                                         )
                 )
-
-            print(f"after : {shape_groups[0].fill_color}")
             edge_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, edge_groups)
             edge_img = render(canvas_width, canvas_height, 2, 2, t, None, *edge_args)
             edge_img = edge_img[:, :, 3:4] * edge_img[:, :, :3] + torch.zeros(edge_img.shape[0], edge_img.shape[1], 3, device = pydiffvg.get_device()) * (1 - edge_img[:, :, 3:4])
