@@ -118,6 +118,14 @@ def load_image(args):
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
+
+    # detection edge
+    image = cv2.imread("demo.png")#读入图像
+    image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    edge = cv2.Canny(image,30, 50)
+    target_edge = torch.from_numpy(edge)
+    print(f"target_edge shape is: {target_edge.shape}")
+    print(f"target_edge  max: {target_edge.max()} | min: {target_edge.min()}")
     return target
 
 
