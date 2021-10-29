@@ -103,6 +103,7 @@ def make_save_path(args):
         try:
             os.makedirs(os.path.join(save_path,'videos'))
             os.makedirs(os.path.join(save_path,'images'))
+            os.makedirs(os.path.join(save_path,'edges'))
         except OSError as exc:  # Python >2.5
             pass
     return save_path
