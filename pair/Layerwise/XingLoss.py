@@ -29,13 +29,15 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         condition1 = ((Area_AB_C * Area_AB_D) <= 0.).float()
         condition2 = ((Area_CD_A * Area_CD_B) <= 0.).float()
 
-        four_areas = torch.cat([
-            abs(Area_AB_C.unsqueeze(dim=-1)), abs(Area_AB_D.unsqueeze(dim=-1)),
-            abs(Area_CD_A.unsqueeze(dim=-1)), abs(Area_CD_B.unsqueeze(dim=-1))
+        four_lens = torch.cat([
+            abs(Area_AB_C.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,1]-mutual_segments[:,:,:,0], dim=2),
+            abs(Area_AB_D.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,1]-mutual_segments[:,:,:,0], dim=2),
+            abs(Area_CD_A.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,3]-mutual_segments[:,:,:,2], dim=2),
+            abs(Area_CD_B.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,3]-mutual_segments[:,:,:,2], dim=2)
         ], dim=-1)
         # areas can describe the distance bwtween one point and a segment.
-        four_areas = four_areas.min(dim=-1, keepdim=False)[0]
-        four_areas = torch.relu(-torch.log(four_areas/10. + 1e-4)) # log (x>1) would be negative, ignore.
+        four_lens = four_lens.min(dim=-1, keepdim=False)[0]
+        four_lens = torch.relu(-torch.log(four_lens + 1e-4)) # log (x>1) would be negative, ignore.
 
         # Tensor_X = Area_AB_C*Area_AB_D
         # Tensor_Y = Area_CD_A*Area_CD_B
@@ -64,14 +66,14 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         mask = torch.triu(mask, diagonal=2) # remove self and connected segments
         area_loss = ( area_loss) * mask
         # remove self-and connected segments.
-        four_areas_top = torch.triu(four_areas, diagonal=2)
-        four_areas_bot = torch.tril(four_areas, diagonal=2)
-        four_areas = (four_areas_top+four_areas_bot).mean()/10.
+        four_lens_top = torch.triu(four_lens, diagonal=2)
+        four_lens_bot = torch.tril(four_lens, diagonal=2)
+        four_lens = (four_lens_top+four_lens_bot).mean()
 
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
-        print(f"area loss is: {(area_loss).sum()} | four_areas loss is {four_areas}")
-        area_loss = (area_loss.sum() + four_areas )/ ((x.shape[0] - 2) ** 2)
+        print(f"area loss is: {(area_loss).sum()} | four_lens loss is {four_lens}")
+        area_loss = (area_loss.sum() + four_lens )/ ((x.shape[0] - 2) ** 2)
 
         loss += area_loss * scale
 
