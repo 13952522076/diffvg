@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main.py demo5.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/main --free --save_video
+python main.py demo5.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/test_segments --free --save_video --num_segments 4
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
