@@ -14,3 +14,5 @@ venv/*
 #pair/data
 #pair/redering/images_resized/
 #pair/Reconstruction/main.py
+
+*.pt
