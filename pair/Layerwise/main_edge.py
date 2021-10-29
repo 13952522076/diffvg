@@ -51,6 +51,7 @@ def parse_args():
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
     parser.add_argument('--circle_init_radius',  type=float)
+    parser.add_argument('--edge_weight',  type=float, default=0.1)
 
     return parser.parse_args()
 
@@ -91,6 +92,7 @@ def make_save_path(args):
     detail_folder+=args.initial
     if args.initial=='circle' and args.circle_init_radius is not None:
         detail_folder+=str(args.circle_init_radius)
+    detail_folder = detail_folder + "Edge" + str(args.edge_weight)
     save_path = os.path.join(args.save_folder, filename, detail_folder)
     try:
         os.makedirs(save_path)
@@ -328,9 +330,9 @@ def main():
             loss = (loss*loss_weight).sum()
             loss_list.append(loss.item())
             # print(f"target_edge.device: {target_edge.device} | edge_img.device: {edge_img.device}")
-            print(f"target_edge[:6,:6]:\n {target_edge[:6,:6]}")
-            print(f"edge_img[:6,:6]:\n {edge_img[:6,:6]}")
-            edge_loss = ((target_edge - edge_img)**2).mean()
+            print(f"target_edge[230:240,140:150]:\n {target_edge[230:240,140:150]}")
+            print(f"edge_img[230:240,140:150]:\n {edge_img[230:240,140:150]}")
+            edge_loss = args.edge_weight * (abs(target_edge - edge_img)).mean()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item(), 'edge_loss': edge_loss.item()})
             # Backpropagate the gradients.
