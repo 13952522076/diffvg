@@ -67,9 +67,9 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         four_areas_bot = torch.tril(four_areas, diagonal=2)
         four_areas = (four_areas_top+four_areas_bot).sum()/10.
 
-        print(f"area loss is: {(area_loss*mask).sum()} | four_areas loss is {(four_areas*0.1*mask).sum()}")
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
+        print(f"area loss is: {(area_loss).sum()} | four_areas loss is {four_areas}")
         area_loss = (area_loss.sum() + four_areas )/ ((x.shape[0] - 2) ** 2)
 
         loss += area_loss * scale
