@@ -68,7 +68,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         # remove self-and connected segments.
         four_lens_top = torch.triu(four_lens, diagonal=2)
         four_lens_bot = torch.tril(four_lens, diagonal=2)
-        four_lens = (four_lens_top+four_lens_bot).mean()
+        four_lens = (four_lens_top+four_lens_bot).mean()/10.
 
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
