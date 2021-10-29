@@ -65,7 +65,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
         area_loss = ( area_loss) * mask
         four_areas_top = torch.triu(four_areas, diagonal=2)
         four_areas_bot = torch.tril(four_areas, diagonal=2)
-        four_areas = (four_areas_top+four_areas_bot).sum()/10.
+        four_areas = (four_areas_top+four_areas_bot).mean()/10.
 
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
