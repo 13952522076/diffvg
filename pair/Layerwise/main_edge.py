@@ -316,7 +316,8 @@ def main():
             pydiffvg.imwrite(edge_img.cpu(), save_name, gamma=gamma)
             edge_img = edge_img[:, :, :3]
             edge_img = 0.299*edge_img[:,:,0] + 0.587*edge_img[:,:,1] + 0.114*edge_img[:,:,2]
-            print(f"edge_img shape is: {edge_img}")
+            print(f"edge_img shape is: {edge_img}, max: {edge_img.max()}, min: {edge_img.min()}")
+
             #### end   save edge ###
 
             img = img[:, :, :3]
