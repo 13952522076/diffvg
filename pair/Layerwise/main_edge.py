@@ -123,10 +123,10 @@ def load_image(args):
     image = cv2.imread("demo.png")#读入图像
     image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     edge = cv2.Canny(image,30, 50)
-    target_edge = torch.from_numpy(edge)
+    target_edge = torch.from_numpy(edge) /255.0
     print(f"target_edge shape is: {target_edge.shape}")
     print(f"target_edge  max: {target_edge.max()} | min: {target_edge.min()}")
-    return target
+    return target, target_edge
 
 
 def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, pixel_loss=None):
@@ -233,7 +233,7 @@ def main():
     # Use GPU if available
     pydiffvg.set_use_gpu(torch.cuda.is_available())
     # filename = os.path.splitext(os.path.basename(args.target))[0]
-    target = load_image(args)
+    target, target_edge = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     num_paths_list = [int(i) for i in args.num_paths.split(',')]
     random.seed(1234)
@@ -311,8 +311,12 @@ def main():
             edge_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, edge_groups)
             edge_img = render(canvas_width, canvas_height, 2, 2, t, None, *edge_args)
             edge_img = edge_img[:, :, 3:4] * edge_img[:, :, :3] + torch.zeros(edge_img.shape[0], edge_img.shape[1], 3, device = pydiffvg.get_device()) * (1 - edge_img[:, :, 3:4])
+
             save_name = os.path.join(save_path,"edges", f"{current_path_str[:-1]}-{t}.png")
             pydiffvg.imwrite(edge_img.cpu(), save_name, gamma=gamma)
+            edge_img = edge_img[:, :, :3]
+            edge_img = 0.299*edge_img[:,:,0] + 0.587*edge_img[:,:,1] + 0.114*edge_img[:,:,2]
+            print(f"edge_img shape is: {edge_img}")
             #### end   save edge ###
 
             img = img[:, :, :3]
