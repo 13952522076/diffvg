@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main.py demo5.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder results/edge --free --num_segments 4
+python main_edge.py demo5.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder results/edge --free --num_segments 4
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -292,15 +292,15 @@ def main():
                     pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
 
             #### start save edge ###
-            edge_groups = shape_groups
-            for edge_group in edge_groups:
-                edge_group.fill_color = torch.tensor([0., 0., 0., 0.])
-                edge_group.stroke_color = torch.tensor([1., 1., 1., 1.])
-            edge_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, edge_groups)
-            edge_img = render(canvas_width, canvas_height, 2, 2, t, None, *edge_args)
-            edge_img = edge_img[:, :, 3:4] * edge_img[:, :, :3] + torch.zeros(edge_img.shape[0], edge_img.shape[1], 3, device = pydiffvg.get_device()) * (1 - edge_img[:, :, 3:4])
-            save_name = os.path.join(save_path,"edges", f"{current_path_str[:-1]}-{t}.png")
-            pydiffvg.imwrite(edge_img.cpu(), save_name, gamma=gamma)
+            # edge_groups = shape_groups
+            # for edge_group in edge_groups:
+            #     edge_group.fill_color = torch.tensor([0., 0., 0., 0.])
+            #     edge_group.stroke_color = torch.tensor([1., 1., 1., 1.])
+            # edge_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, edge_groups)
+            # edge_img = render(canvas_width, canvas_height, 2, 2, t, None, *edge_args)
+            # edge_img = edge_img[:, :, 3:4] * edge_img[:, :, :3] + torch.zeros(edge_img.shape[0], edge_img.shape[1], 3, device = pydiffvg.get_device()) * (1 - edge_img[:, :, 3:4])
+            # save_name = os.path.join(save_path,"edges", f"{current_path_str[:-1]}-{t}.png")
+            # pydiffvg.imwrite(edge_img.cpu(), save_name, gamma=gamma)
             #### end   save edge ###
 
             img = img[:, :, :3]
