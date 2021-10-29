@@ -328,7 +328,7 @@ def main():
             loss = (loss*loss_weight).sum()
             loss_list.append(loss.item())
             # print(f"target_edge.device: {target_edge.device} | edge_img.device: {edge_img.device}")
-            edge_loss = ((target_edge - edge_img)**2).sum()
+            edge_loss = ((target_edge - edge_img)**2).mean()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item(), 'edge_loss': edge_loss.item()})
             # Backpropagate the gradients.
