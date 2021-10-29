@@ -62,7 +62,7 @@ def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
 
 
         mask = torch.triu(mask, diagonal=2) # remove self and connected segments
-        area_loss = ( four_areas) * mask
+        area_loss = ( area_loss + four_areas/10.) * mask
         # print(f"mask is: {mask}")
         # print(f"area_loss is: {area_loss}")
         area_loss = area_loss.sum() / ((x.shape[0] - 2) ** 2)
