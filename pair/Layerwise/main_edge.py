@@ -124,6 +124,7 @@ def load_image(args):
     image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     edge = cv2.Canny(image,30, 50)
     target_edge = torch.from_numpy(edge) /255.0
+    target_edge = target_edge.to(pydiffvg.get_device())
     print(f"target_edge shape is: {target_edge.shape}")
     print(f"target_edge  max: {target_edge.max()} | min: {target_edge.min()}")
     return target, target_edge
@@ -326,7 +327,7 @@ def main():
             loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
             loss = (loss*loss_weight).sum()
             loss_list.append(loss.item())
-            print(f"target_edge.device: {target_edge.device} | edge_img.device: {edge_img.device}")
+            # print(f"target_edge.device: {target_edge.device} | edge_img.device: {edge_img.device}")
             edge_loss = ((target_edge - edge_img)**2).sum()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
             t_range.set_postfix({'loss': loss.item(), 'edge_loss': edge_loss.item()})
