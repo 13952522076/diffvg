@@ -316,7 +316,7 @@ def main():
             pydiffvg.imwrite(edge_img.cpu(), save_name, gamma=gamma)
             edge_img = edge_img[:, :, :3]
             edge_img = 0.299*edge_img[:,:,0] + 0.587*edge_img[:,:,1] + 0.114*edge_img[:,:,2]
-            print(f"edge_img shape is: {edge_img.shape}, max: {edge_img.max()}, min: {edge_img.min()}")
+            # print(f"edge_img shape is: {edge_img.shape}, max: {edge_img.max()}, min: {edge_img.min()}")
 
             #### end   save edge ###
 
@@ -326,9 +326,11 @@ def main():
             loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
             loss = (loss*loss_weight).sum()
             loss_list.append(loss.item())
+            edge_loss = ((target_edge - edge_img)**2).sum()
             # print(f'iteration: {t} \t render loss: {loss.item()}')
-            t_range.set_postfix({'loss': loss.item()})
+            t_range.set_postfix({'loss': loss.item(), 'edge_loss': edge_loss.item()})
             # Backpropagate the gradients.
+            loss +=edge_loss
             loss.backward()
 
             # Take a gradient descent step.
