@@ -69,9 +69,10 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
                 lg = shape_color
                 color = etree.SubElement(defs, 'radialGradient')
                 color.set('id', name)
-                color.set('cx', str(lg.begin[0].item()/width))
-                color.set('cy', str(lg.begin[1].item()/height))
-                color.set('r', str(lg.end[0].item()/width))
+                color.set('cx', str(lg.center[0].item()/width))
+                color.set('cy', str(lg.center[1].item()/height))
+                # this only support width=height
+                color.set('r', str(lg.radius[0].item()/width))
                 offsets = lg.offsets.data.cpu().numpy()
                 stop_colors = lg.stop_colors.data.cpu().numpy()
                 for j in range(offsets.shape[0]):
