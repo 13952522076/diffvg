@@ -65,6 +65,22 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
                     stop.set('stop-color', 'rgb({}, {}, {})'.format(\
                         int(255 * c[0]), int(255 * c[1]), int(255 * c[2])))
                     stop.set('stop-opacity', '{}'.format(c[3]))
+            if isinstance(shape_color, pydiffvg.RadialGradient):
+                lg = shape_color
+                color = etree.SubElement(defs, 'radialGradient')
+                color.set('id', name)
+                color.set('cx', str(lg.begin[0].item()/width))
+                color.set('cy', str(lg.begin[1].item()/height))
+                color.set('r', str(lg.end[0].item()/width))
+                offsets = lg.offsets.data.cpu().numpy()
+                stop_colors = lg.stop_colors.data.cpu().numpy()
+                for j in range(offsets.shape[0]):
+                    stop = etree.SubElement(color, 'stop')
+                    stop.set('offset', str(offsets[j]))
+                    c = lg.stop_colors[j, :]
+                    stop.set('stop-color', 'rgb({}, {}, {})'.format(\
+                        int(255 * c[0]), int(255 * c[1]), int(255 * c[2])))
+                    stop.set('stop-opacity', '{}'.format(c[3]))
         if shape_group.fill_color is not None:
             add_color(shape_group.fill_color, 'shape_{}_fill'.format(i))
         if shape_group.stroke_color is not None:
@@ -125,6 +141,8 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
         if shape_group.fill_color is not None:
             if isinstance(shape_group.fill_color, pydiffvg.LinearGradient):
                 shape_node.set('fill', 'url(#shape_{}_fill)'.format(i))
+            elif isinstance(shape_group.fill_color, pydiffvg.RadialGradient):
+                shape_node.set('fill', 'url(#shape_{}_fill)'.format(i))
             else:
                 c = shape_group.fill_color.data.cpu().numpy()
                 shape_node.set('fill', 'rgb({}, {}, {})'.format(\
@@ -134,6 +152,8 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
             shape_node.set('fill', 'none')
         if shape_group.stroke_color is not None:
             if isinstance(shape_group.stroke_color, pydiffvg.LinearGradient):
+                shape_node.set('stroke', 'url(#shape_{}_stroke)'.format(i))
+            elif isinstance(shape_group.stroke_color, pydiffvg.LinearGradient):
                 shape_node.set('stroke', 'url(#shape_{}_stroke)'.format(i))
             else:
                 c = shape_group.stroke_color.data.cpu().numpy()
