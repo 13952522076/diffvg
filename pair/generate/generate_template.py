@@ -23,6 +23,11 @@ gamma = 1.0
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--template_path", type=str, default="../data/generate/template")
+
+    parser.add_argument("--path_num_min", type=int, default=1)
+    parser.add_argument("--path_num_max", type=int, default=6)
+    parser.add_argument("--generate_num", type=int, default=100)
+
     return parser.parse_args()
 
 def main():
@@ -35,14 +40,20 @@ def main():
         for file in files:
             if file.endswith(".svg"):
                 file_path = os.path.join(root, file)
-                print(f"loading file: {file_path}")
+
                 canvas_width, canvas_height, shapes, shape_groups = pydiffvg.svg_to_scene(file_path)
                 shapes_list.extend(shapes)
                 shape_groups_list.extend(shape_groups)
 
+    shapes_num = len(shapes_list)
     print(f"length of shapes_list is {len(shapes_list)}")
-    print(f"length of shape_groups_list is {len(shape_groups_list)}")
 
+    for t in tqdm(range(args.generate_num)):
+        path_num = np.random.randint(args.path_num_min, args.path_num_max+1)  # [path_num_min, path_num_max]
+        path_indexes = np.random.randint(0, shapes_num, size=path_num)
+        selected_shape = shapes_list[path_indexes]
+        selected_shape_groups = shape_groups_list[path_indexes]
+        print(f"{len(selected_shape)},   {len(selected_shape_groups)}")
 
 
 if __name__ == "__main__":
