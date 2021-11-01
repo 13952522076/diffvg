@@ -2,14 +2,12 @@ import torch
 import pydiffvg
 import xml.etree.ElementTree as etree
 from xml.dom import minidom
-
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
     """
     rough_string = etree.tostring(elem, 'utf-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
-
 def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, background=None):
     root = etree.Element('svg')
     root.set('version', '1.1')
@@ -47,7 +45,6 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
         feFuncA.set('amplitude', str(1))
         feFuncA.set('exponent', str(1/2.2))
         g.set('style', 'filter:url(#gamma)')
-
     # Store color
     for i, shape_group in enumerate(shape_groups):
         def add_color(shape_color, name):
@@ -63,24 +60,22 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
                 stop_colors = lg.stop_colors.data.cpu().numpy()
                 for j in range(offsets.shape[0]):
                     stop = etree.SubElement(color, 'stop')
-                    stop.set('offset', offsets[j])
+                    stop.set('offset', str(offsets[j]))
                     c = lg.stop_colors[j, :]
                     stop.set('stop-color', 'rgb({}, {}, {})'.format(\
                         int(255 * c[0]), int(255 * c[1]), int(255 * c[2])))
                     stop.set('stop-opacity', '{}'.format(c[3]))
-
         if shape_group.fill_color is not None:
             add_color(shape_group.fill_color, 'shape_{}_fill'.format(i))
         if shape_group.stroke_color is not None:
             add_color(shape_group.stroke_color, 'shape_{}_stroke'.format(i))
-
     for i, shape_group in enumerate(shape_groups):
         shape = shapes[shape_group.shape_ids[0]]
         if isinstance(shape, pydiffvg.Circle):
             shape_node = etree.SubElement(g, 'circle')
-            shape_node.set('r', shape.radius.item())
-            shape_node.set('cx', shape.center[0].item())
-            shape_node.set('cy', shape.center[1].item())
+            shape_node.set('r', str(shape.radius.item()))
+            shape_node.set('cx', str(shape.center[0].item()))
+            shape_node.set('cy', str(shape.center[1].item()))
         elif isinstance(shape, pydiffvg.Polygon):
             shape_node = etree.SubElement(g, 'polygon')
             points = shape.points.data.cpu().numpy()
@@ -120,13 +115,12 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
             shape_node.set('d', path_str)
         elif isinstance(shape, pydiffvg.Rect):
             shape_node = etree.SubElement(g, 'rect')
-            shape_node.set('x', shape.p_min[0].item())
-            shape_node.set('y', shape.p_min[1].item())
-            shape_node.set('width', shape.p_max[0].item() - shape.p_min[0].item())
-            shape_node.set('height', shape.p_max[1].item() - shape.p_min[1].item())
+            shape_node.set('x', str(shape.p_min[0].item()))
+            shape_node.set('y', str(shape.p_min[1].item()))
+            shape_node.set('width', str(shape.p_max[0].item() - shape.p_min[0].item()))
+            shape_node.set('height', str(shape.p_max[1].item() - shape.p_min[1].item()))
         else:
             assert(False)
-
         shape_node.set('stroke-width', str(2 * shape.stroke_width.data.cpu().item()))
         if shape_group.fill_color is not None:
             if isinstance(shape_group.fill_color, pydiffvg.LinearGradient):
@@ -148,6 +142,5 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
                 shape_node.set('stroke-opacity', str(c[3]))
             shape_node.set('stroke-linecap', 'round')
             shape_node.set('stroke-linejoin', 'round')
-
     with open(filename, "w") as f:
         f.write(prettify(root))
