@@ -71,16 +71,30 @@ def main():
                 points = points * (1+ (0.4*torch.rand_like(points)-0.5))  # [0.8-1.2]
             new_path.points = points
             shapes.append(new_path)
+
+            # process color
+            color = selected_shape_group.fill_color
             if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
-                print(f"RadialGradient")
-            if isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
-                print(f"linearGradient")
+                color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
+                color.radius = color.radius * (0.1*(torch.rand_like(color.radius)-0.5)+1.0)
+                color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
+                color.stop_colors[:,3] = color.stop_colors[:,3]*1.5  # make most are 1.0
+                color.stop_colors.data.clamp_(0.0, 1.0)
+            elif isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
+                color.begin = color.begin * (0.1*(torch.rand_like(color.begin)-0.5)+1.0)
+                color.end = color.end * (0.1*(torch.rand_like(color.end)-0.5)+1.0)
+                color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
+                color.stop_colors[:,3] = color.stop_colors[:,3]*1.5  # make most are 1.0
+                color.stop_colors.data.clamp_(0.0, 1.0)
+            else:
+                color = torch.rand_like(color)*1.3-0.1
+                color[:,3] = color[:,3]*1.5  # make most are 1.0
+                color.data.clamp_(0.0, 1.0)
 
+            new_path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
+                                         fill_color = color)
 
-            # new_path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
-            #                              fill_color = color)
-
-
+            print(1)
 
 
 
