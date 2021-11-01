@@ -35,6 +35,12 @@ def main():
     shapes_list = []
     shape_groups_list = []
 
+    try:
+        os.makedirs(os.path.join(args.generate_path,'img'))
+        os.makedirs(os.path.join(args.generate_path,'svg'))
+    except OSError as exc:  # Python >2.5
+        pass
+
     for root, dirs, files in os.walk(args.template_path):
 
         for file in files:
