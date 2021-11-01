@@ -87,7 +87,7 @@ def main():
             if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
                 print(f"{t} includes RadialGradient")
                 print(f"color.center: {color.center}")
-                print(f"color.radius: {color.center}")
+                print(f"color.radius: {color.radius}")
 
                 # color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
                 # color.radius = color.radius * (0.1*(torch.rand_like(color.radius)-0.5)+1.0)
