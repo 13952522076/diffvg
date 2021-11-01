@@ -29,7 +29,9 @@ def main():
     args = parse_args()
     files = []
     for file in os.listdir(args.template_path):
-        print(file)
+        print(f"loading... {args.template_path}/{file}")
+        ret = pydiffvg.svg_to_scene(os.path.join(args.template_path, file))
+        print(ret)
 
 
 if __name__ == "__main__":
