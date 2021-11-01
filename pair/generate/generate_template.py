@@ -71,9 +71,15 @@ def main():
                 points = points * (1+ (0.4*torch.rand_like(points)-0.5))  # [0.8-1.2]
             new_path.points = points
             shapes.append(new_path)
+            if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
+                print(f"RadialGradient")
+            if isinstance(selected_shape_group.fill_color, pydiffvg.linearGradient):
+                print(f"linearGradient")
+
+
             # new_path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
             #                              fill_color = color)
-            print(i)
+
 
 
 
