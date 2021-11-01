@@ -98,8 +98,9 @@ def main():
         scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
         render = pydiffvg.RenderFunction.apply
         img = render(canvas_width, canvas_height, 2, 2, 0, None, *scene_args)
-        pydiffvg.imwrite(img.cpu(), os.path.join(args.generate_path, "img", str(i)+'.png'), gamma=gamma)
-
+        pydiffvg.imwrite(img.cpu(), os.path.join(args.generate_path, "img", str(t)+'.png'), gamma=gamma)
+        pydiffvg.save_svg(os.path.join(args.generate_path, "svg", str(t)+'.svg'),
+                          canvas_width, canvas_height, shapes, shape_groups)
 
 if __name__ == "__main__":
     main()
