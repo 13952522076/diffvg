@@ -85,15 +85,15 @@ def main():
             color = selected_shape_group.fill_color
             if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
                 print(f"{t} includes RadialGradient")
-                color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
-                color.radius = color.radius * (0.1*(torch.rand_like(color.radius)-0.5)+1.0)
+                # color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
+                # color.radius = color.radius * (0.1*(torch.rand_like(color.radius)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
                 color.stop_colors[:,3] = color.stop_colors[:,3]*5  # make most are 1.0
                 color.stop_colors.data.clamp_(0.0, 1.0)
             elif isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
                 print(f"{t} includes LinearGradient")
-                color.begin = color.begin * (0.1*(torch.rand_like(color.begin)-0.5)+1.0)
-                color.end = color.end * (0.1*(torch.rand_like(color.end)-0.5)+1.0)
+                # color.begin = color.begin * (0.1*(torch.rand_like(color.begin)-0.5)+1.0)
+                # color.end = color.end * (0.1*(torch.rand_like(color.end)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
                 color.stop_colors[:,3] = color.stop_colors[:,3]*5  # make most are 1.0
                 color.stop_colors.data.clamp_(0.0, 1.0)
@@ -109,6 +109,8 @@ def main():
         scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
         render = pydiffvg.RenderFunction.apply
         img = render(canvas_width, canvas_height, 2, 2, 0, None, *scene_args)
+        # Compose img with white background
+        img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         pydiffvg.imwrite(img.cpu(), os.path.join(args.generate_path, "img", str(t)+'.png'), gamma=gamma)
         pydiffvg.save_svg(os.path.join(args.generate_path, "svg", str(t)+'.svg'),
                           canvas_width, canvas_height, shapes, shape_groups)
