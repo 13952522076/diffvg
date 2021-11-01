@@ -73,7 +73,7 @@ def main():
                                      stroke_width = torch.tensor(1.0),
                                      is_closed = True)
             points = new_path.points
-            points = points + 10*(torch.rand_like(points)-0.5)
+            points = points + 1*(torch.rand_like(points)-0.5)
             # if np.random.randint(1,3) ==1: # random shift the position
             #     mean_point = new_path.points.mean(dim=1, keepdim=True)
             #     points = points - mean_point + torch.rand_like(mean_point)*1.1*mean_point
