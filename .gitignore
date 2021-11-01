@@ -16,3 +16,4 @@ venv/*
 #pair/Reconstruction/main.py
 
 *.pt
+pair/data/generate/template/*
