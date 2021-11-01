@@ -101,6 +101,10 @@ def main():
                 print(f"color.end: {color.end}")
                 color.begin = torch.rand_like(color.begin)*(torch.tensor([canvas_width, canvas_height]).to(color.begin.device))
                 color.end = torch.rand_like(color.end)*(torch.tensor([canvas_width, canvas_height]).to(color.end.device))
+                color.begin[0] = min(color.begin[0],color.end[0] )
+                color.begin[1] = min(color.begin[1],color.end[1] )
+                color.end[0] = max(color.begin[0],color.end[0] )
+                color.end[1] = max(color.begin[1],color.end[1] )
                 # color.begin = color.begin * (0.1*(torch.rand_like(color.begin)-0.5)+1.0)
                 # color.end = color.end * (0.1*(torch.rand_like(color.end)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
