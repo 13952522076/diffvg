@@ -88,6 +88,7 @@ def main():
                 color.stop_colors.data.clamp_(0.0, 1.0)
             else:
                 color = torch.rand_like(color)*1.3-0.1
+                print(f"color.shape: {color.shape}")
                 color[:,3] = color[:,3]*1.5  # make most are 1.0
                 color.data.clamp_(0.0, 1.0)
 
