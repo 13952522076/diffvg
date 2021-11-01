@@ -52,10 +52,10 @@ def save_svg(filename, width, height, shapes, shape_groups, use_gamma = False, b
                 lg = shape_color
                 color = etree.SubElement(defs, 'linearGradient')
                 color.set('id', name)
-                color.set('x1', str(lg.begin[0].item()))
-                color.set('y1', str(lg.begin[1].item()))
-                color.set('x2', str(lg.end[0].item()))
-                color.set('y2', str(lg.end[1].item()))
+                color.set('x1', str(lg.begin[0].item()/width))
+                color.set('y1', str(lg.begin[1].item()/height))
+                color.set('x2', str(lg.end[0].item()/width))
+                color.set('y2', str(lg.end[1].item()/height))
                 offsets = lg.offsets.data.cpu().numpy()
                 stop_colors = lg.stop_colors.data.cpu().numpy()
                 for j in range(offsets.shape[0]):
