@@ -73,7 +73,7 @@ def main():
             shapes.append(new_path)
             if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
                 print(f"RadialGradient")
-            if isinstance(selected_shape_group.fill_color, pydiffvg.linearGradient):
+            if isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
                 print(f"linearGradient")
 
 
