@@ -86,6 +86,9 @@ def main():
             color = selected_shape_group.fill_color
             if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
                 print(f"{t} includes RadialGradient")
+                print(f"color.center: {color.center}")
+                print(f"color.radius: {color.center}")
+
                 # color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
                 # color.radius = color.radius * (0.1*(torch.rand_like(color.radius)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
@@ -93,6 +96,8 @@ def main():
                 color.stop_colors.data.clamp_(0.0, 1.0)
             elif isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
                 print(f"{t} includes LinearGradient")
+                print(f"color.begin: {color.begin}")
+                print(f"color.end: {color.end}")
                 # color.begin = color.begin * (0.1*(torch.rand_like(color.begin)-0.5)+1.0)
                 # color.end = color.end * (0.1*(torch.rand_like(color.end)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
