@@ -53,12 +53,29 @@ def main():
         path_indexes = np.random.randint(0, shapes_num, size=path_num).tolist()
         selected_shapes = []
         selected_shape_groups = []
+        shape_groups = []
+        shapes = []
         for i in path_indexes:
-            print(f"i is {i}")
-            selected_shapes.append(shapes_list[i])
-            selected_shape_groups.append(shape_groups_list[i])
+            selected_shape = shapes_list[i]
+            selected_shape_group = shape_groups_list[i]
 
-        print(f"{len(selected_shapes)},   {len(selected_shape_groups)}")
+            new_path = pydiffvg.Path(num_control_points = selected_shape.num_control_points,
+                                     points = selected_shape.points,
+                                     stroke_width = torch.tensor(1.0),
+                                     is_closed = True)
+            points = new_path.points
+            if np.random.randint(1,3) ==1: # random shift the position
+                mean_point = new_path.points.mean(dim=1, keepdim=True)
+                points = points - mean_point + torch.rand_like(mean_point)*1.3+mean_point
+            if np.random.randint(1,3) ==1: # random add some disturbance
+                points = points * (1+ (0.4*torch.rand_like(points)-0.5))  # [0.8-1.2]
+            new_path.points = points
+            shapes.append(new_path)
+            # new_path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
+            #                              fill_color = color)
+            print(i)
+
+
 
 
 if __name__ == "__main__":
