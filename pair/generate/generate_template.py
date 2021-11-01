@@ -30,8 +30,8 @@ def main():
     files = []
     for file in os.listdir(args.template_path):
         print(f"loading... {args.template_path}/{file}")
-        ret = pydiffvg.svg_to_scene(os.path.join(args.template_path, file))
-        print(ret)
+        canvas_width, canvas_height, shapes, shape_groups = pydiffvg.svg_to_scene(os.path.join(args.template_path, file))
+        print((shape_groups[0]).fill_color)
 
 
 if __name__ == "__main__":
