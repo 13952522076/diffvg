@@ -53,6 +53,7 @@ def main():
         path_indexes = np.random.randint(0, shapes_num, size=path_num)
         selected_shape = shapes_list[path_indexes]
         selected_shape_groups = shape_groups_list[path_indexes]
+        print(path_indexes)
         print(f"{len(selected_shape)},   {len(selected_shape_groups)}")
 
 
