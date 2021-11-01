@@ -37,6 +37,9 @@ def main():
 
     try:
         os.makedirs(os.path.join(args.generate_path,'img'))
+    except OSError as exc:  # Python >2.5
+        pass
+    try:
         os.makedirs(os.path.join(args.generate_path,'svg'))
     except OSError as exc:  # Python >2.5
         pass
