@@ -29,11 +29,12 @@ def main():
     args = parse_args()
     shapes_list = []
     shape_groups_list = []
-    for file in os.listdir(args.template_path):
-        print(f"loading... {args.template_path}/{file}")
-        canvas_width, canvas_height, shapes, shape_groups = pydiffvg.svg_to_scene(os.path.join(args.template_path, file))
-        shapes_list.extend(shapes)
-        shape_groups_list.extend(shape_groups)
+    for root, dirs, files in os.walk(args.template_path):
+        file_path = os.path.join(root, dirs, files)
+        print(f"loading... {file_path}")
+        # canvas_width, canvas_height, shapes, shape_groups = pydiffvg.svg_to_scene(os.path.join(args.template_path, file))
+        # shapes_list.extend(shapes)
+        # shape_groups_list.extend(shape_groups)
 
 
 
