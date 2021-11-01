@@ -299,8 +299,8 @@ def main():
         color_vars = [*old_color_vars, *color_vars]
         points_optim = torch.optim.Adam(points_vars, lr=1)
         color_optim = torch.optim.Adam(color_vars, lr=0.1)
-        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
-        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.01)
+        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
+        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
         # Adam iterations.
         t_range = tqdm(range(args.num_iter))
         for t in t_range:
