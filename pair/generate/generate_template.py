@@ -77,7 +77,7 @@ def main():
                 mean_point = new_path.points.mean(dim=1, keepdim=True)
                 points = points - mean_point + torch.rand_like(mean_point)*1.1*mean_point
             if np.random.randint(1,3) ==1: # random add some disturbance
-                points = points * (1+ (0.1*torch.rand_like(points)-0.5))  # [0.85-1.05]
+                points = points * (1+ (0.02*(torch.rand_like(points)-0.5)))  # [0.85-1.05]
             new_path.points = points
             shapes.append(new_path)
 
