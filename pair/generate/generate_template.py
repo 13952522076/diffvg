@@ -54,7 +54,7 @@ def main():
         selected_shapes = []
         selected_shape_groups = []
         for i in path_indexes:
-            print(i)
+            print(f"i is {i}")
             selected_shapes.append(shapes_list[i])
             selected_shape_groups.append(shape_groups_list[i])
 
