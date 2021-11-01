@@ -23,7 +23,7 @@ gamma = 1.0
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--template_path", type=str, default="../data/generate/template")
-
+    parser.add_argument("--generate_path", type=str, default="../data/generate/generate")
     parser.add_argument("--path_num_min", type=int, default=1)
     parser.add_argument("--path_num_max", type=int, default=6)
     parser.add_argument("--generate_num", type=int, default=100)
@@ -93,9 +93,12 @@ def main():
 
             new_path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
                                          fill_color = color)
+            shape_groups.append(new_path_group)
 
-            print(1)
-
+        scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
+        render = pydiffvg.RenderFunction.apply
+        img = render(canvas_width, canvas_height, 2, 2, 0, None, *scene_args)
+        pydiffvg.imwrite(img.cpu(), os.path.join(args.generate_path, "img", str(i)+'.png'), gamma=gamma)
 
 
 if __name__ == "__main__":
