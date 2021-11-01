@@ -27,11 +27,15 @@ def parse_args():
 
 def main():
     args = parse_args()
-    files = []
+    shapes_list = []
+    shape_groups_list = []
     for file in os.listdir(args.template_path):
         print(f"loading... {args.template_path}/{file}")
         canvas_width, canvas_height, shapes, shape_groups = pydiffvg.svg_to_scene(os.path.join(args.template_path, file))
-        print((shape_groups[0]).fill_color)
+        shapes_list.extend(shapes)
+        shape_groups_list.extend(shape_groups)
+
+
 
 
 if __name__ == "__main__":

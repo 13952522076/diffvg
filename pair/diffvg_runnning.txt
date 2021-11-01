@@ -535,5 +535,123 @@ Prediction problem:
 
 
 
+-----------
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61b.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61b.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61b.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61b.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f61c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f62e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f62e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f62e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f62e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f611.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f611.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f611.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Emoji_u1f611.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/240px-Huaji.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Huaji.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Huaji.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Huaji.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f922.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f922.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f922.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f922.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f637.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f637.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f637.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f637.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f63c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f63c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f63c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/Emoji_u1f63c.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
+
+
+
+
+
+python main.py ../data/emoji_rgb/train/0/240px-Noto_Emoji_Pie_1f60e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Noto_Emoji_Pie_1f60e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 3 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Noto_Emoji_Pie_1f60e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+python main.py ../data/emoji_rgb/train/0/240px-Noto_Emoji_Pie_1f60e.svg.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 800
+
+
 
 

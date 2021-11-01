@@ -6,7 +6,10 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main.py demo5.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/test_segments --free --save_video --num_segments 4
+
+python main.py ../data/emoji_rgb/train/0.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01
+
+python main.py Balloon.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/test_segments --free --save_video --num_segments 4
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -270,8 +273,8 @@ def main():
         color_vars = [*old_color_vars, *color_vars]
         points_optim = torch.optim.Adam(points_vars, lr=1)
         color_optim = torch.optim.Adam(color_vars, lr=0.1)
-        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.1)
-        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.01)
+        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
+        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
         # Adam iterations.
         t_range = tqdm(range(args.num_iter))
         for t in t_range:
