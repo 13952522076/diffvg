@@ -50,7 +50,7 @@ def main():
 
     for t in tqdm(range(args.generate_num)):
         path_num = np.random.randint(args.path_num_min, args.path_num_max+1)  # [path_num_min, path_num_max]
-        path_indexes = np.random.randint(0, shapes_num, size=path_num)
+        path_indexes = np.random.randint(0, shapes_num, size=path_num).reshape((1, -1))
         print(path_indexes)
         selected_shape = shapes_list[path_indexes]
         selected_shape_groups = shape_groups_list[path_indexes]
