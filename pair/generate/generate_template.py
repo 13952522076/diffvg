@@ -51,11 +51,13 @@ def main():
     for t in tqdm(range(args.generate_num)):
         path_num = np.random.randint(args.path_num_min, args.path_num_max+1)  # [path_num_min, path_num_max]
         path_indexes = np.random.randint(0, shapes_num, size=path_num).reshape((1, -1))
-        print(path_indexes)
-        selected_shape = shapes_list[path_indexes]
-        selected_shape_groups = shape_groups_list[path_indexes]
+        selected_shapes = []
+        selected_shape_groups = []
+        for i in path_indexes:
+            selected_shapes.append(shapes_list[i])
+            selected_shape_groups.append(shape_groups_list[i])
 
-        print(f"{len(selected_shape)},   {len(selected_shape_groups)}")
+        print(f"{len(selected_shapes)},   {len(selected_shape_groups)}")
 
 
 if __name__ == "__main__":
