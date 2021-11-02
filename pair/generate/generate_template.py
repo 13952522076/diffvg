@@ -25,8 +25,8 @@ def parse_args():
     parser.add_argument("--template_path", type=str, default="../data/generate/template")
     parser.add_argument("--generate_path", type=str, default="../data/generate/generate")
     parser.add_argument("--path_num_min", type=int, default=1)
-    parser.add_argument("--path_num_max", type=int, default=6)
-    parser.add_argument("--generate_num", type=int, default=100)
+    parser.add_argument("--path_num_max", type=int, default=8)
+    parser.add_argument("--generate_num", type=int, default=2000)
 
     return parser.parse_args()
 
@@ -51,6 +51,7 @@ def main():
                 file_path = os.path.join(root, file)
 
                 canvas_width, canvas_height, shapes, shape_groups = pydiffvg.svg_to_scene(file_path)
+                canvas_width, canvas_height = 240, 240
                 shapes_list.extend(shapes)
                 shape_groups_list.extend(shape_groups)
 
