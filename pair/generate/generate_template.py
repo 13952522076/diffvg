@@ -123,7 +123,7 @@ def main():
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         else:
-            img = img[:, :, 3:4] * img[:, :, :3] + torch.rand(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+            img = img[:, :, 3:4] * img[:, :, :3] + torch.rand(1, 1, 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         pydiffvg.imwrite(img.cpu(), os.path.join(args.generate_path, "img", str(t)+'.png'), gamma=gamma)
         pydiffvg.save_svg(os.path.join(args.generate_path, "svg", str(t)+'.svg'),
                           canvas_width, canvas_height, shapes, shape_groups)
