@@ -720,15 +720,16 @@ python gradient.py ../debug/8.png --num_paths 1 --pool_size 60 --save_folder res
 
 
 
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 7 --initial circle --circle_init_radius 0.01 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 8 --initial circle --circle_init_radius 0.01 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 7 --num_iter 1600
-python main_xingloss.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 8 --num_iter 1600
-
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --initial circle --circle_init_radius 0.01 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --initial circle --circle_init_radius 0.01 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 7 --initial circle --circle_init_radius 0.01 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 8 --initial circle --circle_init_radius 0.01 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 9 --initial circle --circle_init_radius 0.01 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 5 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 6 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 7 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 8 --num_iter 2000
+python main.py ../debug/A.png --num_paths 1 --pool_size 60 --save_folder results/for_temp --free --num_segments 9 --num_iter 2000
 
