@@ -40,7 +40,7 @@ def xing_loss(x_list, scale=1e-3):  # x[ npoints,2]
             opst = 1 - direct  #another direction
             sina = compute_sine_theta(cs1, cs3)  #the angle between cs1 and cs3
             seg_loss += direct * torch.relu( - sina) + opst * torch.relu(sina)
-            print(direct, opst, sina)
+            # print(direct, opst, sina)
         seg_loss /= segment_num
 
 
