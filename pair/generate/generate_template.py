@@ -74,7 +74,7 @@ def main():
                                      stroke_width = torch.tensor(1.0),
                                      is_closed = True)
             points = new_path.points
-            points = points + 1*(torch.rand_like(points)-0.5)
+            # points = points + 1*(torch.rand_like(points)-0.5)
             # if np.random.randint(1,3) ==1: # random shift the position
             #     mean_point = new_path.points.mean(dim=1, keepdim=True)
             #     points = points - mean_point + torch.rand_like(mean_point)*1.1*mean_point
@@ -92,7 +92,7 @@ def main():
                 # color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
                 # color.radius = color.radius * (0.1*(torch.rand_like(color.radius)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
-                color.stop_colors[:,3] = color.stop_colors[:,3]*5  # make most are 1.0
+                color.stop_colors[:,3] = 1.0  # make most are 1.0
                 color.stop_colors.data.clamp_(0.0, 1.0)
             elif isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
                 print(f"{t} includes LinearGradient")
@@ -105,11 +105,11 @@ def main():
                 # color.begin = color.begin * (0.1*(torch.rand_like(color.begin)-0.5)+1.0)
                 # color.end = color.end * (0.1*(torch.rand_like(color.end)-0.5)+1.0)
                 color.stop_colors = torch.rand_like(color.stop_colors)*1.3-0.1
-                color.stop_colors[:,3] = color.stop_colors[:,3]*5  # make most are 1.0
+                color.stop_colors[:,3] = 1.0  # make most are 1.0
                 color.stop_colors.data.clamp_(0.0, 1.0)
             else:
                 color = torch.rand_like(color)*1.3-0.1
-                color[3] = color[3]*5  # make most are 1.0
+                color[3] = 1.0  # make most are 1.0
                 color.data.clamp_(0.0, 1.0)
 
             new_path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([len(shapes) - 1]),
@@ -132,8 +132,6 @@ def main():
                             canvas_width, canvas_height, shapes, shape_groups,
                             background=f"background: rgba({c1}, {c2}, {c3}, {a0})")
         pydiffvg.imwrite(img.cpu(), os.path.join(args.generate_path, "img", str(t)+'.png'), gamma=gamma)
-        pydiffvg.save_svg(os.path.join(args.generate_path, "svg", str(t)+'.svg'),
-                          canvas_width, canvas_height, shapes, shape_groups)
 
 if __name__ == "__main__":
     main()
