@@ -127,7 +127,7 @@ def main():
         else:
             bg = torch.rand(1, 1, 3, device = pydiffvg.get_device())
             img = img[:, :, 3:4] * img[:, :, :3] + bg * (1 - img[:, :, 3:4])
-            c1,c2,c3, a0=int(bg[0,0,0]*255), int(bg[0,0,1]*255),int(bg[0,0,2]*255), bg[0,0,3]
+            c1,c2,c3, a0=int(bg[0,0,0]*255), int(bg[0,0,1]*255),int(bg[0,0,2]*255), 1
             pydiffvg.save_svg(os.path.join(args.generate_path, "svg", str(t)+'.svg'),
                             canvas_width, canvas_height, shapes, shape_groups,
                             background=f"background: rgba({c1}, {c2}, {c3}, {a0})")
