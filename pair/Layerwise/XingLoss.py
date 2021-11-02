@@ -11,77 +11,56 @@ def triangle_area(A, B, C):
     out = out[..., 1] - out[..., 0]
     return out
 
+def compute_sine_theta(s1, s2):  #s1 and s2 aret two segments to be uswed
+    #s1, s2 (2, 2)
+    v1 = s1[1,:] - s1[0, :]
+    v2 = s2[1,:] - s2[0, :]
+    #print(v1, v2)
+    sine_theta = ( v1[0] * v2[1] - v1[1] * v2[0] ) / (torch.norm(v1) * torch.norm(v2))
+    return sine_theta
 
-def xing_loss(x_list, scale=1.0):  # x[ npoints,2]
+def xing_loss(x_list, scale=1e-3):  # x[ npoints,2]
     loss = 0.
+    #print(len(x_list))
     for x in x_list:
-        x1 = torch.cat([x[1:, :], x[:1, :]], dim=0)
-        segments = torch.cat([x.unsqueeze(dim=-1), x1.unsqueeze(dim=-1)],
-                             dim=-1)  # [npoints, 2, 2], npoints, xy, start-end
-        mutual_segments = segments.unsqueeze(dim=1).expand(-1, x.shape[0], -1, -1)  # [npoints,npoints,2,2]
-        mutual_segments_2 = torch.transpose(mutual_segments, 0, 1)
-        mutual_segments = torch.cat([mutual_segments, mutual_segments_2], dim=-1)  # [npoints,npoints,2,4] 4 is A,B,C,D
-        Area_AB_C = triangle_area(mutual_segments[:, :, :, 0], mutual_segments[:, :, :, 1], mutual_segments[:, :, :, 2])
-        Area_AB_D = triangle_area(mutual_segments[:, :, :, 0], mutual_segments[:, :, :, 1], mutual_segments[:, :, :, 3])
-        Area_CD_A = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 0])
-        Area_CD_B = triangle_area(mutual_segments[:, :, :, 2], mutual_segments[:, :, :, 3], mutual_segments[:, :, :, 1])
-
-        condition1 = ((Area_AB_C * Area_AB_D) <= 0.).float()
-        condition2 = ((Area_CD_A * Area_CD_B) <= 0.).float()
-
-        four_lens = torch.cat([
-            abs(Area_AB_C.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,1]-mutual_segments[:,:,:,0], dim=2),
-            abs(Area_AB_D.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,1]-mutual_segments[:,:,:,0], dim=2),
-            abs(Area_CD_A.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,3]-mutual_segments[:,:,:,2], dim=2),
-            abs(Area_CD_B.unsqueeze(dim=-1))/torch.norm(mutual_segments[:,:,:,3]-mutual_segments[:,:,:,2], dim=2)
-        ], dim=-1)
-        # areas can describe the distance bwtween one point and a segment.
-        four_lens = four_lens.min(dim=-1, keepdim=False)[0]
-        four_lens = torch.relu(-torch.log(four_lens + 1e-4)) # log (x>1) would be negative, ignore.
-
-        # Tensor_X = Area_AB_C*Area_AB_D
-        # Tensor_Y = Area_CD_A*Area_CD_B
-        # angel = torch.atan2(Tensor_X + 1e-5,Tensor_Y+ 1e-5)
-        # mask2 = torch.tanh(angel+1.5708)
-        # mask2 = torch.relu(-mask2)
-        # mask2 = torch.triu(mask2, diagonal=2)
-        # print(mask2)
-
-        mask = condition1 * condition2  # mask is without gradient.
-        area_AB_1 = (abs(Area_AB_C)) / (abs(Area_AB_D) + 1e-5)
-        area_AB_2 = (abs(Area_AB_D)) / (abs(Area_AB_C) + 1e-5)
-        area_AB, _ = torch.cat([area_AB_1.unsqueeze(dim=-1), area_AB_2.unsqueeze(dim=-1)], dim=-1).min(dim=-1)
-        area_AB = torch.clip(area_AB, 0.0, 1.0)
-        area_AB = torch.nan_to_num(area_AB, nan=0.0)
-
-        area_CD_1 = (abs(Area_CD_A)) / (abs(Area_CD_B) + 1e-5)
-        area_CD_2 = (abs(Area_CD_B)) / (abs(Area_CD_A) + 1e-5)
-        area_CD, _ = torch.cat([area_CD_1.unsqueeze(dim=-1), area_CD_2.unsqueeze(dim=-1)], dim=-1).min(dim=-1)
-        area_CD = torch.clip(area_CD, 0.0, 1.0)
-        area_CD = torch.nan_to_num(area_CD, nan=0.0)
-
-        area_loss, _ = torch.cat([area_AB.unsqueeze(dim=-1), area_CD.unsqueeze(dim=-1)], dim=-1).min(dim=-1)
+        #print(x)
+        seg_loss = 0.
+        N = x.size()[0]
+        x = torch.cat([x,x[0,:].unsqueeze(0)], dim=0)  #(N+1,2)
+        segments =  torch.cat([x[:-1,:].unsqueeze(1), x[1:,:].unsqueeze(1)], dim=1)  #(N, start/end, 2)
+        assert N % 3 == 0, 'The segment number is not correct!'
+        segment_num = int(N / 3)
+        for i in range(segment_num):
+            cs1 = segments[i*3, :, :]  #start control segs
+            cs2 = segments[i*3 + 1, :, :] #middle control segs
+            cs3 = segments[i*3 + 2, :, :]   #end control segs
+            #print('the direction of the vectors:')
+            #print(compute_sine_theta(cs1, cs2))
+            direct = (compute_sine_theta(cs1, cs2) >= 0).float()
+            opst = 1 - direct  #another direction
+            sina = compute_sine_theta(cs1, cs3)  #the angle between cs1 and cs3
+            seg_loss += direct * torch.relu( - sina) + opst * torch.relu(sina)
+            print(direct, opst, sina)
+        seg_loss /= segment_num
 
 
-        mask = torch.triu(mask, diagonal=2) # remove self and connected segments
-        area_loss = ( area_loss) * mask
-        # remove self-and connected segments.
-        four_lens_top = torch.triu(four_lens, diagonal=2)
-        four_lens_bot = torch.tril(four_lens, diagonal=2)
-        four_lens = (four_lens_top+four_lens_bot).mean()/10.
-
-        # print(f"mask is: {mask}")
-        # print(f"area_loss is: {area_loss}")
-        print(f"area loss is: {(area_loss).sum()} | four_lens loss is {four_lens}")
-        area_loss = (area_loss.sum() + four_lens )/ ((x.shape[0] - 2) ** 2)
-
-        loss += area_loss * scale
+        templ = seg_loss
+        loss += templ * scale #area_loss * scale
 
     return loss / (len(x_list))
 
 
 if __name__ == "__main__":
-    x = torch.rand([6, 2])
-    scale = 0.5
+    #x = torch.rand([6, 2])
+    #x = torch.tensor([[0,0], [1,1], [2,1], [1.5,0]])
+    x = torch.tensor([[0,0], [1,1], [2,1], [0.5,0]])
+    #x = torch.tensor([[1,0], [2,1], [0,1], [2,0]])
+    scale = 1 #0.5
+    y = xing_loss([x], scale)
+    print(y)
+
+    x = torch.tensor([[0,0], [1,1], [2,1], [2.,0]])
+    #x = torch.tensor([[1,0], [2,1], [0,1], [2,0]])
+    scale = 1 #0.5
     y = xing_loss([x], scale)
     print(y)
