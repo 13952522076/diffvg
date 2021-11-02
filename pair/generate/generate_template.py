@@ -87,8 +87,6 @@ def main():
             color = selected_shape_group.fill_color
             if isinstance(selected_shape_group.fill_color, pydiffvg.RadialGradient):
                 print(f"{t} includes RadialGradient")
-                print(f"color.center: {color.center}")
-                print(f"color.radius: {color.radius}")
                 color.center = torch.rand_like(color.center)*(torch.tensor([canvas_width, canvas_height]).to(color.center.device))
                 color.radius = torch.rand_like(color.radius)*(torch.tensor([canvas_width, canvas_height]).to(color.radius.device))
                 # color.center = color.center * (0.1*(torch.rand_like(color.center)-0.5)+1.0)
@@ -98,8 +96,6 @@ def main():
                 color.stop_colors.data.clamp_(0.0, 1.0)
             elif isinstance(selected_shape_group.fill_color, pydiffvg.LinearGradient):
                 print(f"{t} includes LinearGradient")
-                print(f"color.begin: {color.begin}")
-                print(f"color.end: {color.end}")
                 color.begin = torch.rand_like(color.begin)*(torch.tensor([canvas_width, canvas_height]).to(color.begin.device))
                 color.end = torch.rand_like(color.end)*(torch.tensor([canvas_width, canvas_height]).to(color.end.device))
                 color.begin[0] = min(color.begin[0],color.end[0] )
