@@ -300,11 +300,15 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     """
     !!! The two gradient colors are not implemented yet!!!
     """
+    # calculate regional loss_weight
     region_loss = adaptive_avg_pool2d(pixelwise_loss, args.pool_size)
-    print(f"region_loss.shape is:{region_loss.shape}")
     loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
+    loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
+    loss_weight = loss_weight/(loss_weight.sum())
+    loss_weight = loss_weight.clone().detach()
+
     shapes, shape_groups, points_vars, color_vars = init_new_paths(
-        1, canvas_width, canvas_height, args, len(old_shapes), loss_weight)
+        1, canvas_width, canvas_height, args, len(old_shapes), pixelwise_loss)
     old_points_vars = []
     old_color_vars = []
     copyed_shapes = []
