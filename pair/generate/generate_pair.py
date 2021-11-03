@@ -270,8 +270,8 @@ def main_single_img():
                     }
         for num_segment in num_segments_options:
             for color_option in color_options:
-                pydiffvg.save_svg(f"output/init_Seg{str(num_segment)}_{color_option}.svg",
-                                  canvas_width, canvas_height, old_shapes, old_shape_groups)
+                print(f"calculating Segments: {num_segment} calculating color_option: {color_option}")
+
                 candidate_old_shapes, candidate_old_shape_groups, candidate_pixelwise_loss, candidate_loss  = detail_method(
                     old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args)
@@ -287,9 +287,9 @@ def main_single_img():
         old_shapes, old_shape_groups = best_old_shapes, best_old_shape_groups
 
         # append the row data
-        row_data.best_num_segments = best_num_segments
-        row_data.best_color = best_color
-        row_data.best_loss = best_loss
+        row_data["best_num_segments"] = best_num_segments
+        row_data["best_color"] = best_color
+        row_data["best_loss"] = best_loss
         row_data_list.append(row_data)
 
         if best_loss < args.threshold_min_loss:
@@ -339,6 +339,9 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
 
     shapes = [*copyed_shapes, *shapes]
     shape_groups = [*copyed_shape_groups, *shape_groups]
+
+    pydiffvg.save_svg(f"output/init_Seg{str(num_segment)}_{color_option}.svg",
+                                  canvas_width, canvas_height, shapes, shape_groups)
 
     # Optimize
     points_vars = [*old_points_vars, *points_vars]
