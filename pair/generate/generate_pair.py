@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python main_edge.py demo5.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder results/edge --free --num_segments 4
+python generate_pair.py ../Layerwise/demo.png --pool_size 60  --free
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -256,7 +256,7 @@ def main_single_img():
     pixelwise_loss = target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     num_segments_options = [3,4,5,6,7,8]
-    color_options = ["Normal", "RadialGradient", "LinearGradient"]
+    color_options = [ "RadialGradient","Normal", "LinearGradient"]
 
     for threshold_path in range(0, args.threshold_max_path):
         best_num_segments = None
