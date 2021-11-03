@@ -140,7 +140,7 @@ def load_image(args):
     return target, target_edge
 
 
-def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, num_old_shapes=0, pixel_loss=None):
+def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, color_option, num_old_shapes=0, pixel_loss=None):
     shapes = []
     shape_groups = []
 
@@ -200,12 +200,23 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, n
                              is_closed = True)
         shapes.append(path)
         # !!!!!!problem is here. the shape group shape_ids is wrong
-        path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]),
-                                         fill_color = torch.tensor([random.random(),
-                                                                    random.random(),
-                                                                    random.random(),
-                                                                    random.random()]))
-
+        if color_option =="LinearGradient":
+            color = pydiffvg.LinearGradient(\
+                begin = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                end = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                offsets = torch.tensor([0.0, 1.0]),
+                stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
+                                            [random.random(), random.random(), random.random(), random.random()]]))
+        elif color_option =="RadialGradient":
+            color = pydiffvg.RadialGradient(\
+                center = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                radius = torch.tensor([random.random()*canvas_width, random.random()*canvas_height]),
+                offsets = torch.tensor([0.0,1.0]),
+                stop_colors = torch.tensor([[random.random(), random.random(),random.random(), random.random()],
+                                            [random.random(), random.random(), random.random(), random.random()]]))
+        else:
+            color = torch.tensor([random.random(), random.random(), random.random(), random.random()])
+        path_group = pydiffvg.ShapeGroup(shape_ids = torch.tensor([num_old_shapes+i]), fill_color = color)
         shape_groups.append(path_group)
 
     points_vars = []
@@ -214,8 +225,23 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, n
         path.points.requires_grad = True
         points_vars.append(path.points)
     for group in shape_groups:
-        group.fill_color.requires_grad = True
-        color_vars.append(group.fill_color)
+        if color_option =="LinearGradient":
+            group.fill_color.begin.requires_grad = True
+            group.fill_color.end.requires_grad = True
+            color_vars.append(group.fill_color.begin)
+            color_vars.append(group.fill_color.end)
+            group.fill_color.stop_colors.requires_grad = True
+            color_vars.append(group.fill_color.stop_colors)
+        elif color_option =="RadialGradient":
+            group.fill_color.center.requires_grad = True
+            group.fill_color.radius.requires_grad = True
+            color_vars.append(group.fill_color.center)
+            color_vars.append(group.fill_color.radius)
+            group.fill_color.stop_colors.requires_grad = True
+            color_vars.append(group.fill_color.stop_colors)
+        else:
+            group.fill_color.requires_grad = True
+            color_vars.append(group.fill_color)
     print(f"points shape is: {(points_vars[0]).shape}")
     return shapes, shape_groups, points_vars, color_vars
 
@@ -254,8 +280,9 @@ def main_single_img():
     old_shapes, old_shape_groups = [], []
     pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
-    num_segments_options = [3,4]
-    color_options = [ "RadialGradient","Normal", "LinearGradient"]
+    # sort from complex to simple to encourage learning simple shapes.
+    num_segments_options = [4,3]
+    color_options = [ "RadialGradient", "LinearGradient", "Normal"]
 
     for threshold_path in range(1, args.threshold_max_path+1):
         best_num_segments = None
@@ -311,7 +338,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     loss_weight = loss_weight.clone().detach()
 
     shapes, shape_groups, points_vars, color_vars = init_new_paths(
-        1, canvas_width, canvas_height, args, num_segment,  len(old_shapes), pixelwise_loss)
+        1, canvas_width, canvas_height, args, num_segment, color_option, len(old_shapes), pixelwise_loss)
     old_points_vars = []
     old_color_vars = []
     copyed_shapes = []
@@ -327,6 +354,38 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
             else:
                 copyed_path.points.requires_grad = False
         for old_group in old_shape_groups:
+            copyed_group = pydiffvg.ShapeGroup(shape_ids = old_group.shape_ids, fill_color = old_group.fill_color)
+            copyed_shape_groups.append(copyed_group)
+            if args.free:
+                if color_option =="LinearGradient":
+                    copyed_group.fill_color.begin.requires_grad = True
+                    copyed_group.fill_color.end.requires_grad = True
+                    copyed_group.fill_color.stop_colors.requires_grad = True
+                    old_color_vars.append(copyed_group.fill_color.begin)
+                    old_color_vars.append(copyed_group.fill_color.end)
+                    old_color_vars.append(old_group.fill_color.stop_colors)
+                elif color_option == "RadialGradient":
+                    copyed_group.fill_color.center.requires_grad = True
+                    copyed_group.fill_color.radius.requires_grad = True
+                    copyed_group.fill_color.stop_colors.requires_grad = True
+                    old_color_vars.append(copyed_group.fill_color.center)
+                    old_color_vars.append(copyed_group.fill_color.radius)
+                    old_color_vars.append(copyed_group.fill_color.stop_colors)
+                else:
+                    copyed_group.fill_color.requires_grad = True
+                    color_vars.append(copyed_group.fill_color)
+            else:
+                if args.gradient =="LinearGradient":
+                    copyed_group.fill_color.begin.requires_grad = False
+                    copyed_group.fill_color.end.requires_grad = False
+                    copyed_group.fill_color.stop_colors.requires_grad = False
+                elif color_option == "RadialGradient":
+                    copyed_group.fill_color.center.requires_grad = False
+                    copyed_group.fill_color.radius.requires_grad = False
+                    copyed_group.fill_color.stop_colors.requires_grad = False
+                else:
+                    copyed_group.fill_color.requires_grad = False
+
             copyed_group = pydiffvg.ShapeGroup(shape_ids = old_group.shape_ids, fill_color = old_group.fill_color)
             copyed_shape_groups.append(copyed_group)
             if args.free:
