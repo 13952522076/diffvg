@@ -270,9 +270,13 @@ def main_single_img():
                     }
         for num_segment in num_segments_options:
             for color_option in color_options:
+                pydiffvg.save_svg(f"output/init_Seg{str(num_segment)}_{color_option}.svg",
+                                  canvas_width, canvas_height, old_shapes, old_shape_groups)
                 candidate_old_shapes, candidate_old_shape_groups, candidate_pixelwise_loss, candidate_loss  = detail_method(
                     old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args)
+                pydiffvg.save_svg(f"output/outp_Seg{str(num_segment)}_{color_option}.svg",
+                                  canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
                 if candidate_loss < best_loss:
                     best_old_shapes = candidate_old_shapes
                     best_old_shape_groups = candidate_old_shape_groups
