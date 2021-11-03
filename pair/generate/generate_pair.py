@@ -252,7 +252,7 @@ def main_single_img():
     row_data_list = []
 
     old_shapes, old_shape_groups = [], []
-    pixelwise_loss = target.mean(dim=1,keepdim=True) # [n,1,w,h]
+    pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     num_segments_options = [3,4]
     color_options = [ "RadialGradient","Normal", "LinearGradient"]
