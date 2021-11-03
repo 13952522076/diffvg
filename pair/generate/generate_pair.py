@@ -301,6 +301,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     !!! The two gradient colors are not implemented yet!!!
     """
     # calculate regional loss_weight
+    print(f"pixelwise_loss shape is {pixelwise_loss.shape}")
     region_loss = adaptive_avg_pool2d(pixelwise_loss, args.pool_size)
     loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
     print(f"loss_weight shape is {loss_weight.shape}")
