@@ -358,13 +358,17 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
             copyed_shape_groups.append(copyed_group)
             if args.free:
                 if isinstance(copyed_group.fill_color, pydiffvg.LinearGradient):
+                    print(f" in isinstance(copyed_group.fill_color, pydiffvg.LinearGradient): "
+                          f"{isinstance(copyed_group.fill_color, pydiffvg.LinearGradient)}")
                     copyed_group.fill_color.begin.requires_grad = True
                     copyed_group.fill_color.end.requires_grad = True
                     copyed_group.fill_color.stop_colors.requires_grad = True
                     old_color_vars.append(copyed_group.fill_color.begin)
                     old_color_vars.append(copyed_group.fill_color.end)
-                    old_color_vars.append(old_group.fill_color.stop_colors)
+                    old_color_vars.append(copyed_group.fill_color.stop_colors)
                 elif isinstance(copyed_group.fill_color, pydiffvg.RadialGradient):
+                    print(f" in isinstance(copyed_group.fill_color, pydiffvg.RadialGradient): "
+                          f"{isinstance(copyed_group.fill_color, pydiffvg.RadialGradient)}")
                     copyed_group.fill_color.center.requires_grad = True
                     copyed_group.fill_color.radius.requires_grad = True
                     copyed_group.fill_color.stop_colors.requires_grad = True
