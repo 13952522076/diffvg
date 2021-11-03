@@ -257,10 +257,11 @@ def main_single_img():
     num_segments_options = [3,4]
     color_options = [ "RadialGradient","Normal", "LinearGradient"]
 
-    for threshold_path in range(0, args.threshold_max_path):
+    for threshold_path in range(1, args.threshold_max_path+1):
         best_num_segments = None
         best_color = None
         best_loss = 9999.
+        best_pixelwise_loss=0.
         # initialize the row data
         row_data = {"pixelwise_loss": pixelwise_loss,
                     "best_num_segments": best_num_segments,
@@ -269,21 +270,20 @@ def main_single_img():
                     }
         for num_segment in num_segments_options:
             for color_option in color_options:
-                print(f"calculating Segments: {num_segment} calculating color_option: {color_option}")
-
+                print(f"calculating |Paths: {threshold_path} | Segments: {num_segment}| Color: {color_option}")
                 candidate_old_shapes, candidate_old_shape_groups, candidate_pixelwise_loss, candidate_loss  = detail_method(
                     old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args)
-                pydiffvg.save_svg(f"output/Path_{str(threshold_path)}Seg{str(num_segment)}_{color_option}_output.svg",
+                pydiffvg.save_svg(f"output/Path{str(threshold_path)}_Seg{str(num_segment)}_{color_option}_output.svg",
                                   canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
                 if candidate_loss < best_loss:
                     best_old_shapes = candidate_old_shapes
                     best_old_shape_groups = candidate_old_shape_groups
-                    pixelwise_loss = candidate_pixelwise_loss
+                    best_pixelwise_loss = candidate_pixelwise_loss
                     best_loss = candidate_loss
                     best_num_segments = num_segment
                     best_color = color_option
-        old_shapes, old_shape_groups = best_old_shapes, best_old_shape_groups
+        old_shapes, old_shape_groups, pixelwise_loss = best_old_shapes, best_old_shape_groups, best_pixelwise_loss
 
         # append the row data
         row_data["best_num_segments"] = best_num_segments
@@ -338,7 +338,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     shapes = [*copyed_shapes, *shapes]
     shape_groups = [*copyed_shape_groups, *shape_groups]
 
-    pydiffvg.save_svg(f"output/Path_{str(len(shapes))}Seg{str(num_segment)}_{color_option}_init.svg",
+    pydiffvg.save_svg(f"output/Path{str(len(shapes))}_Seg{str(num_segment)}_{color_option}_init.svg",
                                   canvas_width, canvas_height, shapes, shape_groups)
 
     # Optimize
