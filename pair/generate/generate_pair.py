@@ -140,7 +140,7 @@ def load_image(args):
     return target, target_edge
 
 
-def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=0, pixel_loss=None):
+def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, num_old_shapes=0, pixel_loss=None):
     shapes = []
     shape_groups = []
 
@@ -160,7 +160,6 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
 
 
     for i in range(num_paths):
-        num_segments = args.num_segments
         num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
 
         #### original point initialization
@@ -312,7 +311,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     loss_weight = loss_weight.clone().detach()
 
     shapes, shape_groups, points_vars, color_vars = init_new_paths(
-        1, canvas_width, canvas_height, args, len(old_shapes), pixelwise_loss)
+        1, canvas_width, canvas_height, args, num_segment,  len(old_shapes), pixelwise_loss)
     old_points_vars = []
     old_color_vars = []
     copyed_shapes = []
