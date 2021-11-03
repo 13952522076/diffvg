@@ -455,9 +455,10 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         # add xing_loss here
         x_loss = xing_loss(points_vars,scale=args.xing_weight)  # real value [1]
         # pixelwise_loss += x_loss  # pixel-wise loss should not consider the x_los in cal since it is a real value.
-        t_range.set_postfix({'mse_loss': mse_loss.mean().item(), 'edge_loss': edge_loss.mean().item(),'xing_loss': x_loss.item()})
+        loss = ((mse_loss + edge_loss + x_loss)*loss_weight).mean()
+        t_range.set_postfix({'loss':loss.item(), 'mse_loss': mse_loss.mean().item(),
+                             'edge_loss': edge_loss.mean().item(),'xing_loss': x_loss.item()})
         # Backpropagate the gradients.
-        loss = ((mse_loss + edge_loss + x_loss)*loss_weight).sum()
         loss.backward()
 
         # Take a gradient descent step.
