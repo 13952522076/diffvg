@@ -54,8 +54,8 @@ def parse_args():
     parser.add_argument('--save_folder', metavar='DIR', default="output")
     parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
     parser.add_argument('--circle_init_radius',  type=float)
-    parser.add_argument('--edge_weight',  type=float, default=0.1)
-    parser.add_argument('--xing_weight',  type=float ,default=0.1, help="weight for crossing loss.")
+    parser.add_argument('--edge_weight',  type=float, default=0.00001)
+    parser.add_argument('--xing_weight',  type=float ,default=0.00001, help="weight for crossing loss.")
     parser.add_argument('--threshold_max_path',  type=int ,default=30, help="weight for crossing loss.")
     parser.add_argument('--threshold_min_loss',  type=int ,default=0.0013,
                         help="0.0013 is decided by main.py demo.png, which fit an image very well")
