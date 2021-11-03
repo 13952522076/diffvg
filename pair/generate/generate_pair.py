@@ -246,6 +246,17 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, c
     return shapes, shape_groups, points_vars, color_vars
 
 
+def copy_color(color):
+    if isinstance(color, pydiffvg.LinearGradient):
+        new_color = pydiffvg.LinearGradient( begin = color.begin.clone(), end = color.end.clone(),
+                        offsets = color.offsets.clone(), stop_colors = color.stop_colors.clone())
+    elif isinstance(color, pydiffvg.RadialGradient):
+        new_color = pydiffvg.RadialGradient( center = color.center.clone(), radius = color.radius.clone(),
+                offsets = color.offsets.clone(), stop_colors = color.stop_colors.clone())
+    else:
+        new_color = color.clone()
+    return new_color
+
 def plot_loss_map(pixel_loss, args,savepath="./"):
     _, _, H, W = pixel_loss.size()
     region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
@@ -346,7 +357,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     if len(old_shapes) > 0:
         for old_path in old_shapes:
             copyed_path = pydiffvg.Path(num_control_points = old_path.num_control_points,
-                             points = old_path.points, stroke_width = old_path.stroke_width, is_closed = True)
+                             points = old_path.points.clone(), stroke_width = old_path.stroke_width, is_closed = True)
             copyed_shapes.append(copyed_path)
             if args.free:
                 copyed_path.points.requires_grad = True
@@ -354,7 +365,9 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
             else:
                 copyed_path.points.requires_grad = False
         for old_group in old_shape_groups:
-            copyed_group = pydiffvg.ShapeGroup(shape_ids = old_group.shape_ids, fill_color = old_group.fill_color)
+            # use copy_color function to avoid effects among different segments/color_options.
+            copyed_group = pydiffvg.ShapeGroup(shape_ids = old_group.shape_ids,
+                                               fill_color = copy_color(old_group.fill_color))
             copyed_shape_groups.append(copyed_group)
             if args.free:
                 if isinstance(copyed_group.fill_color, pydiffvg.LinearGradient):
