@@ -373,7 +373,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
                     old_color_vars.append(copyed_group.fill_color.stop_colors)
                 else:
                     copyed_group.fill_color.requires_grad = True
-                    color_vars.append(copyed_group.fill_color)
+                    old_color_vars.append(copyed_group.fill_color)
             else:
                 if isinstance(copyed_group.fill_color, pydiffvg.LinearGradient):
                     copyed_group.fill_color.begin.requires_grad = False
