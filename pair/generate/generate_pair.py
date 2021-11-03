@@ -509,8 +509,8 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
         loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
         print(f"mse_loss shape is: {loss.shape}")
-        loss = (loss*loss_weight).sum()
-
+        # loss = (loss*loss_weight).sum()
+        loss = (loss).sum()
         # add edge loss here
         edge_loss = args.edge_weight * (abs(target_edge - edge_img)).mean()
         print(f"edge_loss shape is: {edge_loss.shape}")
