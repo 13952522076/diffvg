@@ -461,7 +461,10 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         color_scheduler.step()
 
         for group in shape_groups:
-            group.fill_color.data.clamp_(0.0, 1.0)
+            if color_option == "Normal":
+                group.fill_color.data.clamp_(0.0, 1.0)
+            else:
+                group.fill_color.stop_colors.data.clamp_(0.0, 1.0)
 
     old_shapes = shapes
     old_shape_groups = shape_groups
