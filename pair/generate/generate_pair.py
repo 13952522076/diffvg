@@ -281,7 +281,7 @@ def main_single_img():
     pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     # sort from complex to simple to encourage learning simple shapes.
-    num_segments_options = [4,3]
+    num_segments_options = [3]
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
 
     for threshold_path in range(1, args.threshold_max_path+1):
