@@ -275,7 +275,7 @@ def main_single_img():
                 candidate_old_shapes, candidate_old_shape_groups, candidate_pixelwise_loss, candidate_loss  = detail_method(
                     old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args)
-                pydiffvg.save_svg(f"output/outp_Seg{str(num_segment)}_{color_option}.svg",
+                pydiffvg.save_svg(f"output/Seg{str(num_segment)}_{color_option}_output.svg",
                                   canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
                 if candidate_loss < best_loss:
                     best_old_shapes = candidate_old_shapes
@@ -340,7 +340,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     shapes = [*copyed_shapes, *shapes]
     shape_groups = [*copyed_shape_groups, *shape_groups]
 
-    pydiffvg.save_svg(f"output/init_Seg{str(num_segment)}_{color_option}.svg",
+    pydiffvg.save_svg(f"output/Seg{str(num_segment)}_{color_option}_init.svg",
                                   canvas_width, canvas_height, shapes, shape_groups)
 
     # Optimize
