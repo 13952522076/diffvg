@@ -378,6 +378,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
         pixelwise_loss = 0.
         mse_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
+        print(f"mse_loss requires_grad is {mse_loss.requires_grad}")
         pixelwise_loss += mse_loss
         # add edge loss here
         edge_loss = args.edge_weight * (abs(target_edge - edge_img)).unsqueeze(dim=0).unsqueeze(dim=0)  # [1,1,H,W]
