@@ -378,7 +378,6 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
         pixelwise_loss = 0.
         mse_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
-        print(f"mse_loss requires_grad is {mse_loss.requires_grad}")
         pixelwise_loss += mse_loss
         # add edge loss here
         edge_loss = args.edge_weight * (abs(target_edge - edge_img)).unsqueeze(dim=0).unsqueeze(dim=0)  # [1,1,H,W]
@@ -403,14 +402,8 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     old_shapes = shapes
     old_shape_groups = shape_groups
 
-    # calculate the pixel loss
-    pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
-    edge_loss = args.edge_weight*((target_edge-edge_img)**2).unsqueeze(dim=0).unsqueeze(dim=0).sqrt_() # [N,1,H, W]
-    region_loss = adaptive_avg_pool2d(pixel_loss+edge_loss, args.pool_size)
-    loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
-    loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
-    loss_weight = loss_weight/(loss_weight.sum())
-    loss_weight = loss_weight.clone().detach()
+    return old_shapes, old_shape_groups, pixelwise_loss, loss
+
 
 
 if __name__ == "__main__":
