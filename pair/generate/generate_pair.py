@@ -254,7 +254,7 @@ def main_single_img():
     old_shapes, old_shape_groups = [], []
     pixelwise_loss = target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
-    num_segments_options = [3,4,5,6,7,8]
+    num_segments_options = [3,4]
     color_options = [ "RadialGradient","Normal", "LinearGradient"]
 
     for threshold_path in range(0, args.threshold_max_path):
@@ -318,7 +318,8 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     copyed_shape_groups = []
     if len(old_shapes) > 0:
         for old_path in old_shapes:
-            copyed_path = old_path.clone()
+            copyed_path = pydiffvg.Path(num_control_points = old_path.num_control_points,
+                             points = old_path.points, stroke_width = old_path.stroke_width, is_closed = True)
             copyed_shapes.append(copyed_path)
             if args.free:
                 copyed_path.points.requires_grad = True
@@ -326,7 +327,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
             else:
                 copyed_path.points.requires_grad = False
         for old_group in old_shape_groups:
-            copyed_group = old_group.clone()
+            copyed_group = pydiffvg.ShapeGroup(shape_ids = old_group.shape_ids, fill_color = old_group.fill_color)
             copyed_shape_groups.append(copyed_group)
             if args.free:
                 copyed_group.fill_color.requires_grad = True
