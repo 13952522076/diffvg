@@ -184,7 +184,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, c
             radius = args.circle_init_radius
             if radius is None:
                 radius = np.random.uniform(low=0.003, high=0.03)
-            print(f"radius {radius} for circle initialization")
+            # print(f"radius {radius} for circle initialization")
             points = get_bezier_circle(radius=radius, segments=num_segments, bias=(random.random(), random.random()))
 
 
@@ -281,7 +281,7 @@ def main_single_img():
     pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     # sort from complex to simple to encourage learning simple shapes.
-    num_segments_options = [3]
+    num_segments_options = [5, 4, 3]
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
 
     for threshold_path in range(1, args.threshold_max_path+1):
@@ -358,8 +358,6 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
             copyed_shape_groups.append(copyed_group)
             if args.free:
                 if isinstance(copyed_group.fill_color, pydiffvg.LinearGradient):
-                    print(f" in isinstance(copyed_group.fill_color, pydiffvg.LinearGradient): "
-                          f"{isinstance(copyed_group.fill_color, pydiffvg.LinearGradient)}")
                     copyed_group.fill_color.begin.requires_grad = True
                     copyed_group.fill_color.end.requires_grad = True
                     copyed_group.fill_color.stop_colors.requires_grad = True
@@ -367,8 +365,6 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
                     old_color_vars.append(copyed_group.fill_color.end)
                     old_color_vars.append(copyed_group.fill_color.stop_colors)
                 elif isinstance(copyed_group.fill_color, pydiffvg.RadialGradient):
-                    print(f" in isinstance(copyed_group.fill_color, pydiffvg.RadialGradient): "
-                          f"{isinstance(copyed_group.fill_color, pydiffvg.RadialGradient)}")
                     copyed_group.fill_color.center.requires_grad = True
                     copyed_group.fill_color.radius.requires_grad = True
                     copyed_group.fill_color.stop_colors.requires_grad = True
