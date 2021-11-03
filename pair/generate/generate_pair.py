@@ -129,7 +129,7 @@ def load_image(args):
     target = target.unsqueeze(0).permute(0, 3, 1, 2) # NHWC -> NCHW
 
     # detection edge
-    image = cv2.imread("demo.png")# read image
+    image = cv2.imread(args.target)# read image
     image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     edge = cv2.Canny(image,30, 50)
     target_edge = torch.from_numpy(edge) /255.0
