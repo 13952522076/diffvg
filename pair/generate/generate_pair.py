@@ -30,6 +30,8 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.nn.functional import adaptive_avg_pool2d
 import warnings
 warnings.filterwarnings("ignore")
+import sys
+sys.path.append("../Layerwise")
 from XingLoss import xing_loss
 
 pydiffvg.set_print_timing(False)
