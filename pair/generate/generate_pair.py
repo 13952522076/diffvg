@@ -290,148 +290,9 @@ def main_single_img():
         if best_loss < args.threshold_min_loss:
             break
 
+    print(f"\nDone! total {threshold_path+1} paths, the last loss is: {best_loss.item()}.\n")
     return row_data_list
 
-
-
-
-
-
-    for num_paths in num_paths_list:
-        loss_list = []
-        print(f"\n=> Adding {num_paths} paths, [{args.initial} initialization] ...")
-        current_path_str = current_path_str+str(num_paths)+","
-        # initialize new shapes related stuffs.
-        shapes, shape_groups, points_vars, color_vars = init_new_paths(
-            num_paths, canvas_width, canvas_height, args, len(old_shapes), region_loss)
-        old_points_vars = []
-        old_color_vars = []
-        if len(old_shapes)>0:
-            for old_path in old_shapes:
-                if args.free:
-                    old_path.points.requires_grad = True
-                    old_points_vars.append(old_path.points)
-                else:
-                    old_path.points.requires_grad = False
-            for old_group in old_shape_groups:
-                if args.free:
-                    old_group.fill_color.requires_grad = True
-                    old_color_vars.append(old_group.fill_color)
-                else:
-                    old_group.fill_color.requires_grad = False
-
-        shapes = [*old_shapes, *shapes]
-        shape_groups = [*old_shape_groups, *shape_groups]
-
-        if args.save_init:
-            save_name = os.path.join(save_path, f"{current_path_str[:-1]}-init.svg")
-            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
-        # Optimize
-        points_vars = [*old_points_vars, *points_vars]
-        color_vars = [*old_color_vars, *color_vars]
-        points_optim = torch.optim.Adam(points_vars, lr=1)
-        color_optim = torch.optim.Adam(color_vars, lr=0.1)
-        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
-        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
-        # Adam iterations.
-        t_range = tqdm(range(args.num_iter))
-        for t in t_range:
-            points_optim.zero_grad()
-            color_optim.zero_grad()
-            # Forward pass: render the image.
-            scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
-            img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
-            # Compose img with white background
-            img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
-            if args.save_video:
-                save_name = os.path.join(save_path,"images", f"{current_path_str[:-1]}-{t}.png")
-                pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
-            if (t == args.num_iter - 1) and args.save_image:
-                    save_name = os.path.join(save_path, f"{current_path_str[:-1]}.png")
-                    pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
-
-            #### start save edge ###
-            edge_groups = []
-            for shape_group in shape_groups:
-                edge_groups.append(
-                    pydiffvg.ShapeGroup(shape_ids = shape_group.shape_ids,
-                                        fill_color = torch.tensor([0., 0., 0., 0.]),
-                                        stroke_color = torch.tensor([1., 1., 1., 1.])
-                                        )
-                )
-            edge_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, edge_groups)
-            edge_img = render(canvas_width, canvas_height, 2, 2, t, None, *edge_args)
-            edge_img = edge_img[:, :, 3:4] * edge_img[:, :, :3] + torch.zeros(edge_img.shape[0], edge_img.shape[1], 3, device = pydiffvg.get_device()) * (1 - edge_img[:, :, 3:4])
-            # save_name = os.path.join(save_path,"edges", f"{current_path_str[:-1]}-{t}.png")
-            # pydiffvg.imwrite(edge_img.cpu(), save_name, gamma=gamma)
-            edge_img = edge_img[:, :, :3]
-            # this can ensure value to be 0 or 1
-            edge_img = 0.299*edge_img[:,:,0] + 0.587*edge_img[:,:,1] + 0.114*edge_img[:,:,2]
-            #### end   save edge ###
-
-            img = img[:, :, :3]
-            img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
-            # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
-            loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
-            loss = (loss*loss_weight).sum()
-            loss_list.append(loss.item())
-
-            # add edge loss here
-            edge_loss = args.edge_weight * (abs(target_edge - edge_img)).mean()
-            # add xing_loss here
-            x_loss = xing_loss(points_vars,scale=args.xing_weight)
-            t_range.set_postfix({'mse_loss': loss.item(), 'edge_loss': edge_loss.item(),'xing_loss': x_loss.item()})
-            # Backpropagate the gradients.
-            loss = loss + edge_loss + x_loss
-            loss.backward()
-
-            # Take a gradient descent step.
-            points_optim.step()
-            color_optim.step()
-
-            points_scheduler.step()
-            color_scheduler.step()
-
-            for group in shape_groups:
-                group.fill_color.data.clamp_(0.0, 1.0)
-            if t == args.num_iter - 1:
-                save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
-                pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
-
-        loss_matrix.append(loss_list)
-        old_shapes = shapes
-        old_shape_groups = shape_groups
-
-        # calculate the pixel loss
-        pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
-        edge_loss = args.edge_weight*((target_edge-edge_img)**2).unsqueeze(dim=0).unsqueeze(dim=0).sqrt_() # [N,1,H, W]
-        region_loss = adaptive_avg_pool2d(pixel_loss+edge_loss, args.pool_size)
-        loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
-        if args.print_weight:
-            print(f"softmax loss weight is: \n{loss_weight}")
-        loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
-        loss_weight = loss_weight/(loss_weight.sum())
-        loss_weight = loss_weight.clone().detach()
-        if args.save_loss:
-            print("saving loss heatmap...")
-            save_name = os.path.join(save_path, current_path_str[:-1])
-            plot_loss_map(pixel_loss, args, savepath=save_name)
-        if args.save_video:
-            print("saving iteration video...")
-            img_array = []
-            for ii in range(0, args.num_iter):
-                filename = os.path.join(save_path, "images", f"{current_path_str[:-1]}-{ii}.png")
-                img = cv2.imread(filename)
-                cv2.putText(img, f"Path:{current_path_str[:-1]} \nIteration:{ii}", (10,10),
-                    cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),  1)
-                img_array.append(img)
-            videoname = os.path.join(save_path, "videos", f"{current_path_str[:-1]}.mp4")
-            out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (canvas_width, canvas_height))
-            for iii in range(len(img_array)):
-                out.write(img_array[iii])
-            out.release()
-
-    print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
 
 def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args):
@@ -439,6 +300,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     !!! The two gradient colors are not implemented yet!!!
     """
     region_loss = adaptive_avg_pool2d(pixelwise_loss, args.pool_size)
+    print(f"region_loss.shape is:{region_loss.shape}")
     loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
     shapes, shape_groups, points_vars, color_vars = init_new_paths(
         1, canvas_width, canvas_height, args, len(old_shapes), loss_weight)
@@ -507,22 +369,18 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         img = img[:, :, :3]
         img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
         # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
-        loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
-        print(f"mse_loss shape is: {loss.shape}")
-        # loss = (loss*loss_weight).sum()
-        loss = (loss).sum()
+        pixelwise_loss = 0.
+        mse_loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
+        pixelwise_loss += mse_loss
         # add edge loss here
-        edge_loss = args.edge_weight * (abs(target_edge - edge_img))
-        print(f"target_edge grad: {target_edge.requires_grad},  edge_img grad: {edge_img.requires_grad}")
-        print(f"edge_loss shape is: {edge_loss.shape}")
-        edge_loss = edge_loss.mean()
-        edge_loss = edge_loss.mean()
+        edge_loss = args.edge_weight * (abs(target_edge - edge_img)).unsqueeze(dim=0).unsqueeze(dim=0)  # [1,1,H,W]
+        pixelwise_loss += edge_loss
         # add xing_loss here
-        x_loss = xing_loss(points_vars,scale=args.xing_weight)
-        print(f"x_loss shape is: {x_loss.shape}")
-        t_range.set_postfix({'mse_loss': loss.item(), 'edge_loss': edge_loss.item(),'xing_loss': x_loss.item()})
+        x_loss = xing_loss(points_vars,scale=args.xing_weight)  # real value [1]
+        # pixelwise_loss += x_loss  # pixel-wise loss should not consider the x_los in cal since it is a real value.
+        t_range.set_postfix({'mse_loss': mse_loss.item(), 'edge_loss': edge_loss.item(),'xing_loss': x_loss.item()})
         # Backpropagate the gradients.
-        loss = loss + edge_loss + x_loss
+        loss = ((loss + edge_loss + x_loss)*loss_weight).sum()
         loss.backward()
 
         # Take a gradient descent step.
