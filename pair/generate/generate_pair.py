@@ -465,7 +465,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
         color_scheduler.step()
 
         for group in shape_groups:
-            if color_option == "Normal":
+            if isinstance(group.fill_color, pydiffvg.LinearGradient) or isinstance(group.fill_color, pydiffvg.RadialGradient):
                 group.fill_color.data.clamp_(0.0, 1.0)
             else:
                 group.fill_color.stop_colors.data.clamp_(0.0, 1.0)
