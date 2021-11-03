@@ -248,13 +248,13 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_segments, c
 
 def copy_color(color):
     if isinstance(color, pydiffvg.LinearGradient):
-        new_color = pydiffvg.LinearGradient( begin = color.begin.clone(), end = color.end.clone(),
-                        offsets = color.offsets.clone(), stop_colors = color.stop_colors.clone())
+        new_color = pydiffvg.LinearGradient( begin = color.begin.clone().detach(), end = color.end.clone().detach(),
+                        offsets = color.offsets.clone().detach(), stop_colors = color.stop_colors.clone().detach())
     elif isinstance(color, pydiffvg.RadialGradient):
-        new_color = pydiffvg.RadialGradient( center = color.center.clone(), radius = color.radius.clone(),
-                offsets = color.offsets.clone(), stop_colors = color.stop_colors.clone())
+        new_color = pydiffvg.RadialGradient( center = color.center.clone().detach(), radius = color.radius.clone().detach(),
+                offsets = color.offsets.clone().detach(), stop_colors = color.stop_colors.clone().detach())
     else:
-        new_color = color.clone()
+        new_color = color.clone().detach()
     return new_color
 
 def plot_loss_map(pixel_loss, args,savepath="./"):
@@ -357,7 +357,7 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     if len(old_shapes) > 0:
         for old_path in old_shapes:
             copyed_path = pydiffvg.Path(num_control_points = old_path.num_control_points,
-                             points = old_path.points.clone(), stroke_width = old_path.stroke_width, is_closed = True)
+                             points = old_path.points.clone().detach(), stroke_width = old_path.stroke_width, is_closed = True)
             copyed_shapes.append(copyed_path)
             if args.free:
                 copyed_path.points.requires_grad = True
