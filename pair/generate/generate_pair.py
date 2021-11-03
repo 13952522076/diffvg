@@ -545,4 +545,4 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
 
 
 if __name__ == "__main__":
-    main()
+    main_single_img()
