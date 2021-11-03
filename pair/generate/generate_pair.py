@@ -390,13 +390,6 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
                 else:
                     copyed_group.fill_color.requires_grad = False
 
-            copyed_group = pydiffvg.ShapeGroup(shape_ids = old_group.shape_ids, fill_color = old_group.fill_color)
-            copyed_shape_groups.append(copyed_group)
-            if args.free:
-                copyed_group.fill_color.requires_grad = True
-                old_color_vars.append(copyed_group.fill_color)
-            else:
-                copyed_group.fill_color.requires_grad = False
 
     shapes = [*copyed_shapes, *shapes]
     shape_groups = [*copyed_shape_groups, *shape_groups]
