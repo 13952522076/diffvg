@@ -1,17 +1,8 @@
 """
-This is the main file or our proposed method.
-Given an input image, we will progressively reconstruct it using svg Bezier path.
-
-This will generate a folder named {args.save_folder}/{filename}/{details}
-
-Here are some use cases:
+Experimental generating pair_exp
 
 python generate_pair.py ../Layerwise/demo2.png --pool_size 60  --free --initial circle --circle_init_radius 0.01
 
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
@@ -40,18 +31,22 @@ gamma = 1.0
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--target", help="target image path")
-    parser.add_argument("--start", type=int, default=0)
-    parser.add_argument("--end", type=int, default=2000)
-    parser.add_argument('--data', metavar='DIR', default="../data/generate/generate/img", help='path to dataset')
+    parser.add_argument("target", help="target image path")
+    parser.add_argument("--num_paths", type=str, default="1,1,1")
+    parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
     # Please ensure that image resolution is divisible by pool_size; otherwise the performance would drop a lot.
     parser.add_argument('--pool_size', type=int, default=60, help="the pooled image size for next path initialization")
-    parser.add_argument('--save_folder', metavar='DIR', default="../data/generate/generate/row_data")
-    parser.add_argument('--initial', type=str, default="circle", choices=['random', 'circle'])
-    parser.add_argument('--circle_init_radius',  type=float, default=0.01)
-    parser.add_argument('--edge_weight',  type=float, default=0.)
+    parser.add_argument('--save_loss', action='store_true')
+    parser.add_argument('--save_init', action='store_true')
+    parser.add_argument('--save_image', action='store_true')
+    parser.add_argument('--save_video', action='store_true')
+    parser.add_argument('--print_weight', action='store_true')
+    parser.add_argument('--save_folder', metavar='DIR', default="output")
+    parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
+    parser.add_argument('--circle_init_radius',  type=float)
+    parser.add_argument('--edge_weight',  type=float, default=0.00001)
     parser.add_argument('--xing_weight',  type=float ,default=0., help="weight for crossing loss.")
     parser.add_argument('--threshold_max_path',  type=int ,default=30, help="weight for crossing loss.")
     parser.add_argument('--threshold_min_loss',  type=int ,default=0.0013,
@@ -89,7 +84,15 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
 
 
 def make_save_path(args):
-    save_path = args.save_folder
+    filename = os.path.splitext(os.path.basename(args.target))[0]
+    detail_folder = args.num_paths+"Seg"+str(args.num_segments)+"Iter"+str(args.num_iter)+"Pool"+str(args.pool_size)
+    if args.free:
+        detail_folder+="Free"
+    detail_folder+=args.initial
+    if args.initial=='circle' and args.circle_init_radius is not None:
+        detail_folder+=str(args.circle_init_radius)
+    detail_folder = detail_folder + "Edge" + str(args.edge_weight)
+    save_path = os.path.join(args.save_folder, filename, detail_folder)
     try:
         os.makedirs(save_path)
     except OSError as exc:  # Python >2.5
@@ -97,6 +100,13 @@ def make_save_path(args):
                 pass
             else:
                 raise
+    if args.save_video:
+        try:
+            os.makedirs(os.path.join(save_path,'videos'))
+            os.makedirs(os.path.join(save_path,'images'))
+            os.makedirs(os.path.join(save_path,'edges'))
+        except OSError as exc:  # Python >2.5
+            pass
     return save_path
 
 
@@ -257,18 +267,12 @@ def plot_loss_map(pixel_loss, args,savepath="./"):
 
 render = pydiffvg.RenderFunction.apply
 
-args = parse_args()
-save_path = make_save_path(args)
-pydiffvg.set_use_gpu(torch.cuda.is_available())
-def main():
-    for i in range(args.start, args.end):
-        file_path = os.path.join(args.data, f"{i}.png")
-        args.target = file_path
-        main_single_img(i)
-    return 0
-
-def main_single_img(file_idx):
-    print(f'==> processing file {file_idx}')
+def main_single_img():
+    args = parse_args()
+    save_path = make_save_path(args)
+    # Use GPU if available
+    pydiffvg.set_use_gpu(torch.cuda.is_available())
+    # filename = os.path.splitext(os.path.basename(args.target))[0]
     target, target_edge = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
     random.seed(1234)
@@ -308,8 +312,8 @@ def main_single_img(file_idx):
                     target, target_edge, canvas_width, canvas_height, args)
                 weighted_candidate_loss = 0.5*(color_options_weight+num_segments_weight)*candidate_loss
                 print(f"weighted_candidate_loss is: {weighted_candidate_loss} \n")
-                # pydiffvg.save_svg(f"output/Path{str(threshold_path)}_Seg{str(num_segment)}_{color_option}_output.svg",
-                #                   canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
+                pydiffvg.save_svg(f"output/Path{str(threshold_path)}_Seg{str(num_segment)}_{color_option}_output.svg",
+                                  canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
                 if weighted_candidate_loss < best_weighted_loss:
                     best_old_shapes = candidate_old_shapes
                     best_old_shape_groups = candidate_old_shape_groups
@@ -329,8 +333,7 @@ def main_single_img(file_idx):
 
         if best_loss < args.threshold_min_loss:
             break
-
-    f = open(os.path.join(args.save_folder, f"{file_idx}.pkl"),"wb")
+    f = open("row_data.pkl","wb")
     pickle.dump(row_data_list,f)
     f.close()
     print(f"\nDone! total {threshold_path+1} paths, the last loss is: {best_loss.item()}.\n")
@@ -405,8 +408,8 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
     shapes = [*copyed_shapes, *shapes]
     shape_groups = [*copyed_shape_groups, *shape_groups]
 
-    # pydiffvg.save_svg(f"output/Path{str(len(shapes))}_Seg{str(num_segment)}_{color_option}_init.svg",
-    #                               canvas_width, canvas_height, shapes, shape_groups)
+    pydiffvg.save_svg(f"output/Path{str(len(shapes))}_Seg{str(num_segment)}_{color_option}_init.svg",
+                                  canvas_width, canvas_height, shapes, shape_groups)
 
     # Optimize
     points_vars = [*old_points_vars, *points_vars]
