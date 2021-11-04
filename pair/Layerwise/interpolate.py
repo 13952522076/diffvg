@@ -3,7 +3,7 @@
 Here are some use cases:
 
 
-python main.py fig1.png fig2.png--num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python interpolate.py fig1.png fig2.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
@@ -276,9 +276,6 @@ def main():
             img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
             # Compose img with white background
             img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
-            if args.save_video:
-                save_name = os.path.join(save_path,"images", f"{current_path_str[:-1]}-{t}.png")
-                pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
             if (t == args.num_iter - 1) and args.save_image:
                     save_name = os.path.join(save_path, f"{current_path_str[:-1]}.png")
                     pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
@@ -302,6 +299,7 @@ def main():
             color_scheduler.step()
 
             for group in shape_groups:
+                group.fill_color.data[3]=1.0
                 group.fill_color.data.clamp_(0.0, 1.0)
             if t == args.num_iter - 1:
                 save_name = os.path.join(save_path, f"{current_path_str[:-1]}.svg")
@@ -362,6 +360,7 @@ def main():
         color_scheduler.step()
 
         for group in shape_groups:
+            group.fill_color.data[3]=1.0
             group.fill_color.data.clamp_(0.0, 1.0)
 
         save_name = os.path.join(save_path, f"Interpolate{t+1}.svg")
