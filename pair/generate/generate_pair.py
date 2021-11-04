@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python generate_pair.py ../Layerwise/demo.png --pool_size 60  --free --initial circle --circle_init_radius 0.01
+python generate_pair.py ../Layerwise/demo2.png --pool_size 60  --free --initial circle --circle_init_radius 0.01
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -293,8 +293,8 @@ def main_single_img():
     pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     # sort from complex to simple to encourage learning simple shapes.
-    num_segments_options = [5, 4, 3]
-    num_segments_weights = [1.05, 1., 0.95]  # encourage lower value
+    num_segments_options = [8, 7, 6, 5, 4, 3]
+    num_segments_weights = [ 1.2, 1.15, 1.1, 1.05, 1., 0.95]  # encourage lower value
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
     color_options_weights = [1., 1., 0.9] # encourage lower value
 
