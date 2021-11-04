@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python generate_pair.py ../Layerwise/demo.png --pool_size 60  --free
+python generate_pair.py ../Layerwise/demo.png --pool_size 60  --free --initial circle --circle_init_radius 0.01
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
@@ -26,6 +26,7 @@ import argparse
 import math
 import errno
 from tqdm import tqdm
+import pickle
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.nn.functional import adaptive_avg_pool2d
 import warnings
@@ -293,31 +294,39 @@ def main_single_img():
 
     # sort from complex to simple to encourage learning simple shapes.
     num_segments_options = [5, 4, 3]
+    num_segments_weights = [1.05, 1., 0.95]  # encourage lower value
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
+    color_options_weights = [1.1, 1., 0.9] # encourage lower value
 
     for threshold_path in range(1, args.threshold_max_path+1):
         best_num_segments = None
         best_color = None
         best_loss = 9999.
+        best_weighted_loss = 9999.
         best_pixelwise_loss=0.
         # initialize the row data
-        row_data = {"pixelwise_loss": pixelwise_loss,
+        row_data = {"pixelwise_loss": pixelwise_loss.clone().cpu().detach().numpy(),
                     "best_num_segments": best_num_segments,
                     "best_color": best_color,
-                    "best_loss": best_loss
+                    "best_loss": best_loss,
+                    "best_weighted_loss": best_weighted_loss
                     }
-        for num_segment in num_segments_options:
-            for color_option in color_options:
+        for idx_n, num_segment in enumerate(num_segments_options):
+            num_segments_weight = num_segments_weights[idx_n]
+            for idx_c, color_option in enumerate(color_options):
+                color_options_weight = color_options_weights[idx_c]
                 print(f"calculating |Paths: {threshold_path} | Segments: {num_segment}| Color: {color_option}")
                 candidate_old_shapes, candidate_old_shape_groups, candidate_pixelwise_loss, candidate_loss  = detail_method(
                     old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args)
+                weighted_candidate_loss = (color_options_weight+num_segments_weight)*candidate_loss
                 pydiffvg.save_svg(f"output/Path{str(threshold_path)}_Seg{str(num_segment)}_{color_option}_output.svg",
                                   canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
-                if candidate_loss < best_loss:
+                if weighted_candidate_loss < best_weighted_loss:
                     best_old_shapes = candidate_old_shapes
                     best_old_shape_groups = candidate_old_shape_groups
                     best_pixelwise_loss = candidate_pixelwise_loss
+                    best_weighted_loss = weighted_candidate_loss
                     best_loss = candidate_loss
                     best_num_segments = num_segment
                     best_color = color_option
@@ -327,12 +336,16 @@ def main_single_img():
         row_data["best_num_segments"] = best_num_segments
         row_data["best_color"] = best_color
         row_data["best_loss"] = best_loss
+        row_data["best_weighted_loss"] = best_weighted_loss
         row_data_list.append(row_data)
 
         if best_loss < args.threshold_min_loss:
             break
-
+    f = open("row_data.pkl","wb")
+    pickle.dump(row_data_list,f)
+    f.close()
     print(f"\nDone! total {threshold_path+1} paths, the last loss is: {best_loss.item()}.\n")
+
     return row_data_list
 
 
