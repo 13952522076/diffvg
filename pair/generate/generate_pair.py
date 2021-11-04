@@ -320,6 +320,7 @@ def main_single_img():
                     old_shapes, old_shape_groups, pixelwise_loss, num_segment, color_option,
                     target, target_edge, canvas_width, canvas_height, args)
                 weighted_candidate_loss = (color_options_weight+num_segments_weight)*candidate_loss
+                print(f"weighted_candidate_loss is: {weighted_candidate_loss} \n")
                 pydiffvg.save_svg(f"output/Path{str(threshold_path)}_Seg{str(num_segment)}_{color_option}_output.svg",
                                   canvas_width, canvas_height, candidate_old_shapes, candidate_old_shape_groups)
                 if weighted_candidate_loss < best_weighted_loss:
