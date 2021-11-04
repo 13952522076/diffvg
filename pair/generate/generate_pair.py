@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python generate_pair.py ../Layerwise/demo2.png --pool_size 60  --free --start 0 --end 3 --num_iter 50 --threshold_max_path 3
+python generate_pair.py  --pool_size 60  --free --start 0 --end 3
 """
 import pydiffvg
 import torch
@@ -275,8 +275,8 @@ def main_single_img(file_idx):
     pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     # sort from complex to simple to encourage learning simple shapes.
-    num_segments_options = [ 3]
-    num_segments_weights = [  0.95]  # encourage lower value
+    num_segments_options = [8, 7, 6, 5, 4, 3]
+    num_segments_weights = [1.2, 1.15, 1.1, 1.05, 1.0,  0.95]  # encourage lower value
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
     color_options_weights = [1., 1., 0.9] # encourage lower value
 
