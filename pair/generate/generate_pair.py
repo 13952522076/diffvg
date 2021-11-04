@@ -6,7 +6,7 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 
 Here are some use cases:
 
-python generate_pair.py ../Layerwise/demo2.png --pool_size 60  --free --initial circle --circle_init_radius 0.01
+python generate_pair.py ../Layerwise/demo2.png --pool_size 60  --free --start 0 --end 3 --num_iter 50 --threshold_max_path 3
 """
 import pydiffvg
 import torch
