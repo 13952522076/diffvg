@@ -293,8 +293,8 @@ def main_single_img():
     pixelwise_loss = 1.-target.mean(dim=1,keepdim=True) # [n,1,w,h]
 
     # sort from complex to simple to encourage learning simple shapes.
-    num_segments_options = [8, 7, 6, 5, 4, 3]
-    num_segments_weights = [ 1.2, 1.15, 1.1, 1.05, 1., 0.95]  # encourage lower value
+    num_segments_options = [ 3]
+    num_segments_weights = [  0.95]  # encourage lower value
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
     color_options_weights = [1., 1., 0.9] # encourage lower value
 
@@ -336,8 +336,8 @@ def main_single_img():
         # append the row data
         row_data["best_num_segments"] = best_num_segments
         row_data["best_color"] = best_color
-        row_data["best_loss"] = best_loss
-        row_data["best_weighted_loss"] = best_weighted_loss
+        row_data["best_loss"] = best_loss.clone().cpu().detach().item()
+        row_data["best_weighted_loss"] = best_weighted_loss.clone().cpu().detach().item()
         row_data_list.append(row_data)
 
         if best_loss < args.threshold_min_loss:
