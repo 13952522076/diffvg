@@ -296,7 +296,7 @@ def main_single_img():
     num_segments_options = [5, 4, 3]
     num_segments_weights = [1.05, 1., 0.95]  # encourage lower value
     color_options = [ "RadialGradient", "LinearGradient", "Normal"]
-    color_options_weights = [1.1, 1., 0.9] # encourage lower value
+    color_options_weights = [1., 1., 0.9] # encourage lower value
 
     for threshold_path in range(1, args.threshold_max_path+1):
         best_num_segments = None
