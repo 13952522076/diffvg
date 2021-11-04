@@ -322,6 +322,7 @@ def main():
 
 
     #### start the target to target_new code
+    loss_weight = 1.0/(canvas_width*canvas_height)
     print(f"\n\n\n==> start the target to target_new code...\n")
     args.target = args.target_new
     target = load_image(args)
@@ -334,6 +335,7 @@ def main():
     # Adam iterations.
     t_range = tqdm(range(args.num_iter2))
     for t in t_range:
+
         points_optim.zero_grad()
         color_optim.zero_grad()
         # Forward pass: render the image.
@@ -344,9 +346,21 @@ def main():
 
         img = img[:, :, :3]
         img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
+
+        if t % 100 ==0:
+            # calculate the pixel loss
+            pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
+            region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
+            loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
+
+            loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
+            loss_weight = loss_weight/(loss_weight.sum())
+            loss_weight = loss_weight.clone().detach()
+
+
         # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
         loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
-        loss = (loss).mean()
+        loss = (loss*loss_weight).sum()
         # print(f'iteration: {t} \t render loss: {loss.item()}')
         t_range.set_postfix({'loss': loss.item()})
         # Backpropagate the gradients.
