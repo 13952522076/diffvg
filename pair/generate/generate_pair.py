@@ -7,11 +7,6 @@ This will generate a folder named {args.save_folder}/{filename}/{details}
 Here are some use cases:
 
 python generate_pair.py ../Layerwise/demo2.png --pool_size 60  --free --initial circle --circle_init_radius 0.01
-
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
@@ -483,4 +478,4 @@ def detail_method(old_shapes, old_shape_groups, pixelwise_loss, num_segment, col
 
 
 if __name__ == "__main__":
-    main_single_img()
+    main()
