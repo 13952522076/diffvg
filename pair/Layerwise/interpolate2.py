@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python interpolate2.py 111.png 111.png --num_paths 1,1,1,1,1,1,1 --pool_size 40 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python interpolate.py 111.png 222.png --num_paths 1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
@@ -188,7 +188,7 @@ def init_new_paths(num_paths, canvas_width, canvas_height, args, num_old_shapes=
     for group in shape_groups:
         group.fill_color.requires_grad = True
         color_vars.append(group.fill_color)
-    # print(f"points shape is: {(points_vars[0]).shape}")
+    print(f"points shape is: {(points_vars[0]).shape}")
     return shapes, shape_groups, points_vars, color_vars
 
 
@@ -258,7 +258,6 @@ def main():
         if args.save_init:
             save_name = os.path.join(save_path, f"{current_path_str[:-1]}-init.svg")
             pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
-
         # Optimize
         points_vars = [*old_points_vars, *points_vars]
         color_vars = [*old_color_vars, *color_vars]
@@ -321,83 +320,64 @@ def main():
     print(f"\nDone! total {sum(num_paths_list)} paths, the last loss is: {loss.item()}.\n")
 
 
-
-
-
-
-
     #### start the target to target_new code
     loss_weight = 1.0/(canvas_width*canvas_height)
     print(f"\n\n\n==> start the target to target_new code...\n")
     args.target = args.target_new
     target = load_image(args)
     canvas_width, canvas_height = target.shape[3], target.shape[2]
+    # Optimize
+    points_optim = torch.optim.Adam(points_vars, lr=1)
+    color_optim = torch.optim.Adam(color_vars, lr=0.1)
+    points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
+    color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
+    # Adam iterations.
+    t_range = tqdm(range(args.num_iter2))
+    for t in t_range:
 
-    points_vars = []
-    color_vars = []
-    for i in range(0, len(shapes)):
-        (shapes[i]).points.requires_grad = False
-        points_vars.append((shapes[i]).points)
-        (shape_groups[i]).fill_color.requires_grad = False
-        color_vars.append((shape_groups[i]).fill_color)
+        points_optim.zero_grad()
+        color_optim.zero_grad()
+        # Forward pass: render the image.
+        scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
+        img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
+        # Compose img with white background
+        img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
 
-    current_total_num_paths=0
-    for num_paths in num_paths_list:
-        current_total_num_paths += num_paths
-        for jj in range(0, current_total_num_paths):
-            (points_vars[jj]).requires_grad = True
-            (color_vars[jj]).requires_grad = True
-        # Optimize
-        points_optim = torch.optim.Adam(points_vars, lr=1)
-        color_optim = torch.optim.Adam(color_vars, lr=0.1)
-        points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
-        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
+        img = img[:, :, :3]
+        img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
 
-        # Adam iterations.
-        t_range = tqdm(range(args.num_iter))
-        for t in t_range:
-            points_optim.zero_grad()
-            color_optim.zero_grad()
-            # Forward pass: render the image.
-            scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
-            img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
-            # Compose img with white background
-            img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
+        if t % 100 ==0:
+            # calculate the pixel loss
+            pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
+            region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
+            loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
 
-            img = img[:, :, :3]
-            img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
-
-            if t == 0:
-                # calculate the pixel loss
-                pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
-                region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
-                loss_weight = torch.softmax(region_loss.reshape(1,1,-1),dim=-1).reshape_as(region_loss)
-                loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
-                loss_weight = loss_weight/(loss_weight.sum())
-                loss_weight = loss_weight.clone().detach()
+            loss_weight = torch.nn.functional.interpolate(loss_weight, size=[canvas_height,canvas_width], mode='area')
+            loss_weight = loss_weight/(loss_weight.sum())
+            loss_weight = loss_weight.clone().detach()
 
 
-            # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
-            loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
-            loss = (loss*loss_weight).sum()
-            # print(f'iteration: {t} \t render loss: {loss.item()}')
-            t_range.set_postfix({'loss': loss.item()})
-            # Backpropagate the gradients.
-            loss.backward()
+        # loss = (img - target).pow(2).mean(dim=1,keepdim=True)
+        loss = ((img-target)**2).sum(dim=1, keepdim=True) # [N,1,H, W]
+        loss = (loss*loss_weight).sum()
+        # print(f'iteration: {t} \t render loss: {loss.item()}')
+        t_range.set_postfix({'loss': loss.item()})
+        # Backpropagate the gradients.
+        loss.backward()
 
-            # Take a gradient descent step.
-            points_optim.step()
-            color_optim.step()
+        # Take a gradient descent step.
+        points_optim.step()
+        color_optim.step()
 
-            points_scheduler.step()
-            color_scheduler.step()
+        points_scheduler.step()
+        color_scheduler.step()
 
-            for group in shape_groups:
-                group.fill_color.data[3]=1.0
-                group.fill_color.data.clamp_(0.0, 1.0)
+        for group in shape_groups:
+            group.fill_color.data[3]=1.0
+            group.fill_color.data.clamp_(0.0, 1.0)
 
-            save_name = os.path.join(save_path, f"Interpolate_{current_total_num_paths}_{t+1}.svg")
-            pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+        save_name = os.path.join(save_path, f"Interpolate{t+1}.svg")
+        pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
 if __name__ == "__main__":
     main()
