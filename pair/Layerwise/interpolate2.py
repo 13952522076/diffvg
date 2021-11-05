@@ -384,18 +384,18 @@ def main():
         pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
 
 
-        if args.save_video:
-            print("saving iteration video...")
-            img_array = []
-            for ii in range(0, args.num_iter2):
-                filename = os.path.join(save_path, "images", f"{ii}.png")
-                img = cv2.imread(filename)
-                img_array.append(img)
-            videoname = os.path.join(save_path, "videos", f"interpolate.mp4")
-            out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 200.0, (canvas_width, canvas_height))
-            for iii in range(len(img_array)):
-                out.write(img_array[iii])
-            out.release()
+    if args.save_video:
+        print("saving iteration video...")
+        img_array = []
+        for ii in range(0, args.num_iter2):
+            filename = os.path.join(save_path, "images", f"{ii}.png")
+            img = cv2.imread(filename)
+            img_array.append(img)
+        videoname = os.path.join(save_path, "videos", f"interpolate.mp4")
+        out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 200.0, (canvas_width, canvas_height))
+        for iii in range(len(img_array)):
+            out.write(img_array[iii])
+        out.release()
 
 if __name__ == "__main__":
     main()
