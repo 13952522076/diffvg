@@ -106,7 +106,7 @@ def main():
     printf('==> Preparing data..')
     # Data
     transform_train = transforms.Compose([ transforms.ToPILImage(), transforms.Resize(224),
-                                           transforms.RandomHorizontalFlip(), transforms.ToTensor()])
+                                            transforms.ToTensor()])
     transform_test = transforms.Compose([ transforms.ToPILImage(), transforms.Resize(224), transforms.ToTensor() ])
     trainset = LossDataset(root=os.path.join(args.root, "train"),  normalize=args.normalize, transform=transform_train)
     train_loader = torch.utils.data.DataLoader(trainset, batch_size=args.bs, shuffle=True, num_workers=args.workers)
