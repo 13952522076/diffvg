@@ -172,8 +172,8 @@ class ResNet(nn.Module):
 
         x = self.lastpool(x)
         x = x.view(x.size(0), -1)
-        seg = torch.sigmoid(self.fc_segnum(x))*self.num_segments*5-self.num_segments
-        col = torch.sigmoid(self.fc_color(x))*self.num_colors*5-self.num_colors
+        seg = torch.sigmoid(self.fc_segnum(x))*self.num_segments*3-self.num_segments
+        col = torch.sigmoid(self.fc_color(x))*self.num_colors*3-self.num_colors
         # print(seg, col)
         # seg = self.fc_segnum(x)
         # seg.data.clamp_(0.0, self.num_segments)
