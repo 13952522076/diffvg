@@ -132,12 +132,12 @@ def main():
         else:
             is_best = False
             {"loss", "loss_segnum", "acc_segnum", "acc_color", "time"}
-        printf(f'Training loss: {train_out["loss"]}, loss_segnum: {train_out["loss_segnum"]}, '
-               f'loss_color: {train_out["loss_color"]},'
-               f'acc_segnum: {train_out["acc_segnum"]}, acc_color: {train_out["acc_color"]}')
-        printf(f'Testing  loss: {test_out["loss"]}, loss_segnum: {test_out["loss_segnum"]}, '
-               f'loss_color: {test_out["loss_color"]}, acc_segnum: {test_out["acc_segnum"]},'
-               f' acc_color: {test_out["acc_color"]}, best_meanAcc_test: {best_test_acc}')
+        printf(f'Training loss: {train_out["loss"][:20]}, loss_segnum: {train_out["loss_segnum"][:20]}, '
+               f'loss_color: {train_out["loss_color"][:20]},'
+               f'acc_segnum: {train_out["acc_segnum"][:20]}, acc_color: {train_out["acc_color"][:20]}')
+        printf(f'Testing  loss: {test_out["loss"][:20]}, loss_segnum: {test_out["loss_segnum"][:20]}, '
+               f'loss_color: {test_out["loss_color"][:20]}, acc_segnum: {test_out["acc_segnum"][:20]},'
+               f' acc_color: {test_out["acc_color"][:20]}, best_meanAcc_test: {best_test_acc}')
         save_model(
             net, epoch, path=args.checkpoint, acc=test_out["acc_color"] + test_out["acc_segnum"],
             is_best=is_best, best_test_acc=best_test_acc,  # best test accuracy
