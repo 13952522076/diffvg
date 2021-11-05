@@ -350,8 +350,8 @@ def main():
             (points_vars[jj]).requires_grad = True
             (color_vars[jj]).requires_grad = True
         # Optimize
-        points_optim = torch.optim.Adam(points_vars, lr=1)
-        color_optim = torch.optim.Adam(color_vars, lr=0.1)
+        points_optim = torch.optim.Adam(points_vars, lr=5)
+        color_optim = torch.optim.Adam(color_vars, lr=0.5)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
         color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
 
