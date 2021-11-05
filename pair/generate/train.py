@@ -66,7 +66,7 @@ def regression_loss(outputs, targets, weight=np.array([0.26, 0.87, 0.95, 0.96, 0
     # return (pt*loss).mean()
 
     weights = torch.Tensor(weight[targets.cpu().numpy()]).to(outputs.device)
-    loss = (abs(outputs - targets))*weights
+    loss = (abs(outputs - targets))*(weights**3)
     return loss.mean()
 
 def save_model(net, epoch, path, acc, is_best, **kwargs):
