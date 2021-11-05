@@ -49,6 +49,11 @@ def get_git_commit_id():
         return "0000000"
 
 
+def focal_loss(outputs, targets, alpha=1, gamma=2):
+    ce_loss = torch.nn.functional.cross_entropy(outputs, targets, reduction='none') # important to add reduction='none' to keep per-batch-item loss
+    pt = torch.exp(-ce_loss)
+    focal_loss = (alpha * (1-pt)**gamma * ce_loss).mean() # mean over the batch
+
 def save_model(net, epoch, path, acc, is_best, **kwargs):
     state = {
         'net': net.state_dict(),
@@ -96,8 +101,8 @@ def main():
     if device == 'cuda':
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
-    criterion1 = nn.CrossEntropyLoss()
-    criterion2 = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
+    criterion = focal_loss
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.lr / 1000)
     best_test_acc = 0.  # best test accuracy
@@ -107,7 +112,7 @@ def main():
     printf('==> Preparing data..')
     # Data
     transform_train = transforms.Compose([ transforms.ToPILImage(), transforms.Resize(224),
-                                            transforms.ToTensor()])
+                                           transforms.RandomHorizontalFlip(), transforms.ToTensor()])
     transform_test = transforms.Compose([ transforms.ToPILImage(), transforms.Resize(224), transforms.ToTensor() ])
     trainset = LossDataset(root=os.path.join(args.root, "train"),  normalize=args.normalize, transform=transform_train)
     train_loader = torch.utils.data.DataLoader(trainset, batch_size=args.bs, shuffle=True, num_workers=args.workers)
@@ -117,8 +122,8 @@ def main():
     for epoch in range(start_epoch, args.epoch):
         printf('\n\nEpoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         # {"loss", "loss_segnum", "loss_color", "acc_segnum", "acc_color", "time"}
-        train_out = train(net, train_loader, optimizer, criterion1,criterion2, device)
-        test_out = validate(net, test_loader, criterion1,criterion2, device)
+        train_out = train(net, train_loader, optimizer, criterion, device)
+        test_out = validate(net, test_loader, criterion, device)
         scheduler.step()
         if 0.5*(test_out["acc_color"] + test_out["acc_segnum"]) > best_test_acc:
             best_test_acc = 0.5*(test_out["acc_color"] + test_out["acc_segnum"])
@@ -142,7 +147,7 @@ def main():
         )
 
 
-def train(net, trainloader, optimizer, criterion1, criterion2, device):
+def train(net, trainloader, optimizer, criterion, device):
     net.train()
     train_loss = 0
     train_loss_segnum = 0
@@ -156,8 +161,8 @@ def train(net, trainloader, optimizer, criterion1, criterion2, device):
         data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
         logits_segnum, logits_color = net(data)
 
-        loss_segnum = criterion1(logits_segnum, label_segnum)
-        loss_color = criterion2(logits_color, label_color)
+        loss_segnum = criterion(logits_segnum, label_segnum)
+        loss_color = criterion(logits_color, label_color)
         loss = loss_segnum + loss_color
         loss.backward()
         optimizer.step()
@@ -188,7 +193,7 @@ def train(net, trainloader, optimizer, criterion1, criterion2, device):
     }
 
 
-def validate(net, valloader, criterion1, criterion2, device):
+def validate(net, valloader, criterion, device):
     net.eval()
     val_loss = 0
     val_loss_segnum = 0
@@ -202,8 +207,8 @@ def validate(net, valloader, criterion1, criterion2, device):
         for batch_idx, (data, label_segnum, label_color) in enumerate(t_range):
             data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
             logits_segnum, logits_color = net(data)
-            loss_segnum = criterion1(logits_segnum, label_segnum)
-            loss_color = criterion2(logits_color, label_color)
+            loss_segnum = criterion(logits_segnum, label_segnum)
+            loss_color = criterion(logits_color, label_color)
             loss = loss_segnum + loss_color
             val_loss += loss.item()
             val_loss_segnum += loss_segnum.item()

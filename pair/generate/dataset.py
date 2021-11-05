@@ -58,6 +58,39 @@ if __name__ == "__main__":
         transforms.Resize(224), transforms.RandomHorizontalFlip(), transforms.ToTensor()])
     dataset = LossDataset(transform=transform_train)
 
+    Seg3_num = 0
+    Seg4_num = 0
+    Seg5_num = 0
+    Seg6_num = 0
+    Seg7_num = 0
+    Seg8_num = 0
+    Norm_num = 0
+    Linear_num = 0
+    Radial_num = 0
+    for i in range(0, len(dataset.segnum)):
+        if dataset.segnum[i] ==0:
+            Seg3_num +=1
+        if dataset.segnum[i] ==1:
+            Seg4_num +=1
+        if dataset.segnum[i] ==2:
+            Seg5_num +=1
+        if dataset.segnum[i] ==3:
+            Seg6_num +=1
+        if dataset.segnum[i] ==4:
+            Seg7_num +=1
+        if dataset.segnum[i] ==5:
+            Seg8_num +=1
+        if dataset.color[i] ==0:
+            Radial_num +=1
+        if dataset.color[i] ==1:
+            Linear_num +=1
+        if dataset.color[i] ==2:
+            Norm_num +=1
+
+    print(f"Seg3: {Seg3_num} Seg4: {Seg4_num} Seg5: {Seg5_num} Seg6: {Seg6_num} Seg7: {Seg7_num} Seg8: {Seg8_num}")
+    print(f"Radial_num: {Radial_num} Linear_num: {Linear_num} Norm_num: {Norm_num}")
+
+
     # print(dataset.__len__())
     # print(dataset.__getitem__(28))
     for i in range (1,500):
