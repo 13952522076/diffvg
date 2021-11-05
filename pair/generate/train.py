@@ -57,7 +57,7 @@ def focal_loss(outputs, targets, alpha=1, gamma=5):
     focal_loss = (alpha * (1-pt)**gamma * ce_loss).mean() # mean over the batch
     return focal_loss
 
-def regression_loss(outputs, targets, weight=0.2):
+def regression_loss(outputs, targets, weight=0.5):
     # print(outputs)
     loss = (abs(outputs - targets))
     pt = torch.exp(loss*weight)
