@@ -194,8 +194,8 @@ def train(net, trainloader, optimizer, criterion, device, args):
                              "acc_color": correct_color/total,
                              })
     time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-    print(f"Train max preds_segnum is: {(preds_segnum[:20]).max()}, preds_color is: {preds_color[:20]}")
-    print(f"Train max label_segnum is: {(label_segnum[:20]).max()}, label_color is: {label_color[:20]}")
+    print(f"Train max preds_segnum is: {(preds_segnum).max()}, preds_color is: {preds_color[:10]}")
+    print(f"Train max label_segnum is: {(label_segnum).max()}, label_color is: {label_color[:10]}")
     return {
         "loss": float("%.3f" % (train_loss / (batch_idx + 1))),
         "loss_segnum": float("%.3f" % (train_loss_segnum / (batch_idx + 1))),
@@ -240,8 +240,8 @@ def validate(net, valloader, criterion, device, args):
                                  "acc_color": correct_color/total,
                                  })
     time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-    print(f"Valid preds_segnum is: {preds_segnum[:20]}, preds_color is: {preds_color[:20]}")
-    print(f"Valid label_segnum is: {label_segnum[:20]}, label_color is: {label_color[:20]}")
+    print(f"Valid max preds_segnum is: {(preds_segnum).max()}, preds_color is: {preds_color[:10]}")
+    print(f"Valid max label_segnum is: {(label_segnum).max()}, label_color is: {label_color[:10]}")
     return {
         "loss": float("%.3f" % (val_loss / (batch_idx + 1))),
         "loss_segnum": float("%.3f" % (val_loss_segnum / (batch_idx + 1))),
