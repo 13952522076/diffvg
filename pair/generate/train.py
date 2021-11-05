@@ -4,6 +4,7 @@ e.g.
 '''
 from __future__ import print_function
 
+import numpy as np
 import torch
 import shutil
 import logging
@@ -57,12 +58,16 @@ def focal_loss(outputs, targets, alpha=1, gamma=5):
     focal_loss = (alpha * (1-pt)**gamma * ce_loss).mean() # mean over the batch
     return focal_loss
 
-def regression_loss(outputs, targets, weight=0.5):
+def regression_loss(outputs, targets, weight=np.array([0.26, 0.87, 0.95, 0.96, 0.96, 0.97])):
     # print(outputs)
-    loss = (abs(outputs - targets))
-    pt = torch.exp(loss*weight)
-    # print(loss.shape)
-    return (pt*loss).mean()
+    # loss = (abs(outputs - targets))
+    # pt = torch.exp(loss*weight)
+    # # print(loss.shape)
+    # return (pt*loss).mean()
+
+    weights = torch.Tensor(weight[targets.numpy()]).to(outputs.device)
+    loss = (abs(outputs - targets))*weights
+    return loss.mean()
 
 def save_model(net, epoch, path, acc, is_best, **kwargs):
     state = {
@@ -171,8 +176,8 @@ def train(net, trainloader, optimizer, criterion, device, args):
         data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
         logits_segnum, logits_color = net(data)
 
-        loss_segnum = criterion(logits_segnum, label_segnum)
-        loss_color = args.alpha * criterion(logits_color, label_color)
+        loss_segnum = criterion(logits_segnum, label_segnum, np.array([0.26, 0.87, 0.95, 0.96, 0.96, 0.97]))
+        loss_color = args.alpha * criterion(logits_color, label_color, np.array([0.20, 0.89, 0.89]))
         loss = loss_segnum + loss_color
         loss.backward()
         torch.nn.utils.clip_grad_norm_(net.parameters(), 1)
@@ -219,8 +224,8 @@ def validate(net, valloader, criterion, device, args):
         for batch_idx, (data, label_segnum, label_color) in enumerate(t_range):
             data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
             logits_segnum, logits_color = net(data)
-            loss_segnum = criterion(logits_segnum, label_segnum)
-            loss_color = args.alpha * criterion(logits_color, label_color)
+            loss_segnum = criterion(logits_segnum, label_segnum, np.array([0.26, 0.87, 0.95, 0.96, 0.96, 0.97]))
+            loss_color = args.alpha * criterion(logits_color, label_color, np.array([0.20, 0.89, 0.89]))
             loss = loss_segnum + loss_color
             val_loss += loss.item()
             val_loss_segnum += loss_segnum.item()
