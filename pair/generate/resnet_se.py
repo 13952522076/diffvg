@@ -168,7 +168,7 @@ class ResNet(nn.Module):
         x = self.layer3(x)
         x = self.layer4(x)
 
-        x = self.avgpool(x)
+        x = self.maxpool(x)
         x = x.view(x.size(0), -1)
         seg = self.fc_segnum(x)
         col = self.fc_color(x)
