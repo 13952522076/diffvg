@@ -187,6 +187,8 @@ def train(net, trainloader, optimizer, criterion, device):
         correct_color += preds_color.eq(label_color).sum().item()
 
         t_range.set_postfix({'Train loss':(train_loss / (batch_idx + 1)),
+                             "loss_segnum": (train_loss_segnum / (batch_idx + 1)),
+                             "loss_color": (train_loss_color / (batch_idx + 1)),
                              "acc_segnum": correct_segnum/total,
                              "acc_color": correct_color/total,
                              })
@@ -231,6 +233,8 @@ def validate(net, valloader, criterion, device):
             correct_color += preds_color.eq(label_color).sum().item()
 
             t_range.set_postfix({'Val loss':(val_loss / (batch_idx + 1)),
+                                 "loss_segnum": (val_loss_segnum / (batch_idx + 1)),
+                                 "loss_color": (val_loss_color / (batch_idx + 1)),
                                  "acc_segnum": correct_segnum/total,
                                  "acc_color": correct_color/total,
                                  })
