@@ -65,7 +65,7 @@ def regression_loss(outputs, targets, weight=np.array([0.26, 0.87, 0.95, 0.96, 0
     # # print(loss.shape)
     # return (pt*loss).mean()
 
-    weights = torch.Tensor(weight[targets.numpy()]).to(outputs.device)
+    weights = torch.Tensor(weight[targets.cpu().numpy()]).to(outputs.device)
     loss = (abs(outputs - targets))*weights
     return loss.mean()
 
