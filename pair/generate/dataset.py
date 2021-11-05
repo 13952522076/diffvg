@@ -12,7 +12,7 @@ def load_data(root="../data/generate/generate/row_data/train", normalize=True):
     all_loss = []
     all_segnum = []
     all_color = []
-    color_map= {"RadialGradient":0, "LinearGradient":1, "Normal":2}
+    color_map= {"RadialGradient":2, "LinearGradient":1, "Normal":0}
     for file_name in glob.glob(os.path.join(BASE_DIR, root, '*.pkl')):
         with open(file_name, "rb") as f:
             row_list = pickle.load(f)
