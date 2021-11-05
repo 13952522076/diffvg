@@ -96,7 +96,8 @@ def main():
     if device == 'cuda':
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
-    criterion = nn.CrossEntropyLoss()
+    criterion1 = nn.CrossEntropyLoss()
+    criterion2 = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.lr / 1000)
     best_test_acc = 0.  # best test accuracy
@@ -116,8 +117,8 @@ def main():
     for epoch in range(start_epoch, args.epoch):
         printf('\n\nEpoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         # {"loss", "loss_segnum", "loss_color", "acc_segnum", "acc_color", "time"}
-        train_out = train(net, train_loader, optimizer, criterion, device)
-        test_out = validate(net, test_loader, criterion, device)
+        train_out = train(net, train_loader, optimizer, criterion1,criterion2, device)
+        test_out = validate(net, test_loader, criterion1,criterion2, device)
         scheduler.step()
         if 0.5*(test_out["acc_color"] + test_out["acc_segnum"]) > best_test_acc:
             best_test_acc = 0.5*(test_out["acc_color"] + test_out["acc_segnum"])
@@ -141,7 +142,7 @@ def main():
         )
 
 
-def train(net, trainloader, optimizer, criterion, device):
+def train(net, trainloader, optimizer, criterion1, criterion2, device):
     net.train()
     train_loss = 0
     train_loss_segnum = 0
@@ -155,8 +156,8 @@ def train(net, trainloader, optimizer, criterion, device):
         data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
         logits_segnum, logits_color = net(data)
 
-        loss_segnum = criterion(logits_segnum, label_segnum)
-        loss_color = criterion(logits_color, label_color)
+        loss_segnum = criterion1(logits_segnum, label_segnum)
+        loss_color = criterion2(logits_color, label_color)
         loss = loss_segnum + loss_color
         loss.backward()
         optimizer.step()
@@ -187,7 +188,7 @@ def train(net, trainloader, optimizer, criterion, device):
     }
 
 
-def validate(net, valloader, criterion, device):
+def validate(net, valloader, criterion1, criterion2, device):
     net.eval()
     val_loss = 0
     val_loss_segnum = 0
@@ -201,8 +202,8 @@ def validate(net, valloader, criterion, device):
         for batch_idx, (data, label_segnum, label_color) in enumerate(t_range):
             data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
             logits_segnum, logits_color = net(data)
-            loss_segnum = criterion(logits_segnum, label_segnum)
-            loss_color = criterion(logits_color, label_color)
+            loss_segnum = criterion1(logits_segnum, label_segnum)
+            loss_color = criterion2(logits_color, label_color)
             loss = loss_segnum + loss_color
             val_loss += loss.item()
             val_loss_segnum += loss_segnum.item()
