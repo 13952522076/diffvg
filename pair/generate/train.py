@@ -76,7 +76,6 @@ def save_model(net, epoch, path, acc, is_best, **kwargs):
     if is_best:
         shutil.copyfile(filepath, os.path.join(path, 'best_checkpoint.pth'))
 
-global args
 def main():
     args = parse_args()
     os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
@@ -132,8 +131,8 @@ def main():
     for epoch in range(start_epoch, args.epoch):
         printf('\n\nEpoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         # {"loss", "loss_segnum", "loss_color", "acc_segnum", "acc_color", "time"}
-        train_out = train(net, train_loader, optimizer, criterion, device)
-        test_out = validate(net, test_loader, criterion, device)
+        train_out = train(net, train_loader, optimizer, criterion, device, args)
+        test_out = validate(net, test_loader, criterion, device, args)
         scheduler.step()
         if 0.5*(test_out["acc_color"] + test_out["acc_segnum"]) > best_test_acc:
             best_test_acc = 0.5*(test_out["acc_color"] + test_out["acc_segnum"])
@@ -157,7 +156,7 @@ def main():
         )
 
 
-def train(net, trainloader, optimizer, criterion, device):
+def train(net, trainloader, optimizer, criterion, device, args):
     net.train()
     train_loss = 0
     train_loss_segnum = 0
@@ -206,7 +205,7 @@ def train(net, trainloader, optimizer, criterion, device):
     }
 
 
-def validate(net, valloader, criterion, device):
+def validate(net, valloader, criterion, device, args):
     net.eval()
     val_loss = 0
     val_loss_segnum = 0
