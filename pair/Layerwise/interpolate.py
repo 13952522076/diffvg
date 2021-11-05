@@ -33,7 +33,7 @@ def parse_args():
     parser.add_argument("--num_paths", type=str, default="1,1,1")
     parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
-    parser.add_argument("--num_iter2", type=int, default=1000)
+    parser.add_argument("--num_iter2", type=int, default=2000)
     parser.add_argument('--free', action='store_true')
     # Please ensure that image resolution is divisible by pool_size; otherwise the performance would drop a lot.
     parser.add_argument('--pool_size', type=int, default=40, help="the pooled image size for next path initialization")
