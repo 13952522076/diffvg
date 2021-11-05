@@ -30,7 +30,7 @@ def parse_args():
     parser.add_argument("--num_paths", type=str, default="1,1,1")
     parser.add_argument("--num_segments", type=int, default=4)
     parser.add_argument("--num_iter", type=int, default=500)
-    parser.add_argument("--num_iter2", type=int, default=2000)
+    parser.add_argument("--num_iter2", type=int, default=3000)
     parser.add_argument('--free', action='store_true')
     # Please ensure that image resolution is divisible by pool_size; otherwise the performance would drop a lot.
     parser.add_argument('--pool_size', type=int, default=40, help="the pooled image size for next path initialization")
@@ -343,10 +343,14 @@ def main():
         # Compose img with white background
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
 
+        if args.save_video:
+                save_name = os.path.join(save_path,"images", f"{t}.png")
+                pydiffvg.imwrite(img.cpu(), save_name, gamma=gamma)
+
         img = img[:, :, :3]
         img = img.unsqueeze(0).permute(0, 3, 1, 2) # HWC -> NCHW
 
-        if t % 100 ==0:
+        if t % 200 ==0:
             # calculate the pixel loss
             pixel_loss = ((img-target)**2).sum(dim=1, keepdim=True).sqrt_() # [N,1,H, W]
             region_loss = adaptive_avg_pool2d(pixel_loss, args.pool_size)
@@ -378,6 +382,20 @@ def main():
 
         save_name = os.path.join(save_path, f"Interpolate{t+1}.svg")
         pydiffvg.save_svg(save_name, canvas_width, canvas_height, shapes, shape_groups)
+
+
+        if args.save_video:
+            print("saving iteration video...")
+            img_array = []
+            for ii in range(0, args.num_iter2):
+                filename = os.path.join(save_path, "images", f"{ii}.png")
+                img = cv2.imread(filename)
+                img_array.append(img)
+            videoname = os.path.join(save_path, "videos", f"interpolate.mp4")
+            out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (canvas_width, canvas_height))
+            for iii in range(len(img_array)):
+                out.write(img_array[iii])
+            out.release()
 
 if __name__ == "__main__":
     main()
