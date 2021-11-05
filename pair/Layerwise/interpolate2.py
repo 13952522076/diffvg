@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python interpolate.py 111.png 222.png --num_paths 1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python interpolate2.py 111.png 222.png --num_paths 1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
