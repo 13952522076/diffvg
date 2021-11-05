@@ -111,6 +111,8 @@ class ResNet(nn.Module):
     def __init__(self, block, layers, num_segments=6, num_colors=3, zero_init_residual=False):
         super(ResNet, self).__init__()
         self.inplanes = 64
+        self.num_segments = num_segments
+        self.num_colors = num_colors
         self.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3,
                                bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -121,8 +123,8 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.lastpool = nn.AdaptiveMaxPool2d((1, 1))
-        self.fc_segnum = nn.Linear(512 * block.expansion, num_segments)
-        self.fc_color = nn.Linear(512 * block.expansion, num_colors)
+        self.fc_segnum = nn.Linear(512 * block.expansion, 1)
+        self.fc_color = nn.Linear(512 * block.expansion, 1)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -170,9 +172,13 @@ class ResNet(nn.Module):
 
         x = self.lastpool(x)
         x = x.view(x.size(0), -1)
-        seg = self.fc_segnum(x)
-        col = self.fc_color(x)
-
+        seg = torch.sigmoid(self.fc_segnum(x))*self.num_segments*5-self.num_segments
+        col = torch.sigmoid(self.fc_color(x))*self.num_colors*5-self.num_colors
+        # print(seg, col)
+        # seg = self.fc_segnum(x)
+        # seg.data.clamp_(0.0, self.num_segments)
+        # col = self.fc_color(x)
+        # col.data.clamp_(0.0, self.num_colors)
         return seg, col
 
 

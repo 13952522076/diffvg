@@ -51,9 +51,16 @@ def get_git_commit_id():
 
 def focal_loss(outputs, targets, alpha=1, gamma=5):
     ce_loss = torch.nn.functional.cross_entropy(outputs, targets, reduction='none') # important to add reduction='none' to keep per-batch-item loss
+    # print(f"ce_loss shape is: {ce_loss.shape}")
     pt = torch.exp(-ce_loss)
     focal_loss = (alpha * (1-pt)**gamma * ce_loss).mean() # mean over the batch
     return focal_loss
+
+def regression_loss(outputs, targets):
+    # print(outputs)
+    loss = ((outputs - targets)**2).sqrt()
+    # print(loss.shape)
+    return loss.mean()
 
 def save_model(net, epoch, path, acc, is_best, **kwargs):
     state = {
@@ -103,7 +110,8 @@ def main():
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
     # criterion = nn.CrossEntropyLoss()
-    criterion = focal_loss
+    # criterion = focal_loss
+    criterion = regression_loss
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.lr / 1000)
     best_test_acc = 0.  # best test accuracy
@@ -166,6 +174,7 @@ def train(net, trainloader, optimizer, criterion, device):
         loss_color = criterion(logits_color, label_color)
         loss = loss_segnum + loss_color
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(net.parameters(), 1)
         optimizer.step()
         train_loss += loss.item()
         train_loss_segnum += loss_segnum.item()
