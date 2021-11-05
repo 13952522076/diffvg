@@ -49,7 +49,7 @@ def get_git_commit_id():
         return "0000000"
 
 
-def focal_loss(outputs, targets, alpha=1, gamma=2):
+def focal_loss(outputs, targets, alpha=1, gamma=5):
     ce_loss = torch.nn.functional.cross_entropy(outputs, targets, reduction='none') # important to add reduction='none' to keep per-batch-item loss
     pt = torch.exp(-ce_loss)
     focal_loss = (alpha * (1-pt)**gamma * ce_loss).mean() # mean over the batch
