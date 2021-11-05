@@ -392,7 +392,7 @@ def main():
                 img = cv2.imread(filename)
                 img_array.append(img)
             videoname = os.path.join(save_path, "videos", f"interpolate.mp4")
-            out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (canvas_width, canvas_height))
+            out = cv2.VideoWriter(videoname, cv2.VideoWriter_fourcc(*'mp4v'), 200.0, (canvas_width, canvas_height))
             for iii in range(len(img_array)):
                 out.write(img_array[iii])
             out.release()
