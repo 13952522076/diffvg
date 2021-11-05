@@ -59,7 +59,7 @@ def focal_loss(outputs, targets, alpha=1, gamma=5):
 
 def regression_loss(outputs, targets):
     # print(outputs)
-    loss = ((outputs - targets)**2).sqrt()
+    loss = (abs(outputs - targets))
     # print(loss.shape)
     return loss.mean()
 
