@@ -114,7 +114,7 @@ def main():
     test_loader = torch.utils.data.DataLoader(testset, batch_size=args.bs, shuffle=False, num_workers=args.workers)
 
     for epoch in range(start_epoch, args.epoch):
-        printf('Epoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
+        printf('\n\nEpoch(%d/%s) Learning Rate %s:' % (epoch + 1, args.epoch, optimizer.param_groups[0]['lr']))
         # {"loss", "loss_segnum", "loss_color", "acc_segnum", "acc_color", "time"}
         train_out = train(net, train_loader, optimizer, criterion, device)
         test_out = validate(net, test_loader, criterion, device)
