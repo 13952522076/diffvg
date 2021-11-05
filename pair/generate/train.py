@@ -100,9 +100,6 @@ def main():
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     scheduler = CosineAnnealingLR(optimizer, args.epoch, eta_min=args.lr / 1000)
     best_test_acc = 0.  # best test accuracy
-    best_train_acc = 0.
-    best_test_loss = float("inf")
-    best_train_loss = float("inf")
     start_epoch = 0
 
     # Data
@@ -178,10 +175,8 @@ def train(net, trainloader, optimizer, criterion, device):
                              "acc_color": correct_color/total,
                              })
     time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-    print(f"preds_segnum is: {preds_segnum}")
-    print(f"label_segnum is: {label_segnum}")
-    print(f"preds_color is: {preds_color}")
-    print(f"label_color is: {label_color}")
+    print(f"Train preds_segnum is: {preds_segnum}, preds_color is: {preds_color}")
+    print(f"Train label_segnum is: {label_segnum}, label_color is: {label_color}")
     return {
         "loss": float("%.3f" % (train_loss / (batch_idx + 1))),
         "loss_segnum": float("%.3f" % (train_loss_segnum / (batch_idx + 1))),
@@ -224,10 +219,8 @@ def validate(net, valloader, criterion, device):
                                  "acc_color": correct_color/total,
                                  })
     time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-    print(f"preds_segnum is: {preds_segnum}")
-    print(f"label_segnum is: {label_segnum}")
-    print(f"preds_color is: {preds_color}")
-    print(f"label_color is: {label_color}")
+    print(f"Valid preds_segnum is: {preds_segnum}, preds_color is: {preds_color}")
+    print(f"Valid label_segnum is: {label_segnum}, label_color is: {label_color}")
     return {
         "loss": float("%.3f" % (val_loss / (batch_idx + 1))),
         "loss_segnum": float("%.3f" % (val_loss_segnum / (batch_idx + 1))),
