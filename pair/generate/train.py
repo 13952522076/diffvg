@@ -37,6 +37,7 @@ def parse_args():
     parser.add_argument('--workers', default=8, type=int, help='batch size')
     parser.add_argument('--epoch', default=300, type=int, help='epoch size')
     parser.add_argument('--normalize', type=bool,  default=True, help='normalize input data')
+    parser.add_argument('--alpha', default=2.0, type=float, help='learning rate')
     return parser.parse_args()
 
 
@@ -78,6 +79,7 @@ def save_model(net, epoch, path, acc, is_best, **kwargs):
 
 def main():
     args = parse_args()
+    global args
     os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     time_str = str(datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
@@ -171,7 +173,7 @@ def train(net, trainloader, optimizer, criterion, device):
         logits_segnum, logits_color = net(data)
 
         loss_segnum = criterion(logits_segnum, label_segnum)
-        loss_color = criterion(logits_color, label_color)
+        loss_color = args.alpha * criterion(logits_color, label_color)
         loss = loss_segnum + loss_color
         loss.backward()
         torch.nn.utils.clip_grad_norm_(net.parameters(), 1)
@@ -220,7 +222,7 @@ def validate(net, valloader, criterion, device):
             data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
             logits_segnum, logits_color = net(data)
             loss_segnum = criterion(logits_segnum, label_segnum)
-            loss_color = criterion(logits_color, label_color)
+            loss_color = args.alpha * criterion(logits_color, label_color)
             loss = loss_segnum + loss_color
             val_loss += loss.item()
             val_loss_segnum += loss_segnum.item()
