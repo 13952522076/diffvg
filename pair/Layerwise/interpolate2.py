@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python interpolate.py 111.png 111.png --num_paths 1,1,1,1,1,1,1 --pool_size 40 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python interpolate2.py 111.png 111.png --num_paths 1,1,1,1,1,1,1 --pool_size 40 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
@@ -76,13 +76,15 @@ def get_bezier_circle(radius=1, segments=4, bias=None):
 
 def make_save_path(args):
     filename = os.path.splitext(os.path.basename(args.target))[0]
+    filename2 = os.path.splitext(os.path.basename(args.target_new))[0]
+
     detail_folder = args.num_paths+"Seg"+str(args.num_segments)+"Iter"+str(args.num_iter)+"Pool"+str(args.pool_size)
     if args.free:
         detail_folder+="Free"
     detail_folder+=args.initial
     if args.initial=='circle' and args.circle_init_radius is not None:
         detail_folder+=str(args.circle_init_radius)
-    save_path = os.path.join(args.save_folder, filename, detail_folder)
+    save_path = os.path.join(args.save_folder, filename+"_"+filename2, detail_folder)
     try:
         os.makedirs(save_path)
     except OSError as exc:  # Python >2.5
