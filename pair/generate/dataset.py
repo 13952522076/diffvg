@@ -8,7 +8,7 @@ from typing import Any, Callable, Optional, Tuple
 
 def load_data(root="../data/generate/generate/row_data/train", normalize=True):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    DATA_DIR = os.path.join(BASE_DIR, 'data')
+    # DATA_DIR = os.path.join(BASE_DIR, 'data')
     all_loss = []
     all_segnum = []
     all_color = []

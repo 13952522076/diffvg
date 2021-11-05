@@ -57,11 +57,12 @@ def focal_loss(outputs, targets, alpha=1, gamma=5):
     focal_loss = (alpha * (1-pt)**gamma * ce_loss).mean() # mean over the batch
     return focal_loss
 
-def regression_loss(outputs, targets):
+def regression_loss(outputs, targets, weight=0.2):
     # print(outputs)
     loss = (abs(outputs - targets))
+    pt = torch.exp(loss*weight)
     # print(loss.shape)
-    return loss.mean()
+    return (pt*loss).mean()
 
 def save_model(net, epoch, path, acc, is_best, **kwargs):
     state = {
