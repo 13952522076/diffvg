@@ -76,10 +76,9 @@ def save_model(net, epoch, path, acc, is_best, **kwargs):
     if is_best:
         shutil.copyfile(filepath, os.path.join(path, 'best_checkpoint.pth'))
 
-
+global args
 def main():
     args = parse_args()
-    global args
     os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     time_str = str(datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
