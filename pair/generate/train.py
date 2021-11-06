@@ -171,6 +171,8 @@ def train(net, trainloader, optimizer, criterion, device, args):
     total = 0
     time_cost = datetime.datetime.now()
     t_range = tqdm(trainloader)
+    max_preds_segnum = 0
+    max_preds_color = 0
     for batch_idx, (data, label_segnum, label_color) in enumerate(t_range):
         data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
         logits_segnum, logits_color = net(data)
@@ -187,6 +189,10 @@ def train(net, trainloader, optimizer, criterion, device, args):
         preds_segnum = logits_segnum.max(dim=1)[1]
         preds_color = logits_color.max(dim=1)[1]
 
+        # just for print
+        max_preds_segnum = preds_segnum.max() if preds_segnum.max() > max_preds_segnum else max_preds_segnum
+        max_preds_color = preds_color.max() if preds_color.max() > max_preds_color else max_preds_color
+
         total += label_segnum.size(0)
         correct_segnum += preds_segnum.eq(label_segnum).sum().item()
         correct_color += preds_color.eq(label_color).sum().item()
@@ -200,7 +206,7 @@ def train(net, trainloader, optimizer, criterion, device, args):
     time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
     print(logits_segnum)
     print(logits_color)
-    print(f"Train max preds_segnum is: {(preds_segnum).max()}, max preds_color is: {preds_color.max()}")
+    print(f"Train max preds_segnum is: {max_preds_segnum}, max preds_color is: {max_preds_color}")
     return {
         "loss": float("%.3f" % (train_loss / (batch_idx + 1))),
         "loss_segnum": float("%.3f" % (train_loss_segnum / (batch_idx + 1))),
@@ -219,6 +225,8 @@ def validate(net, valloader, criterion, device, args):
     correct_segnum = 0
     correct_color = 0
     total = 0
+    max_preds_segnum = 0
+    max_preds_color = 0
     time_cost = datetime.datetime.now()
     t_range = tqdm(valloader)
     with torch.no_grad():
@@ -234,6 +242,11 @@ def validate(net, valloader, criterion, device, args):
             preds_segnum = logits_segnum.max(dim=1)[1]
             preds_color = logits_color.max(dim=1)[1]
 
+            # just for print
+            max_preds_segnum = preds_segnum.max() if preds_segnum.max() > max_preds_segnum else max_preds_segnum
+            max_preds_color = preds_color.max() if preds_color.max() > max_preds_color else max_preds_color
+
+
             total += label_segnum.size(0)
             correct_segnum += preds_segnum.eq(label_segnum).sum().item()
             correct_color += preds_color.eq(label_color).sum().item()
@@ -245,7 +258,7 @@ def validate(net, valloader, criterion, device, args):
                                  "acc_color": correct_color/total,
                                  })
     time_cost = int((datetime.datetime.now() - time_cost).total_seconds())
-    print(f"Valid max preds_segnum is: {(preds_segnum).max()}, max preds_color is: {preds_color.max()}")
+    print(f"Valid max preds_segnum is: {max_preds_segnum}, max preds_color is: {max_preds_color}")
     return {
         "loss": float("%.3f" % (val_loss / (batch_idx + 1))),
         "loss_segnum": float("%.3f" % (val_loss_segnum / (batch_idx + 1))),
