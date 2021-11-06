@@ -233,6 +233,7 @@ def validate(net, valloader, criterion, device, args):
         for batch_idx, (data, label_segnum, label_color) in enumerate(t_range):
             data, label_segnum, label_color  = data.to(device), label_segnum.to(device), label_color.to(device)
             logits_segnum, logits_color = net(data)
+            print(logits_segnum.shape)
             loss_segnum = criterion(logits_segnum, label_segnum, np.array([0.26, 0.87, 0.95, 0.96, 0.96, 0.97]))
             loss_color = args.alpha * criterion(logits_color, label_color, np.array([0.20, 0.89, 0.89]))
             loss = loss_segnum + loss_color
