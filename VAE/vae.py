@@ -1,5 +1,5 @@
 import torch
-from .base import BaseVAE
+from base import BaseVAE
 from torch import nn
 from typing import List, TypeVar
 import torch.nn.functional as F
