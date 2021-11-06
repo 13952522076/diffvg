@@ -9,7 +9,7 @@ Here are some use cases:
 
 python main.py ../data/emoji_rgb/train/0.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01
 
-python main.py Balloon.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/test_segments --free --save_video --num_segments 4
+python main.py ../data/test/apple.png --num_paths 1,1,1,1,1 --pool_size 40 --save_folder results/final_test_layers --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
 
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
