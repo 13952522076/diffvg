@@ -181,3 +181,17 @@ class VAELoss(nn.Module):
 
         loss = recons_loss + kld_loss
         return {'loss': loss, 'Reconstruction_Loss': recons_loss, 'KLD': kld_loss}
+
+
+if __name__ == '__main__':
+    model = VanillaVAE(in_channels=3, latent_dim=128)
+    x = torch.rand([3,3,64,64])
+    out = model(x)
+    reconstruct = out["reconstruct"]
+    input = out["input"]
+    mu = out["mu"]
+    log_var = out["log_var"]
+    print(reconstruct.shape)
+    print(input.shape)
+    print(mu.shape)
+    print(log_var.shape)
