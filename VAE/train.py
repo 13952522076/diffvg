@@ -48,7 +48,7 @@ transform_test = transforms.Compose([transforms.Resize(60), transforms.ToTensor(
 print('==> Preparing data..')
 train_dataset = torchvision.datasets.ImageFolder(root=args.traindir, transform=transform_train)
 test_dataset = torchvision.datasets.ImageFolder(root=args.testdir, transform=transform_test)
-M_N = args.bs / train_dataset.len  # for the loss
+M_N = args.bs / train_dataset.__len__()  # for the loss
 
 # data loader
 trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=args.bs, shuffle=True, num_workers=4)
