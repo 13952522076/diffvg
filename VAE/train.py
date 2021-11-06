@@ -19,7 +19,7 @@ parser.add_argument('--latent_dim', default=256, type=int)
 # Parameters for  dataset
 parser.add_argument('--traindir', default='../pair/data/emoji_rgb/train_x4/', type=str, metavar='PATH',
                     help='path to training set')
-parser.add_argument('--testdir', default='/work/xm0036/NSFdata/validate', type=str, metavar='PATH',
+parser.add_argument('--testdir', default='../pair/data/emoji_rgb/validate', type=str, metavar='PATH',
                     help='path to testing set')
 
 # Parameters for  training
