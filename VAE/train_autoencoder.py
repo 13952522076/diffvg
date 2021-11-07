@@ -24,6 +24,8 @@ parser.add_argument('--testdir', default='../pair/data/emoji_rgb/validate', type
                     help='path to testing set')
 
 # Parameters for  training
+parser.add_argument('--evaluate', action='store_true', help='Evaluate model, ensuring the resume path is given')
+
 parser.add_argument('--resume', default='', type=str, metavar='PATH', help='path to latest checkpoint')
 parser.add_argument('--es', default=500, type=int, help='epoch size')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
