@@ -93,7 +93,7 @@ class AutoEncoder(nn.Module):
                     BasicBlock(64,64),
                     nn.Conv2d(64, 3*4, 3, padding="same"),
                     nn.PixelShuffle(2),
-                    nn.Tanh()
+                    nn.sigmod()
                 )
         )
 

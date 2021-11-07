@@ -41,9 +41,9 @@ args.checkpoint = './checkpoints/%s_%s_bs%s' % (
 if not os.path.isdir(args.checkpoint):
     mkdir_p(args.checkpoint)
 
-SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
-transform_train = transforms.Compose([transforms.Resize(224), transforms.RandomHorizontalFlip(p=0.5), transforms.ToTensor(), SetRange])
-transform_test = transforms.Compose([transforms.Resize(224), transforms.ToTensor(), SetRange])
+# SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
+transform_train = transforms.Compose([transforms.Resize(224), transforms.RandomHorizontalFlip(p=0.5), transforms.ToTensor()])
+transform_test = transforms.Compose([transforms.Resize(224), transforms.ToTensor()])
 print('==> Preparing data..')
 train_dataset = torchvision.datasets.ImageFolder(root=args.traindir, transform=transform_train)
 test_dataset = torchvision.datasets.ImageFolder(root=args.testdir, transform=transform_test)
