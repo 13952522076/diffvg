@@ -14,7 +14,7 @@ default:
     record: True
     stroke: False
   num_segments: 4
-  num_iter: 500
+  num_iter: 800
   lr_base:
     bg: 1
     point: 1
@@ -27,6 +27,12 @@ default:
   use_sdfloss: true 
 
 experiment_16x1:
+  path_schedule:
+    type: repeat
+    max_path: 16
+    schedule_each: 1
+
+experiment_5x1:
   path_schedule:
     type: repeat
     max_path: 16
