@@ -217,7 +217,7 @@ class VAELoss(nn.Module):
         kld_weight = self.M_N  # Account for the minibatch samples from the dataset
         recons_loss = F.mse_loss(recons, input)
 
-        kld_loss = torch.zeros_like(recons_loss)
+        kld_loss = recons_loss
         loss = recons_loss + kld_loss
         return {'loss': loss, 'Reconstruction_Loss': recons_loss, 'KLD': kld_loss}
 
