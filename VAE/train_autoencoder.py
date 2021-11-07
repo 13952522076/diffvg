@@ -114,7 +114,6 @@ def train(net, trainloader, optimizer, criterion):
         inputs = inputs.to(device)
         optimizer.zero_grad()
         result, _ = net(inputs)
-        print(result.shape)
         loss = F.mse_loss(result, inputs)
         loss.backward()
         optimizer.step()
