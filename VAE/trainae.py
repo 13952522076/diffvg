@@ -9,7 +9,7 @@ import os
 import argparse
 from utils import mkdir_p, Logger, progress_bar, save_model, save_binary_img
 from torchvision.datasets import ImageFolder
-from vae import VAELoss,VanillaVAE
+from ae import VAELoss,VanillaAE
 
 
 parser = argparse.ArgumentParser(description='VAE training for NSF project')
@@ -60,7 +60,7 @@ def main():
 
     # Model
     print('==> Building model..')
-    net = VanillaVAE(in_channels=3, latent_dim=args.latent_dim)
+    net = VanillaAE(in_channels=3, latent_dim=args.latent_dim)
     net = net.to(device)
 
     if device == 'cuda':

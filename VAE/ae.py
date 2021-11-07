@@ -217,14 +217,13 @@ class VAELoss(nn.Module):
         kld_weight = self.M_N  # Account for the minibatch samples from the dataset
         recons_loss = F.mse_loss(recons, input)
 
-        kld_loss = kld_weight * torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
-
+        kld_loss = 0.
         loss = recons_loss + kld_loss
         return {'loss': loss, 'Reconstruction_Loss': recons_loss, 'KLD': kld_loss}
 
 
 if __name__ == '__main__':
-    model = VanillaVAE(in_channels=3, latent_dim=512)
+    model = VanillaAE(in_channels=3, latent_dim=512)
     x = torch.rand([3,3,224,224])
     out = model(x)
     reconstruct = out["reconstruct"]
