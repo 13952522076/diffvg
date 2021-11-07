@@ -6,7 +6,7 @@ default:
   save:
     init: true
     image: false
-    output: false
+    output: true
     video: true
     loss: false
   trainable: 
