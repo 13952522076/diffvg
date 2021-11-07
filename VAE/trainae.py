@@ -128,7 +128,7 @@ def train(net, trainloader, optimizer, criterion):
 
         train_loss += loss.item()
         recons_loss += (loss).item()
-        kld_loss += (recons_loss).item()
+        kld_loss += (loss).item()
 
         progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Rec_Loss: %.3f | Rec_Loss: %.3f'
                      % (train_loss / (batch_idx + 1), recons_loss / (batch_idx + 1), kld_loss / (batch_idx + 1)))
