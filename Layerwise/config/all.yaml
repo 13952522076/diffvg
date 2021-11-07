@@ -22,7 +22,7 @@ default:
     stroke_width: null
     stroke_color: null
   coord_init:
-    type: naive
+    type: sparse
   seed: 0
   use_sdfloss: true 
 
