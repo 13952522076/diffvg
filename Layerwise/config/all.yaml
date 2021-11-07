@@ -6,8 +6,8 @@ default:
   save:
     init: true
     image: false
-    output: true
-    video: false
+    output: false
+    video: true
     loss: false
   trainable: 
     bg: False
