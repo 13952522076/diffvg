@@ -6,6 +6,7 @@ import torchvision
 import torch.backends.cudnn as cudnn
 import torchvision.transforms as transforms
 import os
+import torch.nn.functional as F
 import argparse
 from utils import mkdir_p, Logger, progress_bar, save_model, save_binary_img
 from torchvision.datasets import ImageFolder
@@ -84,7 +85,7 @@ def main():
             print("==> No checkpoint found at '{}'".format(args.resume))
     else:
         logger = Logger(os.path.join(args.checkpoint, 'log.txt'))
-        logger.set_names(['Epoch', 'LR', 'Train Loss', 'Recons Loss', 'KLD Loss'])
+        logger.set_names(['Epoch', 'LR', 'Train Loss', 'Recons Loss', 'Recons Loss'])
 
     if not args.evaluate:
         # training
@@ -121,16 +122,15 @@ def train(net, trainloader, optimizer, criterion):
         inputs = inputs.to(device)
         optimizer.zero_grad()
         result = net(inputs)
-        loss_dict = criterion(result)  # loss, Reconstruction_Loss, KLD
-        loss = loss_dict['loss']
+        loss = F.mse_loss(result, input)
         loss.backward()
         optimizer.step()
 
         train_loss += loss.item()
-        recons_loss += (loss_dict['Reconstruction_Loss']).item()
-        kld_loss += (loss_dict['KLD']).item()
+        recons_loss += (loss).item()
+        kld_loss += (recons_loss).item()
 
-        progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Rec_Loss: %.3f | KLD_Loss: %.3f'
+        progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Rec_Loss: %.3f | Rec_Loss: %.3f'
                      % (train_loss / (batch_idx + 1), recons_loss / (batch_idx + 1), kld_loss / (batch_idx + 1)))
 
     return {

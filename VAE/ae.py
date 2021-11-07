@@ -11,7 +11,7 @@ Tensor = TypeVar('torch.tensor')
 __all__ = ['VanillaAE', "VAELoss"]
 
 
-class VanillaAE(BaseVAE):
+class VanillaAE(nn.Module):
 
     def __init__(self,
                  in_channels: int,
@@ -52,13 +52,11 @@ class VanillaAE(BaseVAE):
 
         # self.encoder = nn.Sequential(*modules)
         self.encoder = resnet
-        self.fc_mu = nn.Linear(1024, latent_dim)
-        self.fc_var = nn.Linear(1024, latent_dim)
 
         # Build Decoder
         modules = []
 
-        self.decoder_input = nn.Linear(latent_dim, 64*49)
+        self.decoder_input = nn.Linear(1024, 64*49)
         modules.append(
                 nn.Sequential(
                     nn.UpsamplingBilinear2d(scale_factor=2), # 14
@@ -104,97 +102,14 @@ class VanillaAE(BaseVAE):
 
         self.decoder = nn.Sequential(*modules)
 
-        # self.final_layer = nn.Sequential(
-        #     nn.ConvTranspose2d(hidden_dims[-1],
-        #                        hidden_dims[-1],
-        #                        kernel_size=3,
-        #                        stride=2,
-        #                        padding=1,
-        #                        output_padding=1),
-        #     nn.BatchNorm2d(hidden_dims[-1]),
-        #     nn.LeakyReLU(),
-        #     nn.Conv2d(hidden_dims[-1], out_channels=3,
-        #               kernel_size=3, padding=1),
-        #     nn.Tanh())
 
-    def encode(self, input: Tensor) -> List[Tensor]:
-        """
-        Encodes the input by passing through the encoder network
-        and returns the latent codes.
-        :param input: (Tensor) Input tensor to encoder [N x C x H x W]
-        :return: (Tensor) List of latent codes
-        """
-        result = self.encoder(input)
-        result = torch.flatten(result, start_dim=1)
-
-        # Split the result into mu and var components
-        # of the latent Gaussian distribution
-        mu = self.fc_mu(result)
-        log_var = self.fc_var(result)
-
-        return [mu, log_var]
-
-    def decode(self, z: Tensor) -> Tensor:
-        """
-        Maps the given latent codes
-        onto the image space.
-        :param z: (Tensor) [B x D]
-        :return: (Tensor) [B x C x H x W]
-        """
-        result = self.decoder_input(z)
-        result = result.view(-1, 64, 7, 7)
-        result = self.decoder(result)
-        # result = self.final_layer(result)
-        return result
-
-    def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:
-        """
-        Reparameterization trick to sample from N(mu, var) from
-        N(0,1).
-        :param mu: (Tensor) Mean of the latent Gaussian [B x D]
-        :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
-        :return: (Tensor) [B x D]
-        """
-        # std = torch.exp(0.5 * logvar)
-        # eps = torch.randn_like(std)
-        # return eps * std + mu
-        return mu+logvar
 
     def forward(self, inputs: Tensor, **kwargs):
-        mu, log_var = self.encode(inputs)
-        z = self.reparameterize(mu, log_var)
-        return {
-            "reconstruct": self.decode(z),
-            "input": inputs,
-            "mu": mu,
-            "log_var": log_var
-        }
-
-    def sample(self, z, **kwargs) -> Tensor:
-        """
-        Samples from the latent space and return the corresponding
-        image space map.
-        :param num_samples: (Int) Number of samples
-        :param current_device: (Int) Device to run the model
-        :return: (Tensor)
-        """
-        # z = torch.randn(num_samples,
-        #                 self.latent_dim)
-        #
-        # z = z.to(current_device)
-
-        samples = self.decode(z)
-        return samples
-
-    def generate(self, x: Tensor, **kwargs) -> Tensor:
-        """
-        Given an input image x, returns the reconstructed image
-        :param x: (Tensor) [B x C x H x W]
-        :return: (Tensor) [B x C x H x W]
-        """
-
-        return self.forward(x)["reconstruct"]
-
+        vector = self.encoder(inputs)
+        out = self.decoder_input(vector)
+        out = out.view(-1, 64, 7, 7)
+        out = self.decoder(out)
+        return out
 
 
 class VAELoss(nn.Module):
