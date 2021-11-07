@@ -38,7 +38,7 @@ class VanillaVAE(BaseVAE):
             )
             in_channels = h_dim
 
-        resnet = resnet34(pretrained=False)
+        resnet = resnet34(pretrained=True)
         modules = list(resnet.children())[:-1]      # delete the last fc layer.
         modules.append(nn.Flatten(start_dim=1))
         modules.append(nn.Linear(resnet.fc.in_features, 1024))
@@ -58,38 +58,64 @@ class VanillaVAE(BaseVAE):
         # Build Decoder
         modules = []
 
-        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
-
-        hidden_dims.reverse()
-
-        for i in range(len(hidden_dims) - 1):
-            modules.append(
+        self.decoder_input = nn.Linear(latent_dim, 64*49)
+        modules.append(
                 nn.Sequential(
-                    nn.ConvTranspose2d(hidden_dims[i],
-                                       hidden_dims[i + 1],
-                                       kernel_size=3,
-                                       stride=2,
-                                       padding=1,
-                                       output_padding=1),
-                    nn.BatchNorm2d(hidden_dims[i + 1]),
-                    nn.LeakyReLU()
+                    nn.UpsamplingBilinear2d(scale_factor=2), # 14
+                    nn.Conv2d(64, 64, 3, padding="same"),
+                    nn.BatchNorm2d(64),
+                    nn.LeakyReLU(),
+                    nn.UpsamplingBilinear2d(scale_factor=2), # 28
+                    nn.Conv2d(64, 64, 3, padding="same"),
+                    nn.BatchNorm2d(64),
+                    nn.LeakyReLU(),
+                    nn.UpsamplingBilinear2d(scale_factor=2), # 56
+                    nn.Conv2d(64, 64, 3, padding="same"),
+                    nn.BatchNorm2d(64),
+                    nn.LeakyReLU(),
+
+                    nn.UpsamplingBilinear2d(scale_factor=2), # 112
+                    nn.Conv2d(64, 64, 3, padding="same"),
+                    nn.BatchNorm2d(64),
+                    nn.LeakyReLU(),
+                    nn.Conv2d(64, 3*4, 3, padding="same"),
+                    nn.PixelShuffle(2),
+                    nn.Tanh()
                 )
-            )
+        )
+
+        # hidden_dims.reverse()
+        #
+        # for i in range(len(hidden_dims) - 1):
+        #     modules.append(
+        #         nn.Sequential(
+        #             nn.UpsamplingBilinear2d(scale_factor=2),
+        #             nn.Conv2d(),
+        #             nn.ConvTranspose2d(hidden_dims[i],
+        #                                hidden_dims[i + 1],
+        #                                kernel_size=3,
+        #                                stride=2,
+        #                                padding=1,
+        #                                output_padding=1),
+        #             nn.BatchNorm2d(hidden_dims[i + 1]),
+        #             nn.LeakyReLU()
+        #         )
+        #     )
 
         self.decoder = nn.Sequential(*modules)
 
-        self.final_layer = nn.Sequential(
-            nn.ConvTranspose2d(hidden_dims[-1],
-                               hidden_dims[-1],
-                               kernel_size=3,
-                               stride=2,
-                               padding=1,
-                               output_padding=1),
-            nn.BatchNorm2d(hidden_dims[-1]),
-            nn.LeakyReLU(),
-            nn.Conv2d(hidden_dims[-1], out_channels=3,
-                      kernel_size=3, padding=1),
-            nn.Tanh())
+        # self.final_layer = nn.Sequential(
+        #     nn.ConvTranspose2d(hidden_dims[-1],
+        #                        hidden_dims[-1],
+        #                        kernel_size=3,
+        #                        stride=2,
+        #                        padding=1,
+        #                        output_padding=1),
+        #     nn.BatchNorm2d(hidden_dims[-1]),
+        #     nn.LeakyReLU(),
+        #     nn.Conv2d(hidden_dims[-1], out_channels=3,
+        #               kernel_size=3, padding=1),
+        #     nn.Tanh())
 
     def encode(self, input: Tensor) -> List[Tensor]:
         """
@@ -116,9 +142,9 @@ class VanillaVAE(BaseVAE):
         :return: (Tensor) [B x C x H x W]
         """
         result = self.decoder_input(z)
-        result = result.view(-1, 512, 2, 2)
+        result = result.view(-1, 64, 7, 7)
         result = self.decoder(result)
-        result = self.final_layer(result)
+        # result = self.final_layer(result)
         return result
 
     def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:
@@ -198,8 +224,8 @@ class VAELoss(nn.Module):
 
 
 if __name__ == '__main__':
-    model = VanillaVAE(in_channels=3, latent_dim=128)
-    x = torch.rand([3,3,64,64])
+    model = VanillaVAE(in_channels=3, latent_dim=512)
+    x = torch.rand([3,3,224,224])
     out = model(x)
     reconstruct = out["reconstruct"]
     input = out["input"]
