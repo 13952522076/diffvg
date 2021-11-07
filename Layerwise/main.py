@@ -608,8 +608,8 @@ if __name__ == "__main__":
             filename = os.path.join(
                 cfg.experiment_dir, "output-svg", "{}.svg".format(pathn_record_str))
             check_and_create_dir(filename)
-            print(f"shapes len is {len(shapes)}, shape_groups len is {len(shape_groups)}")
-            pydiffvg.save_svg(filename, w, h, shapes, shape_groups)
+            # print(f"shapes len is {len(shapes)}, shape_groups len is {len(shape_groups)}")
+            pydiffvg.save_svg(filename, w, h, shapes_record, shape_groups_record)
 
         loss_matrix.append(loss_list)
 
