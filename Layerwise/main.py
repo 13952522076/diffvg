@@ -19,6 +19,8 @@ python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder cir
 import pydiffvg
 import torch
 import cv2
+import skimage
+import skimage.io
 import matplotlib.pyplot as plt
 import random
 import argparse
@@ -91,11 +93,11 @@ def get_sdf(phi, method='skfmm', **kwargs):
         if (phi.max() <= 0) or (phi.min() >= 0):
             return np.zeros(phi.shape).astype(np.float32)
         sd = skfmm.distance(phi, dx=1)
-        
+
         flip_negative = kwargs.get('flip_negative', True)
         if flip_negative:
             sd = np.abs(sd)
-        
+
         truncate = kwargs.get('truncate', 10)
         sd = np.clip(sd, -truncate, truncate)
 
@@ -222,7 +224,7 @@ class naive_coord_init():
         return [coord_w, coord_h]
 
 class sparse_coord_init():
-    def __init__(self, pred, gt, format='[bs x c x 2D]', replace_sampling=True):
+    def __init__(self, pred, gt, format='[bs x c x 2D]', bin_interval=0.1):
         if isinstance(pred, torch.Tensor):
             pred = pred.detach().cpu().numpy()
         if isinstance(gt, torch.Tensor):
@@ -233,30 +235,53 @@ class sparse_coord_init():
             self.reference_gt = copy.deepcopy(
                 np.transpose(gt[0], (1, 2, 0)))
         elif format == ['[2D x c]']:
-            self.map = ((pred - gt)**2).sum(-1)
+            self.map = (np.abs(pred - gt)).sum(-1)
             self.reference_gt = copy.deepcopy(gt[0])
         else:
             raise ValueError
-        self.replace_sampling = replace_sampling
+        quantized_interval = np.linspace(0., 3., int(3/bin_interval)+1)
+        quantized_interval = quantized_interval[1:-1]
+        self.map = np.digitize(self.map, quantized_interval, right=False)
+        self.map = np.clip(self.map, 0, 255).astype(np.uint8)
+        self.idcnt = {}
+        for idi in np.unique(self.map):
+            if idi in [0, 255]:
+                continue
+            self.idcnt[idi] = (self.map==idi).sum()
+        self.move_to_center_of_mass = True
 
     def __call__(self):
-        coord = np.where(self.map == self.map.max())
-        coord_h, coord_w = coord[0][0], coord[1][0]
-        # ref_color = self.reference_gt[coord_h, coord_w]
-        # l2dist = self.reference_gt @ ref_color
-        # cosine_sim = cv2.GaussianBlur(cosine_sim, (5, 5), cv2.BORDER_REPLICATE)
-        # cosine_sim
-        if self.replace_sampling:
-            self.map[coord_h, coord_w] = -1
+        if len(self.idcnt) == 0:
+            h, w = self.map.shape
+            return [npr.uniform(0, 1)*w, npr.uniform(0, 1)*h]
+        target_id = max(self.idcnt, key=self.idcnt.get)
+
+        _, component, cstats, ccenter = cv2.connectedComponentsWithStats(
+            (self.map==target_id).astype(np.uint8), connectivity=4)
+
+        # remove cid = 0, it is the invalid area
+        csize = [ci[-1] for ci in cstats[1:]]
+        target_cid = csize.index(max(csize))+1
+        center = ccenter[target_cid][::-1]
+        coord = np.stack(np.where(component == target_cid)).T
+        dist = np.linalg.norm(coord-center, axis=1)
+        target_coord_id = np.argmin(dist)
+        coord_h, coord_w = coord[target_coord_id]
+
+        # replace_sampling
+        self.idcnt[target_id] -= max(csize)
+        if self.idcnt[target_id] == 0:
+            self.idcnt.pop(target_id)
+        self.map[component == target_cid] = 0
         return [coord_w, coord_h]
 
-def init_shapes(num_paths, 
-                num_segments, 
-                canvas_size, 
+def init_shapes(num_paths,
+                num_segments,
+                canvas_size,
                 seginit_cfg,
-                shape_cnt, 
+                shape_cnt,
                 pos_init_method=None,
-                trainable_stroke=False, 
+                trainable_stroke=False,
                 **kwargs):
     shapes = []
     shape_groups = []
@@ -272,7 +297,7 @@ def init_shapes(num_paths,
         if seginit_cfg.type=="random":
             points = []
             p0 = pos_init_method()
-            p0 = [p0[0]*w, p0[1]*h] 
+            p0 = [p0[0]*w, p0[1]*h]
             color_ref = copy.deepcopy(p0)
             points.append(p0)
             for j in range(num_segments):
@@ -298,7 +323,7 @@ def init_shapes(num_paths,
             center = pos_init_method()
             color_ref = copy.deepcopy(center)
             points = get_bezier_circle(
-                radius=radius, segments=num_segments, 
+                radius=radius, segments=num_segments,
                 bias=center)
 
         path = pydiffvg.Path(num_control_points = torch.LongTensor(num_control_points),
@@ -402,8 +427,8 @@ if __name__ == "__main__":
     pathn_record = []
     # Background
     if cfg.trainable.bg:
-        meancolor = gt.mean([2, 3])[0]
-        para_bg = torch.tensor(meancolor, requires_grad=True, device=device)
+        # meancolor = gt.mean([2, 3])[0]
+        para_bg = torch.tensor([1., 1., 1.], requires_grad=True, device=device)
     else:
         if cfg.use_ycrcb:
             para_bg = torch.tensor([219/255, 0, 0], requires_grad=False, device=device)
@@ -422,6 +447,8 @@ if __name__ == "__main__":
     elif cfg.coord_init.type == 'sparse':
         pos_init_method = sparse_coord_init(
             para_bg.view(1, -1, 1, 1).repeat(1, 1, h, w), gt)
+    elif cfg.coord_init.type == 'random':
+        pos_init_method = random_coord_init([h, w])
     else:
         raise ValueError
 
@@ -456,7 +483,7 @@ if __name__ == "__main__":
 
         if cfg.save.init:
             filename = os.path.join(
-                cfg.experiment_dir, "svg-init", 
+                cfg.experiment_dir, "svg-init",
                 "{}-init.svg".format(pathn_record_str))
             check_and_create_dir(filename)
             pydiffvg.save_svg(
@@ -548,7 +575,7 @@ if __name__ == "__main__":
             loss_list.append(loss.item())
             t_range.set_postfix({'loss': loss.item()})
             loss.backward()
-            
+
             # step
             for _, (optim, scheduler) in optim_schedular_dict.items():
                 optim.step()
@@ -592,6 +619,16 @@ if __name__ == "__main__":
         #     .reshape_as(region_loss)
 
         pos_init_method = naive_coord_init(x, gt)
+
+        if cfg.coord_init.type == 'naive':
+            pos_init_method = naive_coord_init(x, gt)
+        elif cfg.coord_init.type == 'sparse':
+            pos_init_method = sparse_coord_init(x, gt)
+        elif cfg.coord_init.type == 'random':
+            pos_init_method = random_coord_init([h, w])
+        else:
+            raise ValueError
+
 
         # XX: what is this?
         # if args.print_weight:
