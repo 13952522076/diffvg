@@ -29,7 +29,7 @@ parser.add_argument('--es', default=500, type=int, help='epoch size')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--bs', default=144, type=int, help='batch size, better to have a square number')
 parser.add_argument('--wd', default=0.0, type=float, help='weight decay')
-parser.add_argument('--scheduler_gamma', default=0.99, type=float)
+parser.add_argument('--scheduler_gamma', default=0.995, type=float)
 
 parser.add_argument('--evaluate', action='store_true', help='Evaluate model, ensuring the resume path is given')
 parser.add_argument('--val_num', default=8, type=int,
