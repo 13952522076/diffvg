@@ -2,13 +2,74 @@ import torch
 from base import BaseVAE
 from torch import nn
 from typing import List, TypeVar
-from torchvision.models import resnet34
 import torch.nn.functional as F
 
 # from torch import tensor as Tensor
 Tensor = TypeVar('torch.tensor')
 
 __all__ = ['VanillaVAE', "VAELoss"]
+
+
+class SELayer(nn.Module):
+    def __init__(self, channel, reduction = 16):
+        super(SELayer, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc       = nn.Sequential(
+                        nn.Linear(channel, channel // reduction),
+                        nn.ReLU(inplace = True),
+                        nn.Linear(channel // reduction, channel),
+                        nn.Sigmoid()
+                )
+
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        y = self.avg_pool(x).view(b, c)
+        y = self.fc(y).view(b, c, 1, 1)
+        return x * y
+
+def conv3x3(in_planes, out_planes, stride=1):
+    """3x3 convolution with padding"""
+    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
+                     padding=1, bias=False)
+
+
+def conv1x1(in_planes, out_planes, stride=1):
+    """1x1 convolution"""
+    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+
+
+class BasicBlock(nn.Module):
+    expansion = 1
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        super(BasicBlock, self).__init__()
+        self.conv1 = conv3x3(inplanes, planes, stride)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = conv3x3(planes, planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.downsample = downsample
+        self.stride = stride
+        self.se  = SELayer(planes)
+
+    def forward(self, x):
+        identity = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.se(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
 
 
 class VanillaVAE(BaseVAE):
@@ -27,33 +88,37 @@ class VanillaVAE(BaseVAE):
             hidden_dims = [32, 64, 128, 256, 512]
 
         # Build Encoder
-        for h_dim in hidden_dims:
-            modules.append(
-                nn.Sequential(
-                    nn.Conv2d(in_channels, out_channels=h_dim,
-                              kernel_size=3, stride=2, padding=1),
-                    nn.BatchNorm2d(h_dim),
-                    nn.LeakyReLU()
-                )
-            )
-            in_channels = h_dim
-
-        resnet = resnet34(pretrained=False)
-        modules = list(resnet.children())[:-1]      # delete the last fc layer.
-        modules.append(nn.Flatten(start_dim=1))
-        modules.append(nn.Linear(resnet.fc.in_features, 1024))
-        modules.append(nn.BatchNorm1d(1024, momentum=0.01))
-        modules.append(nn.ReLU(inplace=True))
-        modules.append(nn.Linear(1024, 1024))
-        modules.append(nn.BatchNorm1d(1024, momentum=0.01))
-        modules.append(nn.ReLU(inplace=True))
-        resnet = nn.Sequential(*modules)
+        # for h_dim in hidden_dims:
+        #     modules.append(
+        #         nn.Sequential(
+        #             nn.Conv2d(in_channels, out_channels=h_dim,
+        #                       kernel_size=3, stride=2, padding=1),
+        #             nn.BatchNorm2d(h_dim),
+        #             nn.LeakyReLU()
+        #         )
+        #     )
+        #     in_channels = h_dim
 
 
-        # self.encoder = nn.Sequential(*modules)
-        self.encoder = resnet
-        self.fc_mu = nn.Linear(1024, latent_dim)
-        self.fc_var = nn.Linear(1024, latent_dim)
+        modules = []
+        self.inplanes = 64
+        conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        bn1 = nn.BatchNorm2d(64)
+        relu = nn.ReLU(inplace=True)
+        maxpool = nn.Conv2d(64,64, kernel_size=3, stride=2, padding=1)
+        layer1 = self._make_layer(BasicBlock, 64, 2)
+        layer2 = self._make_layer(BasicBlock, 128, 2, stride=2)
+        layer3 = self._make_layer(BasicBlock, 256, 2, stride=2)
+        layer4 = self._make_layer(BasicBlock, 512, 2, stride=2)
+        layer5 = nn.Sequential(
+            nn.Conv2d(512, 512, kernel_size=5, stride=3, padding=2, bias=False)
+        )
+        modules = [conv1, bn1, relu, maxpool, layer1, layer2, layer3, layer4, layer5]
+
+
+        self.encoder = nn.Sequential(*modules)
+        self.fc_mu = nn.Linear(512, latent_dim)
+        self.fc_var = nn.Linear(512, latent_dim)
 
         # Build Decoder
         modules = []
@@ -91,6 +156,24 @@ class VanillaVAE(BaseVAE):
                       kernel_size=3, padding=1),
             nn.Tanh())
 
+    def _make_layer(self, block, planes, blocks, stride=1):
+        downsample = None
+        if stride != 1 or self.inplanes != planes * block.expansion:
+            downsample = nn.Sequential(
+                conv1x1(self.inplanes, planes * block.expansion, stride),
+                nn.BatchNorm2d(planes * block.expansion),
+            )
+
+        layers = []
+        layers.append(block(self.inplanes, planes, stride, downsample))
+        self.inplanes = planes * block.expansion
+        for _ in range(1, blocks):
+            layers.append(block(self.inplanes, planes))
+
+        return nn.Sequential(*layers)
+
+
+
     def encode(self, input: Tensor) -> List[Tensor]:
         """
         Encodes the input by passing through the encoder network
@@ -99,6 +182,7 @@ class VanillaVAE(BaseVAE):
         :return: (Tensor) List of latent codes
         """
         result = self.encoder(input)
+        result = F.adaptive_avg_pool2d(result,1)
         result = torch.flatten(result, start_dim=1)
 
         # Split the result into mu and var components
@@ -198,8 +282,8 @@ class VAELoss(nn.Module):
 
 
 if __name__ == '__main__':
-    model = VanillaVAE(in_channels=3, latent_dim=128)
-    x = torch.rand([3,3,64,64])
+    model = VanillaVAE(in_channels=3, latent_dim=256)
+    x = torch.rand([3,3,224,224])
     out = model(x)
     reconstruct = out["reconstruct"]
     input = out["input"]

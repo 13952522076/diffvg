@@ -34,7 +34,7 @@ args.checkpoint = './checkpoints/%s-%s' % ( "VanillaVAE", args.latent_dim)
 print('==> Load image..')
 image = Image.open(args.input)
 x = TF.to_tensor(image)
-x = TF.resize(x,[64,64])
+x = TF.resize(x,[120,120])
 x = x*2-1.
 x.unsqueeze_(0)
 print(x.shape)
@@ -95,12 +95,15 @@ def train(net, trainloader, optimizer, criterion):
 def generate_images(net, x, name="val"):
     with torch.no_grad():
         img = x.to(device)
+        vutils.save_image(((img+1.0)/2.0).float(), "inputs.png", nrow=1)
+
         out = net(img)
         recons = out["reconstruct"]
         mu = out["mu"]
         log_var = out["log_var"]
         print(recons.max(), recons.min(), recons.shape)
-        vutils.save_image(img.float(), "inputs.png", nrow=1)
+        img = (img+1.0)/2.0
+        recons = (recons+1.0)/2.0
         vutils.save_image(recons.float(), "recons.png", nrow=1)
 
         # save_binary_img(recons.data,
