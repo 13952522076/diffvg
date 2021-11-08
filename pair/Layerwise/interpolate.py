@@ -351,15 +351,15 @@ def main():
             (color_vars[jj]).requires_grad = True
         # Optimize
         points_optim = torch.optim.Adam(points_vars, lr=5)
-        # color_optim = torch.optim.Adam(color_vars, lr=0.5)
+        color_optim = torch.optim.Adam(color_vars, lr=0.5)
         points_scheduler = CosineAnnealingLR(points_optim, args.num_iter, eta_min=0.5)
-        # color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
+        color_scheduler = CosineAnnealingLR(color_optim, args.num_iter, eta_min=0.05)
 
         # Adam iterations.
         t_range = tqdm(range(args.num_iter))
         for t in t_range:
             points_optim.zero_grad()
-            # color_optim.zero_grad()
+            color_optim.zero_grad()
             # Forward pass: render the image.
             scene_args = pydiffvg.RenderFunction.serialize_scene(canvas_width, canvas_height, shapes, shape_groups)
             img = render(canvas_width, canvas_height, 2, 2, t, None, *scene_args)
@@ -389,10 +389,10 @@ def main():
 
             # Take a gradient descent step.
             points_optim.step()
-            # color_optim.step()
+            color_optim.step()
 
             points_scheduler.step()
-            # color_scheduler.step()
+            color_scheduler.step()
 
             for group in shape_groups:
                 group.fill_color.data[3]=1.0
