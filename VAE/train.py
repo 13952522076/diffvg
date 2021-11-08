@@ -17,14 +17,13 @@ parser = argparse.ArgumentParser(description='VAE training for NSF project')
 # General MODEL parameters
 parser.add_argument('--latent_dim', default=256, type=int)
 # Parameters for  dataset
-parser.add_argument('--traindir', default='../pair/data/emoji_rgb/train_x4/', type=str, metavar='PATH',
+parser.add_argument('--traindir', default='../pair/data/face/', type=str, metavar='PATH',
                     help='path to training set')
-parser.add_argument('--testdir', default='../pair/data/emoji_rgb/validate', type=str, metavar='PATH',
+parser.add_argument('--testdir', default='../pair/data/face/', type=str, metavar='PATH',
                     help='path to testing set')
 
 # Parameters for  training
 parser.add_argument('--resume', default='', type=str, metavar='PATH', help='path to latest checkpoint')
-parser.add_argument('--small', action='store_true', help='Showcase on small set')
 parser.add_argument('--es', default=500, type=int, help='epoch size')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--bs', default=144, type=int, help='batch size, better to have a square number')
@@ -43,8 +42,8 @@ if not os.path.isdir(args.checkpoint):
     mkdir_p(args.checkpoint)
 
 SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
-transform_train = transforms.Compose([transforms.Resize(224), transforms.RandomHorizontalFlip(p=0.5), transforms.ToTensor(), SetRange])
-transform_test = transforms.Compose([transforms.Resize(224), transforms.ToTensor(), SetRange])
+transform_train = transforms.Compose([transforms.Resize(128), transforms.RandomHorizontalFlip(p=0.5), transforms.ToTensor(), SetRange])
+transform_test = transforms.Compose([transforms.Resize(128), transforms.ToTensor(), SetRange])
 print('==> Preparing data..')
 train_dataset = torchvision.datasets.ImageFolder(root=args.traindir, transform=transform_train)
 test_dataset = torchvision.datasets.ImageFolder(root=args.testdir, transform=transform_test)
