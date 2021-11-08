@@ -114,6 +114,9 @@ def make_save_path(args):
 def load_image(args):
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
     print(f"Input image shape is: {target.shape}")
+    if len(target.shape)==2:
+        print("Converting the gray-scale image to RGB.")
+        target = target.unsqueeze(dim=-1).repeat(1,1,3)
     if target.shape[2] == 4:
         print("Input image includes alpha channel, simply dropout alpha channel.")
         target = target[:, :, :3]
