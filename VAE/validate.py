@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(description='VAE training for NSF project')
 # General MODEL parameters
 parser.add_argument('--latent_dim', default=256, type=int)
 # Parameters for  dataset
-parser.add_argument('--input', default='../pair/data/emoji_rgb/train/0/240px-Emoji_u1f60b.svg.png', type=str)
+parser.add_argument('--input', default='../pair/data/face/0/240px-Emoji_u1f61c.svg copy.png', type=str)
 parser.add_argument('--testdir', default='../pair/data/emoji_rgb/validate')
 
 # Parameters for  training
@@ -34,7 +34,7 @@ args.checkpoint = './checkpoints/%s-%s' % ( "VanillaVAE", args.latent_dim)
 print('==> Load image..')
 image = Image.open(args.input)
 x = TF.to_tensor(image)
-x = TF.resize(x,[120,120])
+x = TF.resize(x,[128,128])
 x = x*2-1.
 x.unsqueeze_(0)
 print(x.shape)
