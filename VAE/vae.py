@@ -181,7 +181,7 @@ class VAELoss(nn.Module):
         log_var = out["log_var"]
 
         kld_weight = self.M_N  # Account for the minibatch samples from the dataset
-        recons_loss = 100.0 * F.mse_loss(recons, input)
+        recons_loss = 100.0 * F.smooth_l1_loss(recons, input)
 
         kld_loss = kld_weight * torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
 
