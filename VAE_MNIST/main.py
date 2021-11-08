@@ -78,12 +78,6 @@ class VAE(nn.Module):
 
 
 
-        self.fc1 = nn.Linear(784, 400)
-        self.fc21 = nn.Linear(400, 20)
-        self.fc22 = nn.Linear(400, 20)
-        self.fc3 = nn.Linear(20, 400)
-        self.fc4 = nn.Linear(400, 784)
-
     def encode(self, x):
         h = self.encoder(x)
         return self.mu(h), self.log_var(h)
@@ -171,7 +165,7 @@ if __name__ == "__main__":
         if best_loss > test_loss:
             torch.save(model.state_dict(),f"best_dim{args.hidden_dim}.pth"),
         with torch.no_grad():
-            sample = torch.randn(64, 20).to(device)
+            sample = torch.randn(64, args.hidden_dim).to(device)
             sample = model.decode(sample).cpu()
             save_image(sample.view(64, 1, 28, 28),
                        'results/sample_' + str(epoch) + '.png')
