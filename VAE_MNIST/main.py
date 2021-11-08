@@ -15,10 +15,13 @@ parser.add_argument('--epochs', type=int, default=100, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
+parser.add_argument('--evaluate', action='store_true', default=True)
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='how many batches to wait before logging training status')
+parser.add_argument('--img_1', type=int, default=1)
+parser.add_argument('--img_2', type=int, default=4)
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -122,13 +125,47 @@ def test(epoch):
     print('====> Test set loss: {:.4f}'.format(test_loss))
 
 if __name__ == "__main__":
-    for epoch in range(1, args.epochs + 1):
-        train(epoch)
-        test(epoch)
-        torch.save(model.state_dict(),"last.pth")
-        scheduler.step()
+    if not args.evaluate:
+        for epoch in range(1, args.epochs + 1):
+            train(epoch)
+            test(epoch)
+            torch.save(model.state_dict(),"last.pth")
+            scheduler.step()
+            with torch.no_grad():
+                sample = torch.randn(64, 64).to(device)
+                sample = model.decode(sample).cpu()
+                save_image(sample.view(64, 1, 28, 28),
+                           'results/sample_' + str(epoch) + '.png')
+    else:
+        dataset = datasets.MNIST('../data', train=True, download=True, transform=transforms.ToTensor())
+        model.load_state_dict(torch.load("last.pth",map_location=torch.device('cpu')))
+        data1, label1 = dataset.__getitem__(args.img_1)
+        data2, label2 = dataset.__getitem__(args.img_2)
+        model.eval()
         with torch.no_grad():
-            sample = torch.randn(64, 64).to(device)
-            sample = model.decode(sample).cpu()
-            save_image(sample.view(64, 1, 28, 28),
-                       'results/sample_' + str(epoch) + '.png')
+            _, mu1, logvar1 = model(data1.view(1, 1, 28, 28))
+            _, mu2, logvar2 = model(data2.view(1, 1, 28, 28))
+            for i in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
+                # sample interplolated mean std
+                mu = (1-i)*mu1+ i*mu2
+                logvar = (1-i)*logvar1+ i*logvar2
+                hidden = model.reparameterize(mu,logvar)
+
+                sampled = 1 - model.decode(hidden).view(1, 1, 28, 28) # change the color
+                # remove some noise
+                sampled[sampled>=0.5] = 1.0
+                sampled[sampled<0.5] = 0.0
+                save_image(sampled, f'results/id{args.img_1}_id{args.img_2}_{i}.png')
+
+
+        out = 1-data1.view(1, 1, 28, 28)
+        out[out>=0.5] = 1.0
+        out[out<0.5] = 0.0
+        save_image(out, 'results/data1.png')
+        out = 1-data2.view(1, 1, 28, 28)
+        out[out>=0.5] = 1.0
+        out[out<0.5] = 0.0
+        save_image(out, 'results/data2.png')
+        # print(data2)
+        print(label1, label2)
+        #### hr https://bigjpg.com/
