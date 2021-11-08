@@ -10,6 +10,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+
+
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                     help='input batch size for training (default: 128)')
@@ -137,7 +139,7 @@ def train(epoch):
                 bce_loss / (batch_idx+1.0),
                 kld_loss / (batch_idx+1.0)
             ))
-        return train_loss / (batch_idx+1.0)
+    return train_loss / (batch_idx+1.0)
 
 def test(epoch):
     model.eval()
