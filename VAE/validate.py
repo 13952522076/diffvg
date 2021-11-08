@@ -18,7 +18,7 @@ from vae import VAELoss,VanillaVAE
 parser = argparse.ArgumentParser(description='VAE training for NSF project')
 
 # General MODEL parameters
-parser.add_argument('--latent_dim', default=256, type=int)
+parser.add_argument('--latent_dim', default=128, type=int)
 # Parameters for  dataset
 parser.add_argument('--input', default='../pair/data/face/0/240px-Emoji_u1f61c.svg copy.png', type=str)
 parser.add_argument('--testdir', default='../pair/data/emoji_rgb/validate')
