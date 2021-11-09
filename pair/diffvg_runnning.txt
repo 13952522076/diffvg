@@ -751,13 +751,46 @@ python main.py ../data/test/161761.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 
 
-python main.py ../data/test/egg/frame_30.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
-python main.py ../data/test/egg/frame_34.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
-python main.py ../data/test/egg/frame_38.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
-python main.py ../data/test/egg/frame_42.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
-python main.py ../data/test/egg/frame_46.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
-python main.py ../data/test/egg/frame_50.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
-python main.py ../data/test/egg/frame_54.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
+python main.py ../data/test/egg/frame_30.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../data/test/egg/frame_34.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../data/test/egg/frame_38.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../data/test/egg/frame_42.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../data/test/egg/frame_46.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../data/test/egg/frame_50.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../data/test/egg/frame_54.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 80 --save_folder results/final_test_layers/egg --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
 
 
 
+
+python interpolate.py 1.svg 2.svg --alpha 0.1
+python interpolate.py 1.svg 2.svg --alpha 0.2
+python interpolate.py 1.svg 2.svg --alpha 0.3
+python interpolate.py 1.svg 2.svg --alpha 0.4
+python interpolate.py 1.svg 2.svg --alpha 0.5
+python interpolate.py 1.svg 2.svg --alpha 0.6
+python interpolate.py 1.svg 2.svg --alpha 0.7
+python interpolate.py 1.svg 2.svg --alpha 0.8
+python interpolate.py 1.svg 2.svg --alpha 0.9
+
+python interpolate2.py ../data/test/egg/frame_30.png ../data/test/egg/frame_34.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate2 --free --num_segments 4 --initial circle --circle_init_radius 0.01
+
+
+python interpolate3.py ../data/test/egg/frame_30.png ../data/test/egg/frame_34.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate3 --free --num_segments 4 --initial circle --circle_init_radius 0.01 --save_video
+
+
+
+python main.py ../../VAE_MNIST/hr/data1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/data2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.3.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.4.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.5.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.6.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.7.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.8.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr/id1_id4_0.9.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+
+
+
+python main.py --config config/all.yaml --experiment experiment_200list --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f611.svg.png
