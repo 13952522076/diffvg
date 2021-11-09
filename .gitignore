@@ -19,3 +19,4 @@ venv/*
 pair/data/generate/template/*
 *.pkl
 data/MNIST/raw/t10k-labels-idx1-ubyte
+data/MNIST/*

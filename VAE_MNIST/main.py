@@ -1,6 +1,7 @@
 from __future__ import print_function
 import argparse
 import torch
+# import cv2
 import torch.utils.data
 from torch import nn, optim
 from torch.nn import functional as F
@@ -153,8 +154,8 @@ if __name__ == "__main__":
 
                 sampled = 1 - model.decode(hidden).view(1, 1, 28, 28) # change the color
                 # remove some noise
-                sampled[sampled>=0.5] = 1.0
-                sampled[sampled<0.5] = 0.0
+                # sampled[sampled>=0.5] = 1.0
+                # sampled[sampled<0.5] = 0.0
                 save_image(sampled, f'results/id{args.img_1}_id{args.img_2}_{i}.png')
 
 
