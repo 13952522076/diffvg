@@ -18,9 +18,11 @@ from vae import VAELoss,VanillaVAE
 parser = argparse.ArgumentParser(description='VAE training for NSF project')
 
 # General MODEL parameters
-parser.add_argument('--latent_dim', default=128, type=int)
+parser.add_argument('--latent_dim', default=64, type=int)
 # Parameters for  dataset
-parser.add_argument('--input', default='../pair/data/face/0/240px-Emoji_u1f61c.svg copy.png', type=str)
+# 240px-Emoji_u1f60b.svg.png
+# 240px-Emoji_u1f61d.svg.png
+parser.add_argument('--input', default='../pair/data/face/0/240px-Emoji_u1f60b.svg.png', type=str)
 parser.add_argument('--testdir', default='../pair/data/emoji_rgb/validate')
 
 # Parameters for  training
@@ -63,35 +65,6 @@ def main():
     # sample_images(net, name="test_randsample")
 
 
-def train(net, trainloader, optimizer, criterion):
-    net.train()
-    train_loss = 0
-    recons_loss = 0
-    kld_loss = 0
-
-    for batch_idx, (inputs, targets) in enumerate(trainloader):
-        inputs = inputs.to(device)
-        optimizer.zero_grad()
-        result = net(inputs)
-        loss_dict = criterion(result)  # loss, Reconstruction_Loss, KLD
-        loss = loss_dict['loss']
-        loss.backward()
-        optimizer.step()
-
-        train_loss += loss.item()
-        recons_loss += (loss_dict['Reconstruction_Loss']).item()
-        kld_loss += (loss_dict['KLD']).item()
-
-        progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Rec_Loss: %.3f | KLD_Loss: %.3f'
-                     % (train_loss / (batch_idx + 1), recons_loss / (batch_idx + 1), kld_loss / (batch_idx + 1)))
-
-    return {
-        "train_loss": train_loss / (batch_idx + 1),
-        "recons_loss": recons_loss / (batch_idx + 1),
-        "kld_loss": kld_loss / (batch_idx + 1)
-    }
-
-
 def generate_images(net, x, name="val"):
     with torch.no_grad():
         img = x.to(device)
@@ -101,7 +74,9 @@ def generate_images(net, x, name="val"):
         recons = out["reconstruct"]
         mu = out["mu"]
         log_var = out["log_var"]
-        print(recons.max(), recons.min(), recons.shape)
+        # print(mu)
+        # print(log_var)
+        # print(recons.max(), recons.min(), recons.shape)
         # img = (img+1.0)/2.0
         # recons = (recons+1.0)/2.0
         vutils.save_image(recons.float(), "recons.png", nrow=1)
