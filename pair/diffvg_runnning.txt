@@ -779,18 +779,21 @@ python interpolate3.py ../data/test/egg/frame_30.png ../data/test/egg/frame_34.p
 
 
 
-python main.py ../../VAE_MNIST/hr/data1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/data2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.3.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.4.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.5.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.6.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.7.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.8.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr/id1_id4_0.9.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/data1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/data2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.3.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.4.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.5.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.6.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.7.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.8.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.9.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
 
 
 
-python main.py --config config/all.yaml --experiment experiment_200list --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f611.svg.png
+
+
+python main.py --config config/all.yaml --experiment experiment_200list --signature sunflower --target data/exemplar/sunflowers.jpeg
+python main.py ../../Layerwise/data/exemplar/sunflowers.jpeg --num_paths 1,3,3,3,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5 --pool_size 60 --save_folder results/final_test_layers --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 600
