@@ -795,7 +795,8 @@ python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.9.png --num_paths 1,1,1,1,1 -
 
 
 
-python main.py --config config/all.yaml --experiment experiment_200list --signature shapes --target data/exemplar/sunflowers.jpeg
+python main.py --config config/all.yaml --experiment experiment_5x1 --signature sunflower --target data/exemplar/shape1.png
+
 python main.py ../../Layerwise/data/exemplar/sunflowers.jpeg --num_paths 1,3,3,3,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5 --pool_size 60 --save_folder results/final_test_layers --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 600
 
 
