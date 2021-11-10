@@ -140,6 +140,8 @@ def parse_args():
     cfg.log_dir = args.log_dir
     cfg.initial = args.initial
     cfg.signature = args.signature
+    # set cfg num_segments in command
+    cfg.num_segments = args.num_segments
     if args.seginit is not None:
         cfg.seginit = edict()
         cfg.seginit.type = args.seginit[0]
