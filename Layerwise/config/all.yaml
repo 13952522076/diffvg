@@ -7,13 +7,13 @@ default:
     init: true
     image: false
     output: true
-    video: true
+    video: false
     loss: false
   trainable: 
     bg: False
     record: True
     stroke: False
-  num_segments: 16
+#  num_segments: 16
   num_iter: 600
   lr_base:
     bg: 0.01

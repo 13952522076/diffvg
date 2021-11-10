@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python main.py --config config/all.yaml --experiment experiment_5x1 --signature shape1_4 --target data/exemplar/shape1.png
+python main.py --config config/all.yaml --experiment experiment_32x1 --signature bug191074 --target ../pair/data/test/191074.png
 """
 import pydiffvg
 import torch
