@@ -4,7 +4,7 @@ default:
     type: circle
     radius: 5
   save:
-    init: false
+    init: true
     image: false
     output: true
     video: true
@@ -13,10 +13,10 @@ default:
     bg: False
     record: True
     stroke: False
-  num_segments: 20
+  num_segments: 16
   num_iter: 600
   lr_base:
-    bg: 1
+    bg: 0.01
     point: 1
     color: 0.01
     stroke_width: null
@@ -24,7 +24,10 @@ default:
   coord_init:
     type: sparse
   seed: 0
-  use_sdfloss: true 
+  loss:
+    use_distance_weighted_loss: true
+    xing_loss_weight: 0.01
+    bis_loss_weight: null
 
 experiment_16x1:
   path_schedule:
@@ -32,10 +35,10 @@ experiment_16x1:
     max_path: 16
     schedule_each: 1
 
-experiment_5x1:
+experiment_32x1:
   path_schedule:
     type: repeat
-    max_path: 5
+    max_path: 32
     schedule_each: 1
 
 experiment_1357:

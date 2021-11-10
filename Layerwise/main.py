@@ -1,20 +1,6 @@
 """
-This is the main file or our proposed method.
-Given an input image, we will progressively reconstruct it using svg Bezier path.
-
-This will generate a folder named {args.save_folder}/{filename}/{details}
-
 Here are some use cases:
-
-
-python main.py ../data/emoji_rgb/train/0.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/for_temp --free --num_segments 4 --initial circle --circle_init_radius 0.01
-
-python main.py Balloon.png --num_paths 1,1,1,1,1,1,1,1,1 --pool_size 40 --save_folder results/test_segments --free --save_video --num_segments 4
-
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
-
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python main.py --config config/all.yaml --experiment experiment_5x1 --signature shape1_4 --target data/exemplar/shape1.png
 """
 import pydiffvg
 import torch
@@ -27,7 +13,7 @@ import argparse
 import math
 import errno
 from tqdm import tqdm
-from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.optim.lr_scheduler import CosineAnnealingLR, LambdaLR
 from torch.nn.functional import adaptive_avg_pool2d
 import warnings
 warnings.filterwarnings("ignore")
@@ -41,6 +27,7 @@ import numpy.random as npr
 import shutil
 import copy
 # import skfmm
+from xing_loss import xing_loss
 
 import yaml
 from easydict import EasyDict as edict
@@ -211,7 +198,7 @@ class naive_coord_init():
         return [coord_w, coord_h]
 
 class sparse_coord_init():
-    def __init__(self, pred, gt, format='[bs x c x 2D]', bin_interval=0.1):
+    def __init__(self, pred, gt, format='[bs x c x 2D]', quantile_interval=300):
         if isinstance(pred, torch.Tensor):
             pred = pred.detach().cpu().numpy()
         if isinstance(gt, torch.Tensor):
@@ -226,16 +213,16 @@ class sparse_coord_init():
             self.reference_gt = copy.deepcopy(gt[0])
         else:
             raise ValueError
-        quantized_interval = np.linspace(0., 3., int(3/bin_interval)+1)
+        quantile_interval = np.linspace(0., 1., quantile_interval)
+        quantized_interval = np.quantile(self.map, quantile_interval)
         quantized_interval = quantized_interval[1:-1]
         self.map = np.digitize(self.map, quantized_interval, right=False)
         self.map = np.clip(self.map, 0, 255).astype(np.uint8)
         self.idcnt = {}
-        for idi in np.unique(self.map):
-            if idi in [0, 255]:
-                continue
+        for idi in sorted(np.unique(self.map)):
             self.idcnt[idi] = (self.map==idi).sum()
-        self.move_to_center_of_mass = True
+        self.idcnt.pop(min(self.idcnt.keys()))
+        # remove smallest one to remove the correct region
 
     def __call__(self):
         if len(self.idcnt) == 0:
@@ -262,6 +249,7 @@ class sparse_coord_init():
         self.map[component == target_cid] = 0
         return [coord_w, coord_h]
 
+
 def init_shapes(num_paths,
                 num_segments,
                 canvas_size,
@@ -284,7 +272,6 @@ def init_shapes(num_paths,
         if seginit_cfg.type=="random":
             points = []
             p0 = pos_init_method()
-            p0 = [p0[0]*w, p0[1]*h]
             color_ref = copy.deepcopy(p0)
             points.append(p0)
             for j in range(num_segments):
@@ -360,6 +347,21 @@ def init_shapes(num_paths,
         return shapes, shape_groups, point_var, color_var, stroke_width_var, stroke_color_var
     else:
         return shapes, shape_groups, point_var, color_var
+
+class linear_decay_lrlambda_f(object):
+    def __init__(self, decay_every, decay_ratio):
+        self.decay_every = decay_every
+        self.decay_ratio = decay_ratio
+
+    def __call__(self, n):
+        decay_time = n//self.decay_every
+        decay_step = n %self.decay_every
+        lr_s = self.decay_ratio**decay_time
+        lr_e = self.decay_ratio**(decay_time+1)
+        r = decay_step/self.decay_every
+        lr = lr_s * (1-r) + lr_e * r
+        return lr
+
 
 if __name__ == "__main__":
 
@@ -439,6 +441,7 @@ if __name__ == "__main__":
     else:
         raise ValueError
 
+    lrlambda_f = linear_decay_lrlambda_f(cfg.num_iter, 0.4)
     optim_schedular_dict = {}
 
     for path_idx, pathn in enumerate(path_schedule):
@@ -488,12 +491,19 @@ if __name__ == "__main__":
 
         pg = [{'params' : para[ki], 'lr' : cfg.lr_base[ki]} for ki in sorted(para.keys())]
         optim = torch.optim.Adam(pg)
+
+        # if cfg.trainable.record:
+        #     scheduler = CosineAnnealingLR(
+        #         optim, cfg.num_iter*(len(path_schedule) - path_idx), eta_min=0.5)
+        # else:
+        #     scheduler = CosineAnnealingLR(
+        #         optim, cfg.num_iter, eta_min=0.5)
         if cfg.trainable.record:
-            scheduler = CosineAnnealingLR(
-                optim, cfg.num_iter*(len(path_schedule) - path_idx), eta_min=0.5)
+            scheduler = LambdaLR(
+                optim, lr_lambda=lrlambda_f, last_epoch=-1)
         else:
-            scheduler = CosineAnnealingLR(
-                optim, cfg.num_iter, eta_min=0.5)
+            scheduler = LambdaLR(
+                optim, lr_lambda=lrlambda_f, last_epoch=cfg.num_iter)
         optim_schedular_dict[path_idx] = (optim, scheduler)
 
         # Inner loop training
@@ -532,7 +542,7 @@ if __name__ == "__main__":
             else:
                 loss = ((x-gt)**2)
 
-            if cfg.use_sdfloss:
+            if cfg.loss.use_distance_weighted_loss:
                 if cfg.use_ycrcb:
                     raise ValueError
                 shapes_forsdf = copy.deepcopy(shapes)
@@ -559,6 +569,15 @@ if __name__ == "__main__":
             else:
                 loss = (loss.sum(1)*loss_weight).mean()
 
+            # if (cfg.loss.bis_loss_weight is not None)  and (cfg.loss.bis_loss_weight > 0):
+            #     loss_bis = bezier_intersection_loss(point_var[0]) * cfg.loss.bis_loss_weight
+            #     loss = loss + loss_bis
+            if (cfg.loss.xing_loss_weight is not None) \
+                    and (cfg.loss.xing_loss_weight > 0):
+                loss_xing = xing_loss(point_var) * cfg.loss.xing_loss_weight
+                loss = loss + loss_xing
+
+
             loss_list.append(loss.item())
             t_range.set_postfix({'loss': loss.item()})
             loss.backward()
@@ -571,7 +590,7 @@ if __name__ == "__main__":
             for group in shape_groups_record:
                 group.fill_color.data.clamp_(0.0, 1.0)
 
-        if cfg.use_sdfloss:
+        if cfg.loss.use_distance_weighted_loss:
             loss_weight_keep = loss_weight.detach().cpu().numpy() * 1
 
         if not cfg.trainable.record:
