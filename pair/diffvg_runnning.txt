@@ -809,7 +809,7 @@ python interpolate2.py ../data/test/egg/frame_30.png ../data/test/egg/frame_54.p
 
 
 
-python main.py --config config/all.yaml --experiment experiment_5x1 --signature smile_mse --target data/exemplar/shape1.png
+python main.py --config config/all.yaml --experiment experiment_5x1 --signature smile_mse --target data/exemplar/smile.png --num_segments 4
 
 
 

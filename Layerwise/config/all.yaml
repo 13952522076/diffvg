@@ -7,7 +7,7 @@ default:
     init: true
     image: true
     output: true
-    video: false
+    video: true
     loss: false
   trainable: 
     bg: False
