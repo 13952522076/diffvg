@@ -795,9 +795,9 @@ python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.9.png --num_paths 1,1,1,1,1 -
 
 
 
-python main.py --config config/all.yaml --experiment experiment_1x1 --signature yeah_sdf --target data/exemplar/yeah.png
-python main.py --config config/all.yaml --experiment experiment_1x1 --signature yeah_sdf --target data/exemplar/yeah.png
-
+python main.py --config config/all.yaml --experiment experiment_1x1 --signature yeah_mse --target data/exemplar/yeah.png
+python main.py --config config/all.yaml --experiment experiment_1x1 --signature twocircle_mse --target data/exemplar/twocircle.png
+python main.py --config config/all.yaml --experiment experiment_1x1 --signature twospquare_mse --target data/exemplar/twospquare.png
 
 
 
