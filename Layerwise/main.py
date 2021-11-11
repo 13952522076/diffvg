@@ -684,4 +684,17 @@ if __name__ == "__main__":
             out.release()
             # shutil.rmtree(os.path.join(cfg.experiment_dir, "video-png"))
 
+
+    # # save images for evaluate
+    # if cfg.save.evaluate:
+    #         filename = os.path.join(
+    #             cfg.experiment_dir, "demo-png", "{}.png".format(pathn_record_str))
+    #         check_and_create_dir(filename)
+    #         if cfg.use_ycrcb:
+    #             imshow = ycrcb_conversion(
+    #                 img, format='[2D x 3]', reverse=True).detach().cpu()
+    #         else:
+    #             imshow = img.detach().cpu()
+    #         pydiffvg.imwrite(imshow, filename, gamma=gamma)
+
     print("The last loss is: {}".format(loss.item()))
