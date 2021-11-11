@@ -5,7 +5,7 @@ default:
     radius: 5
   save:
     init: true
-    image: false
+    image: true
     output: true
     video: false
     loss: false
