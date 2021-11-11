@@ -544,6 +544,9 @@ if __name__ == "__main__":
             else:
                 loss = ((x-gt)**2)
 
+            if cfg.loss.use_l1_loss:
+                loss = abs(x-gt)
+
             if cfg.loss.use_distance_weighted_loss:
                 if cfg.use_ycrcb:
                     raise ValueError
