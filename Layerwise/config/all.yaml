@@ -14,7 +14,7 @@ default:
     record: True
     stroke: False
 #  num_segments: 16
-  num_iter: 600
+  num_iter: 500
   lr_base:
     bg: 0.01
     point: 1
@@ -25,8 +25,8 @@ default:
     type: sparse
   seed: 0
   loss:
-    use_l1_loss: true
-    use_distance_weighted_loss: false
+    use_l1_loss: false
+    use_distance_weighted_loss: true
     xing_loss_weight: 0.01
     bis_loss_weight: null
 
