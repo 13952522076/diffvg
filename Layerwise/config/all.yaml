@@ -25,7 +25,7 @@ default:
     type: sparse
   seed: 0
   loss:
-    use_distance_weighted_loss: true
+    use_distance_weighted_loss: false
     xing_loss_weight: 0.01
     bis_loss_weight: null
 
