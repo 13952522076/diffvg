@@ -73,6 +73,14 @@ experiment_200list:
 
 
 
+experiment_exp2_64_8:
+  path_schedule:
+    type: exp
+    base: 2
+    max_path: 64
+    max_path_per_iter: 8
+
+
 # for comparison
 experiment_exp2_8:
   path_schedule:
