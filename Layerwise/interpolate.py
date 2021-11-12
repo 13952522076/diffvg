@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python main.py --config config/all.yaml --experiment experiment_8x1 --signature egg1_egg2 --target ../pair/data/test/egg1.png --target2 ../pair/data/test/egg2.png --num_segments 8 --log_dir log/eggs
+python interpolate.py --config config/all.yaml --experiment experiment_8x1 --signature egg1_egg2 --target ../pair/data/test/egg1.png --target2 ../pair/data/test/egg2.png --num_segments 8 --log_dir log/eggs
 """
 import pydiffvg
 import torch
