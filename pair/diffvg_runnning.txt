@@ -822,4 +822,18 @@ python main.py --config config/all.yaml --experiment experiment_16x1 --signature
 python interpolate.py --config config/all.yaml --experiment experiment_8x1 --signature new_egg1_egg2 --target ../pair/data/test/egg_new1.png --target2 ../pair/data/test/egg_new2.png --num_segments 8 --log_dir log/eggs
 
 
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 17 --target data/originals_resized/17.png --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 18 --target data/originals_resized/18.png --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 19 --target data/originals_resized/19.png --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 21 --target data/originals_resized/21.png --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 22 --target data/originals_resized/22.png --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 24 --target data/originals_resized/24.png --log_dir log/originals
+
+
+
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 42 --target data/originals_resized/42.jpg --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 31 --target data/originals_resized/31.jpg --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 30 --target data/originals_resized/30.jpg --log_dir log/originals
+python main.py --config config/all.yaml --experiment experiment_exp2_64 --signature 25 --target data/originals_resized/25.png --log_dir log/originals
+
 
