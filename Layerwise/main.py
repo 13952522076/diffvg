@@ -392,6 +392,7 @@ if __name__ == "__main__":
     device = pydiffvg.get_device()
 
     gt = np.array(PIL.Image.open(cfg.target))
+    print(f"gt shape is {gt.shape}")
     gt = (gt/255).astype(np.float32)
     gt = torch.FloatTensor(gt).permute(2, 0, 1)[None].to(device)
     if cfg.use_ycrcb:
