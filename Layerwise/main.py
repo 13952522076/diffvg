@@ -392,7 +392,13 @@ if __name__ == "__main__":
     device = pydiffvg.get_device()
 
     gt = np.array(PIL.Image.open(cfg.target))
-    print(f"gt shape is {gt.shape}")
+    print(f"Input image shape is: {gt.shape}")
+    if len(gt.shape) == 2:
+        print("Converting the gray-scale image to RGB.")
+        gt = gt.unsqueeze(dim=-1).repeat(1,1,3)
+    if gt.shape[2] == 4:
+        print("Input image includes alpha channel, simply dropout alpha channel.")
+        gt = gt[:, :, :3]
     gt = (gt/255).astype(np.float32)
     gt = torch.FloatTensor(gt).permute(2, 0, 1)[None].to(device)
     if cfg.use_ycrcb:
