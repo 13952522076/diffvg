@@ -119,7 +119,7 @@ def parse_args():
     parser.add_argument('--seginit', nargs='+', type=str)
 
     parser.add_argument("--num_paths", type=str, default="1,1,1")
-    parser.add_argument("--num_segments", type=int, default=4)
+    parser.add_argument("--num_segments", type=int, default=8)
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument('--free', action='store_true')
     # Please ensure that image resolution is divisible by pool_size; otherwise the performance would drop a lot.
