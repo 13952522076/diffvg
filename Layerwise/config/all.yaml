@@ -8,7 +8,7 @@ default:
     image: true
     output: true
     video: true
-    loss: false
+    loss: true
   trainable: 
     bg: False
     record: True
