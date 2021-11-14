@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python main.py --config config/all.yaml --experiment experiment_32x1 --signature bug191074 --target ../pair/data/test/191074.png
+python main_folder.py --config config/all.yaml --experiment experiment_1x1 --target_folder data/emoji_rgb/all --save_folder emoji
 """
 import pydiffvg
 import torch
@@ -263,7 +263,7 @@ class sparse_coord_init():
 
 
 def init_shapes(num_paths, num_segments, canvas_size, seginit_cfg, shape_cnt,
-                pos_init_method=None, trainable_stroke=False, **kwargs):
+                pos_init_method=None, trainable_stroke=False, gt=None, **kwargs):
     shapes = []
     shape_groups = []
     h, w = canvas_size
@@ -313,7 +313,7 @@ def init_shapes(num_paths, num_segments, canvas_size, seginit_cfg, shape_cnt,
         shapes.append(path)
         # !!!!!!problem is here. the shape group shape_ids is wrong
 
-        if 'gt' in kwargs:
+        if gt is not None:
             wref, href = color_ref
             wref = max(0, min(int(wref), w-1))
             href = max(0, min(int(href), h-1))
