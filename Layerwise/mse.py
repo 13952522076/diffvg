@@ -1,5 +1,7 @@
 """
 python mse.py --target_folder data/emoji_rgb/all --save_folder ../pair/Layerwise/evaluate/emoji_path8
+pair_vgtest240
+python mse.py --target_folder data/pair_vgtest240 --save_folder ../pair/Layerwise/evaluate/pair_vgtest240_path8
 """
 import pydiffvg
 import torch
@@ -29,6 +31,9 @@ if __name__ == "__main__":
             target_path = join(args.target_folder, file)
             save_path = join(args.save_folder, file)
             target = torch.from_numpy(skimage.io.imread(target_path)).to(torch.float32) / 255.0
+            if len(target.shape)==2:
+                # print("Converting the gray-scale image to RGB.")
+                target = target.unsqueeze(dim=-1).repeat(1,1,3)
             render = torch.from_numpy(skimage.io.imread(save_path)).to(torch.float32) / 255.0
             print(f"target shape {target.shape}, rendered shape {render.shape}")
 
