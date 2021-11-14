@@ -1,5 +1,5 @@
 """
-python painterly_rendering.py --use_blob --num_paths 8 --target_folder ../../Layerwise/data/emoji_rgb/all --save_folder evaluate/emoji
+python painterly_rendering_folder.py --use_blob --num_paths 8 --target_folder ../../Layerwise/data/emoji_rgb/all --save_folder evaluate/emoji
 """
 import pydiffvg
 import torch
@@ -226,7 +226,6 @@ if __name__ == "__main__":
     parser.add_argument("--use_blob", dest='use_blob', action='store_true')
     parser.add_argument("--save_folder", help="target image path")
     parser.add_argument("--filename", type=str)
-    parser.add_argument("--save_folder", type=str)
     args = parser.parse_args()
     try:
         os.makedirs(args.save_folder)
