@@ -1,3 +1,6 @@
+"""
+python mse.py --target_folder data/emoji_rgb/all --save_folder ../pair/Layerwise/evaluate/emoji_path8
+"""
 import pydiffvg
 import torch
 import os
@@ -9,6 +12,7 @@ import random
 import ttools.modules
 import argparse
 import math
+import torch.nn.functional as F
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -17,10 +21,21 @@ if __name__ == "__main__":
     parser.add_argument("--filename", type=str)
     args = parser.parse_args()
     files = [f for f in listdir(args.target_folder) if isfile(join(args.target_folder, f))]
+    targets = []
+    renders = []
+
     for file in files:
         if file.endswith(".png") or file.endswith(".jpg") or file.endswith(".jpeg"):
             target_path = join(args.target_folder, file)
             save_path = join(args.save_folder, file)
             target = torch.from_numpy(skimage.io.imread(target_path)).to(torch.float32) / 255.0
-            rendered = torch.from_numpy(skimage.io.imread(save_path)).to(torch.float32) / 255.0
-            print(f"target shape {target.shape}, rendered shape {rendered.shape}")
+            render = torch.from_numpy(skimage.io.imread(save_path)).to(torch.float32) / 255.0
+            print(f"target shape {target.shape}, rendered shape {render.shape}")
+
+            targets.append(target.permute(2,0,1).unsqueeze(dim=0))
+            renders.append(render.permute(2,0,1).unsqueeze(dim=0))
+
+    targets = torch.cat(targets,dim=0)
+    renders = torch.cat(renders,dim=0)
+    loss = F.mse_loss(renders, targets)
+    print(f"loss is {loss}")
