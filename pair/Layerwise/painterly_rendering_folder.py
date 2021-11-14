@@ -1,13 +1,11 @@
 """
-Scream: python painterly_rendering.py imgs/scream.jpg --num_paths 2048 --max_width 4.0
-Fallingwater: python painterly_rendering.py imgs/fallingwater.jpg --num_paths 2048 --max_width 4.0
-Fallingwater: python painterly_rendering.py imgs/fallingwater.jpg --num_paths 2048 --max_width 4.0 --use_lpips_loss
-Baboon: python painterly_rendering.py imgs/baboon.png --num_paths 1024 --max_width 4.0 --num_iter 250
-Baboon Lpips: python painterly_rendering.py imgs/baboon.png --num_paths 1024 --max_width 4.0 --num_iter 500 --use_lpips_loss
-Kitty: python painterly_rendering.py imgs/kitty.jpg --num_paths 1024 --use_blob
+python painterly_rendering.py --use_blob --num_paths 8 --target_folder ../../Layerwise/data/emoji_rgb/all --save_folder evaluate/emoji
 """
 import pydiffvg
 import torch
+import os
+from os import listdir
+from os.path import isfile, join
 import skimage
 import skimage.io
 import random
@@ -15,7 +13,7 @@ import ttools.modules
 import argparse
 import math
 
-pydiffvg.set_print_timing(True)
+pydiffvg.set_print_timing(False)
 
 gamma = 1.0
 
@@ -28,10 +26,10 @@ def main(args):
     #target = torch.from_numpy(skimage.io.imread('imgs/lena.png')).to(torch.float32) / 255.0
     target = torch.from_numpy(skimage.io.imread(args.target)).to(torch.float32) / 255.0
     if len(target.shape)==2:
-        print("Converting the gray-scale image to RGB.")
+        # print("Converting the gray-scale image to RGB.")
         target = target.unsqueeze(dim=-1).repeat(1,1,3)
     if target.shape[2] == 4:
-        print("Input image includes alpha channel, simply dropout alpha channel.")
+        # print("Input image includes alpha channel, simply dropout alpha channel.")
         target = target[:, :, :3]
     target = target.pow(gamma)
     target = target.to(pydiffvg.get_device())
@@ -122,7 +120,7 @@ def main(args):
                  0,   # seed
                  None,
                  *scene_args)
-    pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/init.png', gamma=gamma)
+    # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/init.png', gamma=gamma)
 
     points_vars = []
     stroke_width_vars = []
@@ -150,7 +148,7 @@ def main(args):
     color_optim = torch.optim.Adam(color_vars, lr=0.01)
     # Adam iterations.
     for t in range(args.num_iter):
-        print('iteration:', t)
+        # print('iteration:', t)
         points_optim.zero_grad()
         if len(stroke_width_vars) > 0:
             width_optim.zero_grad()
@@ -168,7 +166,7 @@ def main(args):
         # Compose img with white background
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         # Save the intermediate render.
-        pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
+        # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
@@ -177,7 +175,7 @@ def main(args):
             loss = perception_loss(img, target) + (img.mean() - target.mean()).pow(2)
         else:
             loss = (img - target).pow(2).mean()
-        print('render loss:', loss.item())
+        print(f'iteration {t} render loss: {loss.item()}' )
     
         # Backpropagate the gradients.
         loss.backward()
@@ -210,7 +208,7 @@ def main(args):
                  None,
                  *scene_args)
     # Save the intermediate render.
-    pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/final.png'.format(t), gamma=gamma)
+    pydiffvg.imwrite(img.cpu(), join(args.save_folder, args.filename), gamma=gamma)
     # # Convert the intermediate renderings to a video.
     # from subprocess import call
     # call(["ffmpeg", "-framerate", "24", "-i",
@@ -219,11 +217,26 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("target", help="target image path")
-    parser.add_argument("--num_paths", type=int, default=512)
+    parser.add_argument("--target_folder", help="target image path")
+    parser.add_argument("--target", type=str)
+    parser.add_argument("--num_paths", type=int, default=64)
     parser.add_argument("--max_width", type=float, default=2.0)
     parser.add_argument("--use_lpips_loss", dest='use_lpips_loss', action='store_true')
     parser.add_argument("--num_iter", type=int, default=500)
     parser.add_argument("--use_blob", dest='use_blob', action='store_true')
+    parser.add_argument("--save_folder", help="target image path")
+    parser.add_argument("--filename", type=str)
+    parser.add_argument("--save_folder", type=str)
     args = parser.parse_args()
-    main(args)
+    try:
+        os.makedirs(args.save_folder)
+    except:
+        pass
+    args.use_blob = True
+    args.save_folder = args.save_folder+"_path"+str(args.num_paths)
+    files = [f for f in listdir(args.target_folder) if isfile(join(args.target_folder, f))]
+    for file in files:
+        if file.endswith(".png") or file.endswith(".jpg") or file.endswith(".jpeg"):
+            args.target = join(args.target_folder, file)
+            args.filename = file
+            main(args)
