@@ -587,20 +587,23 @@ if __name__ == "__main__":
 
                 # save
                 plt.imshow(save_loss, cmap='Reds')
-                plt.colorbar()
+                plt.axis('off')
+                # plt.colorbar()
                 filename = os.path.join(cfg.experiment_dir, "loss", "{}-iter{}-mseloss.png".format(pathn_record_str, t))
                 check_and_create_dir(filename)
                 plt.savefig(filename, dpi=800)
                 plt.close()
 
-                plt.imshow(save_weight, cmap='Reds')
-                plt.colorbar()
+                plt.imshow(save_weight, cmap='Greys')
+                plt.axis('off')
+                # plt.colorbar()
                 filename = os.path.join(cfg.experiment_dir, "loss", "{}-iter{}-sdfweight.png".format(pathn_record_str, t))
                 plt.savefig(filename, dpi=800)
                 plt.close()
 
                 plt.imshow(save_weighted_loss, cmap='Reds')
-                plt.colorbar()
+                plt.axis('off')
+                # plt.colorbar()
                 filename = os.path.join(cfg.experiment_dir, "loss", "{}-iter{}-weightedloss.png".format(pathn_record_str, t))
                 plt.savefig(filename, dpi=800)
                 plt.close()
