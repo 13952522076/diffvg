@@ -34,6 +34,9 @@ if __name__ == "__main__":
             if len(target.shape)==2:
                 # print("Converting the gray-scale image to RGB.")
                 target = target.unsqueeze(dim=-1).repeat(1,1,3)
+            if target.shape[2] == 4:
+                # print("Input image includes alpha channel, simply dropout alpha channel.")
+                target = target[:, :, :3]
             render = torch.from_numpy(skimage.io.imread(save_path)).to(torch.float32) / 255.0
             print(f"target shape {target.shape}, rendered shape {render.shape}")
 
