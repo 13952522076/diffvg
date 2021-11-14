@@ -550,7 +550,6 @@ if __name__ == "__main__":
                 loss = ((x-gt)*(color_reweight.view(1, -1, 1, 1)))**2
             else:
                 loss = ((x-gt)**2)
-            print(f"MSE Loss shape is: {loss.shape}")
 
             if cfg.loss.use_l1_loss:
                 loss = abs(x-gt)
