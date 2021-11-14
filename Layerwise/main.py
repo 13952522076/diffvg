@@ -576,7 +576,39 @@ if __name__ == "__main__":
                 loss_weight += loss_weight_keep
                 loss_weight = np.clip(loss_weight, 0, 1)
                 loss_weight = torch.FloatTensor(loss_weight).to(device)
-                print(f"loss_weight shape is: {loss_weight.shape}")
+
+            if cfg.save.loss:
+                save_loss = loss.squeeze(dim=0).mean(dim=0,keepdim=False).cpu().detach().numpy()
+                save_weight = loss_weight.cpu().detach().numpy()
+                save_weighted_loss = save_loss*save_weight
+                # normalize to [0,1]
+                save_loss = (save_loss - np.min(save_loss))/np.ptp(save_loss)
+                save_weight = (save_weight - np.min(save_weight))/np.ptp(save_weight)
+                save_weighted_loss = (save_weighted_loss - np.min(save_weighted_loss))/np.ptp(save_weighted_loss)
+
+                # save
+                plt.imshow(save_loss, cmap='Reds')
+                plt.colorbar()
+                filename = os.path.join(cfg.experiment_dir, "loss", "{}-iter{}-mseloss.png".format(pathn_record_str, t))
+                check_and_create_dir(filename)
+                plt.savefig(filename, dpi=800)
+                plt.close()
+
+                plt.imshow(save_weight, cmap='Reds')
+                plt.colorbar()
+                filename = os.path.join(cfg.experiment_dir, "loss", "{}-iter{}-sdfweight.png".format(pathn_record_str, t))
+                plt.savefig(filename, dpi=800)
+                plt.close()
+
+                plt.imshow(save_weighted_loss, cmap='Reds')
+                plt.colorbar()
+                filename = os.path.join(cfg.experiment_dir, "loss", "{}-iter{}-weightedloss.png".format(pathn_record_str, t))
+                plt.savefig(filename, dpi=800)
+                plt.close()
+
+
+
+
 
             if loss_weight is None:
                 loss = loss.sum(1).mean()
