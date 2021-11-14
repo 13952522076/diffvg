@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams["font.family"] = "Times New Roman"
 
 
-control_points = "M 256.3534851074219 110.7645034790039 C 71.21488952636719 181.9011688232422 -10.244577407836914 324.7065124511719 237.1314697265625 284.7209777832031 C 262.41851806640625 89.2352066040039 245.9853057861328 118.39578247070312 187.95252990722656 141.21246337890625 C 145.94461059570312 167.42044067382812 115.1034927368164 246.79754638671875 -58.48623275756836 237.8876495361328 C -52.845550537109375 -154.3301239013672 289.62677001953125 -114.38773345947266 256.3534851074219 110.7645034790039"
+control_points = "394.145 331.428 409.253 325.658 319.737 315.75 270.829 238.104 244.883 249.059 209.444 285.784 206.58 341.234 204.854 412.84 249.637 447.074 284.938 449.045 348.816 456.138 397.825 386.081 394.145 331.428"
 control_points = control_points.replace("M ", "")
 control_points = control_points.replace("C ", "")
 control_points = control_points.split(" ")
@@ -19,12 +20,18 @@ print(x_list)
 print(y_list)
 print(control_points)
 print(control_points.__len__())
-fig, ax = plt.subplots()
-ax.scatter(x_list, y_list)
+fig = plt.figure(1, figsize=(4, 3.5))
+ax = fig.add_subplot(111)
+ax.scatter(x_list, y_list, s=60)
 ax.plot(x_list, y_list)
-
+ax.axis('off')
 
 for i, txt in enumerate(labels):
-    ax.annotate(txt, (x_list[i], y_list[i]))
+    if i==0:
+        ax.annotate(txt, (x_list[i]-5, y_list[i]+5), fontsize=16)
+    else:
+        ax.annotate(txt, (x_list[i], y_list[i]), fontsize=16)
 
-plt.show()
+fig.tight_layout()
+fig.savefig("points.pdf", bbox_inches="tight", pad_inches=0, transparent=True)
+plt.close()
