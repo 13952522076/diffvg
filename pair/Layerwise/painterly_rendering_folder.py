@@ -167,6 +167,8 @@ def main(args):
         img = img[:, :, 3:4] * img[:, :, :3] + torch.ones(img.shape[0], img.shape[1], 3, device = pydiffvg.get_device()) * (1 - img[:, :, 3:4])
         # Save the intermediate render.
         # pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/iter_{}.png'.format(t), gamma=gamma)
+        if t == (args.num_iter-1):
+            pydiffvg.imwrite(img.cpu(), join(args.save_folder, args.filename), gamma=gamma)
         img = img[:, :, :3]
         # Convert img from HWC to NCHW
         img = img.unsqueeze(0)
@@ -200,16 +202,16 @@ def main(args):
         #                       canvas_width, canvas_height, shapes, shape_groups)
     
     # Render the final result.
-    img = render(target.shape[1], # width
-                 target.shape[0], # height
-                 2,   # num_samples_x
-                 2,   # num_samples_y
-                 0,   # seed
-                 None,
-                 *scene_args)
-    # Save the intermediate render.
-    pydiffvg.imwrite(img.cpu(), join(args.save_folder, args.filename), gamma=gamma)
-    # # Convert the intermediate renderings to a video.
+    # img = render(target.shape[1], # width
+    #              target.shape[0], # height
+    #              2,   # num_samples_x
+    #              2,   # num_samples_y
+    #              0,   # seed
+    #              None,
+    #              *scene_args)
+    # # Save the intermediate render.
+    # pydiffvg.imwrite(img.cpu(), join(args.save_folder, args.filename), gamma=gamma)
+    # # # Convert the intermediate renderings to a video.
     # from subprocess import call
     # call(["ffmpeg", "-framerate", "24", "-i",
     #     "results/painterly_rendering/iter_%d.png", "-vb", "20M",
