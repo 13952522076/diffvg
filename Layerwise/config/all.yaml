@@ -4,11 +4,11 @@ default:
     type: circle
     radius: 5
   save:
-    init: true
-    image: true
+    init: false
+    image: false
     output: true
-    video: true
-    loss: true
+    video: false
+    loss: false
   trainable: 
     bg: False
     record: True
