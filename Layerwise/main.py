@@ -74,6 +74,7 @@ def get_sdf(phi, method='skfmm', **kwargs):
 
         truncate = kwargs.get('truncate', 10)
         sd = np.clip(sd, -truncate, truncate)
+        print(f"max sd value is: {sd.max()}")
 
         zero2max = kwargs.get('zero2max', True)
         if zero2max and flip_negative:
