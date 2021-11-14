@@ -23,8 +23,7 @@ if __name__ == "__main__":
     parser.add_argument("--filename", type=str)
     args = parser.parse_args()
     files = [f for f in listdir(args.target_folder) if isfile(join(args.target_folder, f))]
-    targets = []
-    renders = []
+
     loss = 0.
     i=0.
     for file in files:
@@ -39,7 +38,7 @@ if __name__ == "__main__":
                 # print("Input image includes alpha channel, simply dropout alpha channel.")
                 target = target[:, :, :3]
             render = torch.from_numpy(skimage.io.imread(save_path)).to(torch.float32) / 255.0
-            loss_item = F.mse_loss(renders, targets)
+            loss_item = F.mse_loss(render, target)
             print(f" {file}: target shape {target.shape}, rendered shape {render.shape}, loss {loss_item}")
             loss+=loss_item
             i+=1.
