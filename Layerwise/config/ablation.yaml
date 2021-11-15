@@ -1,7 +1,7 @@
 default:
   use_ycrcb: False
   seginit:
-    type: circle
+    type: random
     radius: 5
   save:
     init: true
