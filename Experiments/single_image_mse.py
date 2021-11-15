@@ -9,8 +9,8 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--target", default="images/emoji/demo2.png", help="target image path")
-parser.add_argument("--render", default="images/emoji/LIVE/1,1,1,1,4.png", help="target image path")
+parser.add_argument("--target", default="images/yosemite/yosemite.jpeg", help="target image path")
+parser.add_argument("--render", default="images/yosemite/LIVE/512.png", help="target image path")
 parser.add_argument("--filename", type=str)
 args = parser.parse_args()
 target = torch.from_numpy(np.array(PIL.Image.open(args.target))).to(torch.float32) / 255.0
@@ -26,6 +26,7 @@ if render.shape[2] == 4:
 print(target.shape, render.shape)
 target = target.permute(2,0,1).unsqueeze(dim=0)
 render = render.permute(2,0,1).unsqueeze(dim=0)
-render = F.interpolate(render, (240,240))
+_,_,w,h = target.size()
+render = F.interpolate(render, (w,h))
 loss = F.mse_loss(render, target)
 print(loss)
