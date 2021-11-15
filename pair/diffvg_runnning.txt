@@ -841,6 +841,8 @@ python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --sign
 
 19, 42, 31
 
+python main.py --config config/ablation.yaml --experiment experiment_exp2_512 --signature 25 --target data/originals/25.png --log_dir log/originals_full
+
 
 nohup python painterly_rendering_folder.py --use_blob --num_paths 16 --target_folder ../../Layerwise/data/emoji_rgb/all --save_folder evaluate/emoji > emoji_16.out &
 
@@ -870,6 +872,8 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_exp
 # svg
 nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_64.out &
 
+nohup python main_folder.py --config config/all.yaml --experiment experiment_list_64 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list64.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_list_32 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list32.out &
 
 
 # svg
@@ -892,4 +896,4 @@ python main.py --config config/ablation.yaml --experiment experiment_list_512 --
 
 
 
-python mse.py --target_folder data/pair_vgtest240 --save_folder log/evaluate/pair_vgtest240_path_experiment_exp2_32
+python mse.py --target_folder data/emoji_rgb/all --save_folder log/evaluate/emoji_Pathexperiment_exp2_8

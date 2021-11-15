@@ -128,8 +128,8 @@ experiment_exp2_512:
   path_schedule:
     type: exp
     base: 2
-    max_path: 256
-    max_path_per_iter: 32
+    max_path: 512
+    max_path_per_iter: 64
 
 experiment_list_64:
   path_schedule:
