@@ -4,10 +4,10 @@ default:
     type: circle
     radius: 5
   save:
-    init: true
+    init: false
     image: true
     output: true
-    video: true
+    video: false
     loss: false
   trainable: 
     bg: False
@@ -124,7 +124,12 @@ experiment_exp2_256:
     max_path: 256
     max_path_per_iter: 32
 
-
+experiment_exp2_512:
+  path_schedule:
+    type: exp
+    base: 2
+    max_path: 256
+    max_path_per_iter: 32
 
 experiment_list_64:
   path_schedule:
