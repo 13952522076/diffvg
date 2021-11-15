@@ -748,11 +748,13 @@ if __name__ == "__main__":
         yaml.dump(edict_2_dict(cfg), f)
 
     files = [f for f in listdir(cfg.target_folder) if isfile(join(cfg.target_folder, f))]
+    random.shuffle(files)
     for file in files:
         if file.endswith(".png") or file.endswith(".jpg") or file.endswith(".jpeg"):
             cfg.filename = file
             if not isfile(os.path.join( cfg.experiment_dir, f"{cfg.filename}")):
                 cfg.target = join(cfg.target_folder, file)
                 main(cfg)
-
+            else:
+                print(f'{os.path.join( cfg.experiment_dir, f"{cfg.filename}")} exist, pass.')
     print("Done")
