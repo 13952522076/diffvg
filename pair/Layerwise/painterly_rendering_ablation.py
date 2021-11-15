@@ -1,5 +1,11 @@
 """
-python painterly_rendering_ablation.py demo.png --num_paths 4 --save_folder demo_path4
+python painterly_rendering_ablation.py demo2.png --num_paths 1 --save_folder demo2_path1
+python painterly_rendering_ablation.py demo2.png --num_paths 4 --save_folder demo2_path4
+python painterly_rendering_ablation.py demo2.png --num_paths 8 --save_folder demo2_path8
+python painterly_rendering_ablation.py demo2.png --num_paths 16 --save_folder demo2_path16
+python painterly_rendering_ablation.py demo2.png --num_paths 32 --save_folder demo2_path32
+python painterly_rendering_ablation.py demo2.png --num_paths 64 --save_folder demo2_path64
+python painterly_rendering_ablation.py demo2.png --num_paths 128 --save_folder demo2_path128
 """
 import pydiffvg
 import torch
@@ -200,11 +206,11 @@ def main(args):
                  *scene_args)
     # Save the intermediate render.
     pydiffvg.imwrite(img.cpu(), 'results/painterly_rendering/final.png'.format(t), gamma=gamma)
-    # Convert the intermediate renderings to a video.
-    from subprocess import call
-    call(["ffmpeg", "-framerate", "24", "-i",
-        "results/painterly_rendering/iter_%d.png", "-vb", "20M",
-        "results/painterly_rendering/out.mp4"])
+    # # Convert the intermediate renderings to a video.
+    # from subprocess import call
+    # call(["ffmpeg", "-framerate", "24", "-i",
+    #     "results/painterly_rendering/iter_%d.png", "-vb", "20M",
+    #     "results/painterly_rendering/out.mp4"])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
