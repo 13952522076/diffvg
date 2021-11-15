@@ -4,7 +4,7 @@ default:
     type: circle
     radius: 5
   save:
-    init: false
+    init: true
     image: true
     output: true
     video: true
