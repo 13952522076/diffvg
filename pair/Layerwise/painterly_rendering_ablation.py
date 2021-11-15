@@ -5,7 +5,12 @@ python painterly_rendering_ablation.py demo2.png --num_paths 8 --save_folder dem
 python painterly_rendering_ablation.py demo2.png --num_paths 16 --save_folder demo2_path16
 python painterly_rendering_ablation.py demo2.png --num_paths 32 --save_folder demo2_path32
 python painterly_rendering_ablation.py demo2.png --num_paths 64 --save_folder demo2_path64
-python painterly_rendering_ablation.py demo2.png --num_paths 128 --save_folder demo2_path128
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 32 --save_folder yosemite_path32
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 64 --save_folder yosemite_path64
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 128 --save_folder yosemite_path128
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 256 --save_folder yosemite_path256
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+
 """
 import pydiffvg
 import torch

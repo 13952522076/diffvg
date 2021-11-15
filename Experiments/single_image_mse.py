@@ -10,7 +10,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--target", default="images/emoji/demo2.png", help="target image path")
-parser.add_argument("--render", default="images/emoji/diffvg/64.png", help="target image path")
+parser.add_argument("--render", default="images/emoji/LIVE/1,1,1,1,4.png", help="target image path")
 parser.add_argument("--filename", type=str)
 args = parser.parse_args()
 target = torch.from_numpy(np.array(PIL.Image.open(args.target))).to(torch.float32) / 255.0
