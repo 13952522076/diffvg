@@ -1,5 +1,5 @@
 """
-python painterly_rendering.py demo.png --num_paths 4 --save_folder demo_path4
+python painterly_rendering_ablation.py demo.png --num_paths 4 --save_folder demo_path4
 """
 import pydiffvg
 import torch
@@ -209,7 +209,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("target", help="target image path")
-    parser.add_argument("save_folder", type=str, help="target image path")
+    parser.add_argument("--save_folder", type=str, help="target image path")
     parser.add_argument("--num_paths", type=int, default=512)
     parser.add_argument("--max_width", type=float, default=2.0)
     parser.add_argument("--use_lpips_loss", dest='use_lpips_loss', action='store_true')
