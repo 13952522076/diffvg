@@ -750,8 +750,9 @@ if __name__ == "__main__":
     files = [f for f in listdir(cfg.target_folder) if isfile(join(cfg.target_folder, f))]
     for file in files:
         if file.endswith(".png") or file.endswith(".jpg") or file.endswith(".jpeg"):
-            cfg.target = join(cfg.target_folder, file)
             cfg.filename = file
-            main(cfg)
+            if not isfile(os.path.join( cfg.experiment_dir, f"{cfg.filename}")):
+                cfg.target = join(cfg.target_folder, file)
+                main(cfg)
 
     print("Done")
