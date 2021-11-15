@@ -849,7 +849,30 @@ nohup python painterly_rendering_folder.py --use_blob --num_paths 32 --target_fo
 nohup python painterly_rendering_folder.py --use_blob --num_paths 64 --target_folder ../../Layerwise/data/emoji_rgb/all --save_folder evaluate/emoji > emoji_64.out &
 
 
-painterly_rendering_folder.py --use_blob --num_paths 32 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240
-painterly_rendering_folder.py --use_blob --num_paths 64 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240
-painterly_rendering_folder.py --use_blob --num_paths 128 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240
-painterly_rendering_folder.py --use_blob --num_paths 256 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240
+nohup python painterly_rendering_folder.py --use_blob --num_paths 32 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240 > pair_vgtest240_32.out &
+nohup python painterly_rendering_folder.py --use_blob --num_paths 64 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240 > pair_vgtest240_64.out &
+nohup python painterly_rendering_folder.py --use_blob --num_paths 128 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240 > pair_vgtest240_128.out &
+nohup python painterly_rendering_folder.py --use_blob --num_paths 256 --target_folder ../../Layerwise/data/pair_vgtest240 --save_folder evaluate/pair_vgtest240 > pair_vgtest240_256.out &
+
+
+
+
+
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_8 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_8.out &
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_16 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_16.out &
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_32.out &
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_64.out &
+
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240 > pair_vgtest240_32.out &
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240 > pair_vgtest240_64.out &
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_128 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240 > pair_vgtest240_128.out &
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_256 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240 > pair_vgtest240_256.out &
+

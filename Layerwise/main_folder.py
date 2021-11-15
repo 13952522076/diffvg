@@ -376,14 +376,14 @@ def main(cfg):
 
     gt = np.array(PIL.Image.open(cfg.target))
     print(f"Input image shape is: {gt.shape}")
+    gt = (gt/255).astype(np.float32)
+    gt = torch.FloatTensor(gt).permute(2, 0, 1)[None].to(device)
     if len(gt.shape) == 2:
         print("Converting the gray-scale image to RGB.")
         gt = gt.unsqueeze(dim=-1).repeat(1,1,3)
     if gt.shape[2] == 4:
         print("Input image includes alpha channel, simply dropout alpha channel.")
         gt = gt[:, :, :3]
-    gt = (gt/255).astype(np.float32)
-    gt = torch.FloatTensor(gt).permute(2, 0, 1)[None].to(device)
     if cfg.use_ycrcb:
         gt = ycrcb_conversion(gt)
     h, w = gt.shape[2:]
@@ -739,7 +739,7 @@ if __name__ == "__main__":
     cfg.exid = get_experiment_id(cfg.debug)
 
     cfg.experiment_dir = \
-        osp.join(cfg.log_dir, f'{cfg.save_folder}_Path{cfg.experiment}')
+        osp.join(cfg.log_dir, f'{cfg.save_folder}_path_{cfg.experiment}')
     configfile = osp.join(cfg.experiment_dir, 'config.yaml')
     check_and_create_dir(configfile)
     with open(osp.join(configfile), 'w') as f:
