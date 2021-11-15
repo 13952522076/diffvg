@@ -884,7 +884,12 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_exp
 # multi
 nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_256 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240 > pair_vgtest240_256.out &
 
-
+# svg1
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_256 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240 > pair_vgtest240_256_2.out &
 
 python main.py --config config/ablation.yaml --experiment experiment_list_64 --signature demo2_64 --target ../pair/Layerwise/demo2.png --log_dir log/plot
-python main.py --config config/ablation.yaml --experiment experiment_list_512 --signature yosemite --target ../pair/Layerwise/yosemite.jpeg --log_dir log/plot
+python main.py --config config/ablation.yaml --experiment experiment_list_512 --signature yosemite_512 --target data/exemplar/yosemite.jpeg --log_dir log/plot
+
+
+
+python mse.py --target_folder data/pair_vgtest240 --save_folder log/evaluate/pair_vgtest240_path_experiment_exp2_32
