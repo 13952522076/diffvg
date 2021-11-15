@@ -12,7 +12,7 @@ python main.py ../data/emoji_rgb/train/0.png --num_paths 1,1,1,1,1,1,1,1,1 --poo
 python main.py ../data/test/apple.png --num_paths 1,1,1,1,1 --pool_size 40 --save_folder results/final_test_layers --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 800
 
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
+python main.py demo2.png --num_paths 1,1,1,1,4,8,16,32 --pool_size 40 --save_folder evaluate --free --num_segments 4 --initial circle --circle_init_radius 0.01 --save_image
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
@@ -59,15 +59,41 @@ def parse_args():
 
 
 def get_bezier_circle(radius=1, segments=4, bias=None):
+    # points = []
+    # if bias is None:
+    #     bias = (random.random(), random.random())
+    # avg_degree = 360 / (segments*3)
+    # for i in range(0, segments*3):
+    #     point = (np.cos(np.deg2rad(i * avg_degree)),
+    #                 np.sin(np.deg2rad(i * avg_degree)))
+    #     points.append(point)
+    # points = torch.tensor(points)
+    # points = (points)*radius + torch.tensor(bias).unsqueeze(dim=0)
+    # points = points.type(torch.FloatTensor)
+    # return points
+
     points = []
     if bias is None:
         bias = (random.random(), random.random())
-    avg_degree = 360 / (segments*3)
-    for i in range(0, segments*3):
-        point = (np.cos(np.deg2rad(i * avg_degree)),
-                    np.sin(np.deg2rad(i * avg_degree)))
-        points.append(point)
+    m_point = (1.0, 0.0)
+    points.append(m_point)
+    m1_point_angle = np.degrees(4/3*np.tan(np.pi/(2*segments)))
+    m1_point_radius = np.sqrt(1+ ( 4/3*np.tan(np.pi/(2*segments)))**2)
+    m3_point_angle = 360/segments
+    for i in range(0, segments):
+        m1_point = (m1_point_radius*np.cos(np.deg2rad(i*m3_point_angle+m1_point_angle)),
+                    m1_point_radius*np.sin(np.deg2rad(i*m3_point_angle+m1_point_angle)))
+        m2_point_angle = m3_point_angle-m1_point_angle
+        m2_point = (m1_point_radius*np.cos(np.deg2rad(i*m3_point_angle+m2_point_angle)),
+                    m1_point_radius*np.sin(np.deg2rad(i*m3_point_angle+m2_point_angle)))
+        m3_point = (np.cos(np.deg2rad(i*m3_point_angle+m3_point_angle)),
+                    np.sin(np.deg2rad(i*m3_point_angle+m3_point_angle)))
+        points.append(m1_point)
+        points.append(m2_point)
+        points.append(m3_point)
+    points.reverse()
     points = torch.tensor(points)
+    points = points[:-1,:]
     points = (points)*radius + torch.tensor(bias).unsqueeze(dim=0)
     points = points.type(torch.FloatTensor)
     return points
