@@ -841,7 +841,10 @@ python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --sign
 
 19, 42, 31
 
-python main.py --config config/ablation.yaml --experiment experiment_exp2_512 --signature 25 --target data/originals/25.png --log_dir log/originals_full
+python main.py --config config/ablation.yaml --experiment experiment_exp2_512 --signature fallingwater --target data/exemplar/fallingwater.png --log_dir log/demo
+
+
+python main.py --config config/ablation.yaml --experiment experiment_8x1 --signature init_circle --target data/emoji_rgb/train/240px-Noto_Emoji_KitKat_1f615.svg.png --log_dir log/init
 
 
 nohup python painterly_rendering_folder.py --use_blob --num_paths 16 --target_folder ../../Layerwise/data/emoji_rgb/all --save_folder evaluate/emoji > emoji_16.out &
@@ -874,6 +877,10 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_exp
 
 nohup python main_folder.py --config config/all.yaml --experiment experiment_list_64 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list64.out &
 nohup python main_folder.py --config config/all.yaml --experiment experiment_list_32 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list32.out &
+
+
+
+nohup python main_folder.py --config config/xing0.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list32.out &
 
 
 # svg
