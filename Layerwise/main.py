@@ -202,7 +202,7 @@ class naive_coord_init():
 
 
 class sparse_coord_init():
-    def __init__(self, pred, gt, format='[bs x c x 2D]', quantile_interval=200):
+    def __init__(self, pred, gt, format='[bs x c x 2D]', quantile_interval=200, nodiff_thres=0.1):
         if isinstance(pred, torch.Tensor):
             pred = pred.detach().cpu().numpy()
         if isinstance(gt, torch.Tensor):
@@ -216,6 +216,8 @@ class sparse_coord_init():
             self.reference_gt = copy.deepcopy(gt[0])
         else:
             raise ValueError
+        # OptionA: Zero too small errors to avoid the error too small deadloop
+        self.map[self.map < nodiff_thres] = 0
         quantile_interval = np.linspace(0., 1., quantile_interval)
         quantized_interval = np.quantile(self.map, quantile_interval)
         # remove redundant
@@ -250,7 +252,7 @@ class sparse_coord_init():
         self.map[component == target_cid] = 0
         return [coord_w, coord_h]
 
-
+    
 def init_shapes(num_paths,
                 num_segments,
                 canvas_size,
