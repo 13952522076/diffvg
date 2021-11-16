@@ -11,7 +11,7 @@ default:
     loss: false
   trainable: 
     bg: False
-    record: True
+    record: False
     stroke: False
 #  num_segments: 8
   num_iter: 500
