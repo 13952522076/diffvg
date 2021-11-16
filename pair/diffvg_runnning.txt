@@ -875,8 +875,8 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_exp
 # svg
 nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_64.out &
 
-nohup python main_folder.py --config config/all.yaml --experiment experiment_list_64 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list64.out &
-nohup python main_folder.py --config config/all.yaml --experiment experiment_list_32 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list32.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/emoji_rgb/all --save_folder emoji2 > emoji2_exp64.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/emoji_rgb/all --save_folder emoji2 > emoji2_exp32.out &
 
 
 
@@ -944,4 +944,15 @@ python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_fold
 
 
 
-python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Huaji.svg.png --log_dir log/others --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Noto_Emoji_KitKat_1f616.svg.png --log_dir log/others --num_segments 4
+
+
+
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f62f.svg.png --log_dir log/others --num_segments 4
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f62e.svg.png --log_dir log/others --num_segments 4
+
+
+
+python main.py --config config/ablation.yaml --experiment experiment_1x1 --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f62e.svg.png --log_dir log/others --num_segments 4

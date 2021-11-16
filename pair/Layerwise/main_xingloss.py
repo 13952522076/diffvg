@@ -11,7 +11,7 @@ python main_xingloss.py Balloon.png --num_paths 1 --pool_size 40 --save_folder r
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
 
-python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python main_xingloss.py demo7.png --num_paths 1,1,1,1,1,1 --pool_size 40  --num_segments 4 --xing_weight 0.01
 """
 import pydiffvg
 import torch
@@ -49,10 +49,10 @@ def parse_args():
     parser.add_argument('--save_image', action='store_true')
     parser.add_argument('--save_video', action='store_true')
     parser.add_argument('--print_weight', action='store_true')
-    parser.add_argument('--save_folder', metavar='DIR', default="output")
-    parser.add_argument('--initial', type=str, default="random", choices=['random', 'circle'])
-    parser.add_argument('--circle_init_radius',  type=float)
-    parser.add_argument('--xing_weight',  type=float ,default=1, help="weight for crossing loss.")
+    parser.add_argument('--save_folder', metavar='DIR', default="output/xing")
+    parser.add_argument('--initial', type=str, default="circle", choices=['random', 'circle'])
+    parser.add_argument('--circle_init_radius', default=0.01, type=float)
+    parser.add_argument('--xing_weight',  type=float ,default=0.01, help="weight for crossing loss.")
 
     return parser.parse_args()
 

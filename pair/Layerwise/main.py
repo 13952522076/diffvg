@@ -14,7 +14,7 @@ python main.py ../data/test/apple.png --num_paths 1,1,1,1,1 --pool_size 40 --sav
 
 python main.py demo2.png --num_paths 1,1,1,1,4,8,16,32 --pool_size 40 --save_folder evaluate --free --num_segments 4 --initial circle --circle_init_radius 0.01 --save_image
 
-python main.py demo7.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder circle --free --num_segments 4 --initial circle --circle_init_radius 0.01
+python main.py demo7.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder xingloss --free --num_segments 4 --initial circle --circle_init_radius 0.01
 """
 import pydiffvg
 import torch
