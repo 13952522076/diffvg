@@ -11,7 +11,7 @@ default:
     loss: false
   trainable: 
     bg: False
-    record: False
+    record: True
     stroke: False
 #  num_segments: 8
   num_iter: 500
@@ -19,8 +19,8 @@ default:
     bg: 0.01
     point: 1
     color: 0.01
-    stroke_width: 1
-    stroke_color: 0.01
+    stroke_width: null
+    stroke_color: null
   coord_init:
     type: sparse
   seed: 0
