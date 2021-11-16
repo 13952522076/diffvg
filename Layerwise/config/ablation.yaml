@@ -64,7 +64,7 @@ experiment_exp2:
     type: exp
     base: 2
     max_path: 200
-    max_path_per_iter: 32
+    max_path_per_iter: 64
 
 experiment_200list:
   path_schedule:
