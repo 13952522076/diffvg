@@ -27,7 +27,7 @@ default:
   loss:
     use_l1_loss: false
     use_distance_weighted_loss: true
-    xing_loss_weight: 0.01
+    xing_loss_weight: 0.
     bis_loss_weight: null
 
 experiment_1x1:
