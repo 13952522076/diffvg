@@ -880,7 +880,10 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_lis
 
 
 
-nohup python main_folder.py --config config/xing0.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder emoji > emoji_list32.out &
+nohup python main_folder.py --config config/xing0.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder xing0 > emoji_xing0.out &
+nohup python main_folder.py --config config/xing0.1.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder xing0.1 > emoji_xing0.1.out &
+nohup python main_folder.py --config config/xing0.01.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder xing0.01 > emoji_xing0.01.out &
+nohup python main_folder.py --config config/xing0.001.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder xing0.001 > emoji_xing0.001.out &
 
 
 # svg
@@ -904,3 +907,7 @@ python main.py --config config/ablation.yaml --experiment experiment_list_512 --
 
 
 python mse.py --target_folder data/emoji_rgb/all --save_folder log/evaluate/emoji_Pathexperiment_exp2_8
+
+
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature example --target data/exemplar/smile.png --log_dir log/losses
