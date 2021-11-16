@@ -910,4 +910,38 @@ python mse.py --target_folder data/emoji_rgb/all --save_folder log/evaluate/emoj
 
 
 
-python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature example --target data/exemplar/smile.png --log_dir log/losses
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature example11 --target data/emoji_rgb/train/240px-Noto_Emoji_KitKat_1f615.svg.png --log_dir log/others --num_segments 4
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target ../pair/Layerwise/demo2.png --log_dir log/others --num_segments 4
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Noto_Emoji_KitKat_1f620.svg.png --log_dir log/others --num_segments 4
+
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Noto_Emoji_KitKat_1f626.svg.png --log_dir log/others --num_segments 4
+
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Emoji_u1f924.svg.svg.png --log_dir log/others --num_segments 4
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Emoji_u1f61b.svg.png --log_dir log/others --num_segments 4
+
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder 1_path1
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path2
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path3
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path4
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path5
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path6
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path7
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path8
+
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+python painterly_rendering_ablation.py yosemite.jpeg --num_paths 512 --save_folder yosemite_path512
+
+
+
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature demo2 --target data/emoji_rgb/train/240px-Huaji.svg.png --log_dir log/others --num_segments 4

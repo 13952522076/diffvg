@@ -252,7 +252,7 @@ class sparse_coord_init():
         self.map[component == target_cid] = 0
         return [coord_w, coord_h]
 
-    
+
 def init_shapes(num_paths,
                 num_segments,
                 canvas_size,

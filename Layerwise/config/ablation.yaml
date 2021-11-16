@@ -12,15 +12,15 @@ default:
   trainable: 
     bg: False
     record: True
-    stroke: False
+    stroke: True
 #  num_segments: 8
   num_iter: 500
   lr_base:
     bg: 0.01
     point: 1
     color: 0.01
-    stroke_width: null
-    stroke_color: null
+    stroke_width: 0.01
+    stroke_color: 0.01
   coord_init:
     type: sparse
   seed: 0
