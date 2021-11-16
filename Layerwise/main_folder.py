@@ -209,13 +209,13 @@ class naive_coord_init():
             self.map[coord_h, coord_w] = -1
         return [coord_w, coord_h]
 
+
 class sparse_coord_init():
-    def __init__(self, pred, gt, format='[bs x c x 2D]', quantile_interval=300):
+    def __init__(self, pred, gt, format='[bs x c x 2D]', quantile_interval=200, nodiff_thres=0.1):
         if isinstance(pred, torch.Tensor):
             pred = pred.detach().cpu().numpy()
         if isinstance(gt, torch.Tensor):
             gt = gt.detach().cpu().numpy()
-
         if format == '[bs x c x 2D]':
             self.map = ((pred[0] - gt[0])**2).sum(0)
             self.reference_gt = copy.deepcopy(
@@ -225,9 +225,13 @@ class sparse_coord_init():
             self.reference_gt = copy.deepcopy(gt[0])
         else:
             raise ValueError
+        # OptionA: Zero too small errors to avoid the error too small deadloop
+        self.map[self.map < nodiff_thres] = 0
         quantile_interval = np.linspace(0., 1., quantile_interval)
         quantized_interval = np.quantile(self.map, quantile_interval)
-        quantized_interval = quantized_interval[1:-1]
+        # remove redundant
+        quantized_interval = np.unique(quantized_interval)
+        quantized_interval = sorted(quantized_interval[1:-1])
         self.map = np.digitize(self.map, quantized_interval, right=False)
         self.map = np.clip(self.map, 0, 255).astype(np.uint8)
         self.idcnt = {}
@@ -235,16 +239,13 @@ class sparse_coord_init():
             self.idcnt[idi] = (self.map==idi).sum()
         self.idcnt.pop(min(self.idcnt.keys()))
         # remove smallest one to remove the correct region
-
     def __call__(self):
         if len(self.idcnt) == 0:
             h, w = self.map.shape
             return [npr.uniform(0, 1)*w, npr.uniform(0, 1)*h]
         target_id = max(self.idcnt, key=self.idcnt.get)
-
         _, component, cstats, ccenter = cv2.connectedComponentsWithStats(
             (self.map==target_id).astype(np.uint8), connectivity=4)
-
         # remove cid = 0, it is the invalid area
         csize = [ci[-1] for ci in cstats[1:]]
         target_cid = csize.index(max(csize))+1
@@ -253,13 +254,13 @@ class sparse_coord_init():
         dist = np.linalg.norm(coord-center, axis=1)
         target_coord_id = np.argmin(dist)
         coord_h, coord_w = coord[target_coord_id]
-
         # replace_sampling
         self.idcnt[target_id] -= max(csize)
         if self.idcnt[target_id] == 0:
             self.idcnt.pop(target_id)
         self.map[component == target_cid] = 0
         return [coord_w, coord_h]
+
 
 
 def init_shapes(num_paths, num_segments, canvas_size, seginit_cfg, shape_cnt,
