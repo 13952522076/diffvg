@@ -153,3 +153,9 @@ experiment_list_10:
   path_schedule:
     type: list
     schedule: [1, 2, 3, 4]
+
+
+experiment_list_8:
+  path_schedule:
+    type: list
+    schedule: [1, 2, 2, 3]
