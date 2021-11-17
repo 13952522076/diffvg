@@ -11,7 +11,7 @@ python main_xingloss.py Balloon.png --num_paths 1 --pool_size 40 --save_folder r
 
 python main.py demo.png --num_paths 1,1,1,1,1,1 --pool_size 40 --save_folder video --free --save_video --num_segments 8
 
-python main_xingloss.py demo7.png --num_paths 1,1,1,1,1,1 --pool_size 40  --num_segments 4 --xing_weight 0.01
+python main_xingloss.py demo5.png --num_paths 1,1,1,1,1,1 --pool_size 40  --num_segments 4 --xing_weight 0.01
 """
 import pydiffvg
 import torch

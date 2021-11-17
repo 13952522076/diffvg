@@ -841,7 +841,7 @@ python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --sign
 
 19, 42, 31
 
-python main.py --config config/ablation.yaml --experiment experiment_exp2_512 --signature fallingwater --target data/exemplar/fallingwater.png --log_dir log/demo
+python main.py --config config/ablation.yaml --experiment experiment_exp2_512 --signature fallingwater --target data/exemplar/fallingwater.png --log_dir log/demo_water
 
 
 python main.py --config config/ablation.yaml --experiment experiment_8x1 --signature init_circle --target data/emoji_rgb/train/240px-Noto_Emoji_KitKat_1f615.svg.png --log_dir log/init
@@ -878,6 +878,9 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_exp
 nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/emoji_rgb/all --save_folder emoji2 > emoji2_exp64.out &
 nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/emoji_rgb/all --save_folder emoji2 > emoji2_exp32.out &
 
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_8 --target_folder data/emoji_rgb/all --save_folder emoji2 > emoji2_exp64.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_16 --target_folder data/emoji_rgb/all --save_folder emoji2 > emoji2_exp32.out &
+
 
 
 nohup python main_folder.py --config config/xing0.yaml --experiment experiment_list_10 --target_folder data/emoji_rgb/all --save_folder xing0 > emoji_xing0.out &
@@ -906,7 +909,7 @@ python main.py --config config/ablation.yaml --experiment experiment_list_512 --
 
 
 
-python mse.py --target_folder data/emoji_rgb/all --save_folder log/evaluate/emoji_Pathexperiment_exp2_8
+python mse.py --target_folder data/emoji_rgb/all --save_folder log/evaluate/emoji2_path_experiment_exp2_32
 
 
 
@@ -955,4 +958,4 @@ python main.py --config config/ablation.yaml --experiment experiment_4x1 --signa
 
 
 
-python main.py --config config/ablation.yaml --experiment experiment_1x1 --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f62e.svg.png --log_dir log/others --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_1x1 --signature xing0 --target data/emoji_rgb/train/240px-Noto_Emoji_Pie_1f9d0.png --log_dir log/others --num_segments 4
