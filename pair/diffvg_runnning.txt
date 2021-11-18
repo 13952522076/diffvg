@@ -1063,16 +1063,18 @@ python main.py --config config/ablation.yaml --experiment experiment_1x1 --signa
 
 
 
-nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_32_3.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_32_C.out &
 
 
-nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_64_3.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_64_C.out &
 
 
-nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_128 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_128_7.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_128 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_128_E.out &
 
 
-nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_256 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_256_7.out &
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_256 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_256_F.out &
 
+48/ 34/ 27/ 13/ 1:01 	3Xmulti1-3+point+svg+svg2
 
-
+python mse.py --target_folder data/pair_vgtest240 --save_folder log/evaluate/pair_vgtest240_v2_path_experiment_exp2_32
+/scratch/ma.xu1/diffvg/Layerwise/log/evaluate/pair_vgtest240_v2_path_experiment_exp2_128

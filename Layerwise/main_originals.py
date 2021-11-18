@@ -1,6 +1,6 @@
 """
 Here are some use cases:
-python main_folder.py --config config/all.yaml --experiment experiment_1x1 --target_folder data/emoji_rgb/all --save_folder emoji
+python main_originals.py --config config/originals.yaml --experiment experiment_exp2_256 --target_folder data/originals --save_folder originals_Nov18
 """
 import pydiffvg
 import torch
@@ -646,7 +646,7 @@ def main(cfg):
 
         if cfg.save.output:
             filename = os.path.join(
-                cfg.experiment_dir, "output-svg", "{}.svg".format(pathn_record_str))
+                cfg.experiment_dir, "output-svg", f"{cfg.filename}", "{}.svg".format(pathn_record_str))
             check_and_create_dir(filename)
             pydiffvg.save_svg(filename, w, h, shapes_record, shape_groups_record)
 
@@ -714,10 +714,13 @@ def main(cfg):
             # shutil.rmtree(os.path.join(cfg.experiment_dir, "video-png"))
 
 
+
+    filename = os.path.join( cfg.experiment_dir, f"{cfg.filename}.svg")
+    check_and_create_dir(filename)
+    pydiffvg.save_svg(filename, w, h, shapes_record, shape_groups_record)
     # # save images for evaluate
     # if cfg.save.evaluate:
-    filename = os.path.join(
-        cfg.experiment_dir, f"{cfg.filename}")
+    filename = os.path.join( cfg.experiment_dir, f"{cfg.filename}")
     check_and_create_dir(filename)
     if cfg.use_ycrcb:
         imshow = ycrcb_conversion(
