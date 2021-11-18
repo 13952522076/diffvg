@@ -159,3 +159,11 @@ experiment_list_8:
   path_schedule:
     type: list
     schedule: [1, 2, 2, 3]
+
+
+experiment_exp2_20:
+  path_schedule:
+    type: exp
+    base: 2
+    max_path: 20
+    max_path_per_iter: 8
