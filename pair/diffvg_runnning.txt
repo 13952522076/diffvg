@@ -762,15 +762,17 @@ python main.py ../data/test/egg/frame_54.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1
 
 
 
-python interpolate.py 1.svg 2.svg --alpha 0.1
-python interpolate.py 1.svg 2.svg --alpha 0.2
-python interpolate.py 1.svg 2.svg --alpha 0.3
-python interpolate.py 1.svg 2.svg --alpha 0.4
-python interpolate.py 1.svg 2.svg --alpha 0.5
-python interpolate.py 1.svg 2.svg --alpha 0.6
-python interpolate.py 1.svg 2.svg --alpha 0.7
-python interpolate.py 1.svg 2.svg --alpha 0.8
-python interpolate.py 1.svg 2.svg --alpha 0.9
+python interpolate.py N1.svg N2.svg --alpha 0.1
+python interpolate.py N1.svg N2.svg --alpha 0.2
+python interpolate.py N1.svg N2.svg --alpha 0.3
+python interpolate.py N1.svg N2.svg --alpha 0.4
+python interpolate.py N1.svg N2.svg --alpha 0.5
+python interpolate.py N1.svg N2.svg --alpha 0.6
+python interpolate.py N1.svg N2.svg --alpha 0.7
+python interpolate.py N1.svg N2.svg --alpha 0.8
+python interpolate.py N1.svg N2.svg --alpha 0.9
+
+
 
 python interpolate2.py ../data/test/egg/frame_30.png ../data/test/egg/frame_34.png --num_paths 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 --pool_size 60 --save_folder results/interpolate2_nov09 --free --num_segments 4 --initial circle --circle_init_radius 0.01 --save_video
 
@@ -781,15 +783,44 @@ python interpolate3.py ../data/test/egg1.png ../data/test/egg2.png --num_paths 1
 
 python main.py ../../VAE_MNIST/hr_binary/data1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
 python main.py ../../VAE_MNIST/hr_binary/data2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.3.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.4.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.5.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.6.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.7.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.8.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
-python main.py ../../VAE_MNIST/hr_binary/id1_id4_0.9.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.2.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.3.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.4.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.5.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.6.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.7.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.8.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id30_0.9.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+
+
+
+
+module load cuda/11.0
+module unload gcc/5.5.0   
+module load gcc/8.1.0 
+export CC=/shared/centos7/gcc/8.1.0/bin/gcc
+export CXX=/shared/centos7/gcc/8.1.0/bin/g++
+conda activate im2vec
+cd /scratch/ma.xu1/diffvg/pair/Layerwise/
+
+
+
+
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_0.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_0.1.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_0.3.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_0.5.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_0.7.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary_matrix --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_0.9.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary_matrix --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+python main.py ../../VAE_MNIST/hr_binary/id1_id4_id30_id60_1.0_1.0.png --num_paths 1,1,1,1,1 --pool_size 28 --save_folder results/mnist_hr_binary_matrix --free --num_segments 4 --initial circle --circle_init_radius 0.01 --num_iter 500
+
+
+
+
+
+
+
 
 
 
@@ -909,6 +940,12 @@ python main.py --config config/ablation.yaml --experiment experiment_list_512 --
 
 
 
+
+
+
+
+
+
 python mse.py --target_folder data/emoji_rgb/all --save_folder log/evaluate/emoji2_path_experiment_exp2_8
 
 
@@ -964,15 +1001,43 @@ python main.py --config config/ablation.yaml --experiment experiment_8x1 --signa
 
 
 
-python painterly_rendering_ablation.py mountain.png --num_paths 32 --save_folder mountain_32
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature figure5_1_path4 --target data/figure5/1.png --log_dir log/figure5 --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature figure5_2_path4 --target data/figure5/2.png --log_dir log/figure5 --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature figure5_3_path4 --target data/figure5/3.png --log_dir log/figure5 --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature figure5_4_path4 --target data/figure5/4.png --log_dir log/figure5 --num_segments 4
+
+
+python main.py --config config/ablation.yaml --experiment experiment_exp2_20 --signature figure5_1_path20 --target data/figure5/1.png --log_dir log/figure5 --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_exp2_20 --signature figure5_2_path20 --target data/figure5/2.png --log_dir log/figure5 --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_exp2_20 --signature figure5_3_path20 --target data/figure5/3.png --log_dir log/figure5 --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_exp2_20 --signature figure5_4_path20 --target data/figure5/4.png --log_dir log/figure5 --num_segments 4
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/1.png --num_paths 20 --save_folder figure5_1_path20
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/2.png --num_paths 20 --save_folder figure5_2_path20
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/3.png --num_paths 20 --save_folder figure5_3_path20
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/4.png --num_paths 20 --save_folder figure5_4_path20
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/1.png --num_paths 4 --save_folder figure5_1_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/2.png --num_paths 4 --save_folder figure5_2_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/3.png --num_paths 4 --save_folder figure5_3_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/figure5/4.png --num_paths 4 --save_folder figure5_4_path4
+
+
+
+
+python painterly_rendering_ablation.py mountain.png --num_paths 4 --save_folder mountain_4
+python painterly_rendering_ablation.py mountain.png --num_paths 8 --save_folder mountain_8
+
 python painterly_rendering_ablation.py mountain.png --num_paths 64 --save_folder mountain_64
 python painterly_rendering_ablation.py mountain.png --num_paths 128 --save_folder mountain_128
-python painterly_rendering_ablation.py mountain.png --num_paths 16 --save_folder mountain_128
+python painterly_rendering_ablation.py mountain.png --num_paths 16 --save_folder mountain_16
 python painterly_rendering_ablation.py mountain.png --num_paths 196 --save_folder mountain_196
 python painterly_rendering_ablation.py mountain.png --num_paths 256 --save_folder mountain_256
 python painterly_rendering_ablation.py mountain.png --num_paths 512 --save_folder mountain_512
 
-python main.py --config config/ablation.yaml --experiment experiment_list_512 --signature mountain512 --target data/exemplar/mountain.jpeg --log_dir log/plot
+python main.py --config config/ablation.yaml --experiment experiment_8x1 --signature mountain8x1 --target data/exemplar/mountain.png --log_dir log/plot
 
 
 
@@ -982,9 +1047,9 @@ python main.py --config config/ablation.yaml --experiment experiment_4x1 --signa
 
 
 
-python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f62f.svg.png --log_dir log/others --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature q --target data/emoji_rgb/train/240px-Emoji_u1f61b.svg.png --log_dir log/others --num_segments 4
 
-python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature 1 --target data/emoji_rgb/train/240px-Emoji_u1f62e.svg.png --log_dir log/others --num_segments 4
+python main.py --config config/ablation.yaml --experiment experiment_4x1 --signature w --target data/emoji_rgb/train/240px-Emoji_u1f61c.svg.png --log_dir log/others --num_segments 4
 
 
 
@@ -992,3 +1057,22 @@ python main.py --config config/ablation.yaml --experiment experiment_1x1 --signa
 
 
 /scratch/ma.xu1/Im2Vec/logs/VectorVAEnLayers/version_110
+
+
+
+
+
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_32 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_32_3.out &
+
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_64 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_64_3.out &
+
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_128 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_128_7.out &
+
+
+nohup python main_folder.py --config config/all.yaml --experiment experiment_exp2_256 --target_folder data/pair_vgtest240 --save_folder pair_vgtest240_v2 > pair_vgtest240_256_7.out &
+
+
+

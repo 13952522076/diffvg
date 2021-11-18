@@ -393,10 +393,10 @@ def main(cfg):
 
     path_schedule = get_path_schedule(**cfg.path_schedule)
 
-    if cfg.seed is not None:
-        random.seed(cfg.seed)
-        npr.seed(cfg.seed)
-        torch.manual_seed(cfg.seed)
+    # if cfg.seed is not None:
+    #     random.seed(cfg.seed)
+    #     npr.seed(cfg.seed)
+    #     torch.manual_seed(cfg.seed)
     render = pydiffvg.RenderFunction.apply
 
     shapes_record, shape_groups_record = [], []
