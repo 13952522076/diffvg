@@ -14,7 +14,7 @@ try:
     os.mkdir("hr_binary")
 except:
     pass
-filename = "id1_id4_0.9.png"
+filename = "id1_id4_id30_id60_1.0_0.png"
 image = Image.open(f'hr/{filename}')
 x = TF.to_tensor(image)
 x.unsqueeze_(0)

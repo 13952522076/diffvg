@@ -853,22 +853,22 @@ python main.py --config config/all.yaml --experiment experiment_16x1 --signature
 python interpolate.py --config config/all.yaml --experiment experiment_8x1 --signature new_egg1_egg2 --target ../pair/data/test/egg_new1.png --target2 ../pair/data/test/egg_new2.png --num_segments 8 --log_dir log/eggs
 
 #!/bin/bash
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 17 --target data/originals/17.png --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 18 --target data/originals/18.png --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 19 --target data/originals/19.png --log_dir log/originals_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 17 --target data/originals/17.png --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 18 --target data/originals/18.png --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 19 --target data/originals/19.png --log_dir log/originals > log/.out &_full
 
 
 #!/bin/bash
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 21 --target data/originals/21.png --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 22 --target data/originals/22.png --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 24 --target data/originals/24.png --log_dir log/originals_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 21 --target data/originals/21.png --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 22 --target data/originals/22.png --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 24 --target data/originals/24.png --log_dir log/originals > log/.out &_full
 
 
 #!/bin/bash
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 42 --target data/originals/42.jpg --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 31 --target data/originals/31.jpg --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 30 --target data/originals/30.jpg --log_dir log/originals_full
-python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 25 --target data/originals/25.png --log_dir log/originals_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 42 --target data/originals/42.jpg --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 31 --target data/originals/31.jpg --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 30 --target data/originals/30.jpg --log_dir log/originals > log/.out &_full
+python main.py --config config/all.yaml --experiment experiment_exp2_64_8 --signature 25 --target data/originals/25.png --log_dir log/originals > log/.out &_full
 
 19, 42, 31
 
@@ -1078,3 +1078,27 @@ nohup python main_folder.py --config config/all.yaml --experiment experiment_exp
 
 python mse.py --target_folder data/pair_vgtest240 --save_folder log/evaluate/pair_vgtest240_v2_path_experiment_exp2_32
 /scratch/ma.xu1/diffvg/Layerwise/log/evaluate/pair_vgtest240_v2_path_experiment_exp2_128
+
+
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 17 --target data/originals/17.png --log_dir log/originals > log/17.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 18 --target data/originals/18.png --log_dir log/originals > log/18.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 19 --target data/originals/19.png --log_dir log/originals > log/19.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 21 --target data/originals/21.png --log_dir log/originals > log/21.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 22 --target data/originals/22.png --log_dir log/originals > log/22.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 24 --target data/originals/24.png --log_dir log/originals > log/24.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 25 --target data/originals/25.png --log_dir log/originals > log/25.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 30 --target data/originals/30.jpg --log_dir log/originals > log/30.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 31 --target data/originals/31.jpg --log_dir log/originals > log/31.out &
+
+nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 42 --target data/originals/42.jpg --log_dir log/originals > log/42.out &
+
+

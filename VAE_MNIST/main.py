@@ -22,7 +22,7 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--img_1', type=int, default=1)
-parser.add_argument('--img_2', type=int, default=4)
+parser.add_argument('--img_2', type=int, default=60)
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -160,12 +160,12 @@ if __name__ == "__main__":
 
 
         out = 1-data1.view(1, 1, 28, 28)
-        out[out>=0.5] = 1.0
-        out[out<0.5] = 0.0
+        # out[out>=0.5] = 1.0
+        # out[out<0.5] = 0.0
         save_image(out, 'results/data1.png')
         out = 1-data2.view(1, 1, 28, 28)
-        out[out>=0.5] = 1.0
-        out[out<0.5] = 0.0
+        # out[out>=0.5] = 1.0
+        # out[out<0.5] = 0.0
         save_image(out, 'results/data2.png')
         # print(data2)
         print(label1, label2)
