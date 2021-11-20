@@ -1102,3 +1102,14 @@ nohup python main.py --config config/originals.yaml --experiment experiment_exp2
 nohup python main.py --config config/originals.yaml --experiment experiment_exp2_256 --signature 42 --target data/originals/42.jpg --log_dir log/originals > log/42.out &
 
 
+
+________supplementary ___________
+
+python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Emoji_u1f923 --target data/emoji_rgb/all/240px-Emoji_u1f923.svg.png --log_dir log/supp
+
+python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Noto_Emoji_KitKat_1f609 --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f609.svg.png --log_dir log/supp
+
+python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Noto_Emoji_KitKat_1f60b --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f60b.svg.png --log_dir log/supp
+
+
+python main.py --config config/supp.yaml --experiment experiment_8x1 --signature twocircle --target data/exemplar/twocircle.svg.png --log_dir log/supp

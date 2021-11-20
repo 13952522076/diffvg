@@ -4,7 +4,7 @@ default:
     type: circle
     radius: 5
   save:
-    init: false
+    init: true
     image: true
     output: true
     video: true
@@ -40,6 +40,12 @@ experiment_8x1:
   path_schedule:
     type: repeat
     max_path: 8
+    schedule_each: 1
+
+experiment_2x1:
+  path_schedule:
+    type: repeat
+    max_path: 2
     schedule_each: 1
 
 
