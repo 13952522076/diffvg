@@ -1112,4 +1112,4 @@ python main.py --config config/supp.yaml --experiment experiment_8x1 --signature
 python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Noto_Emoji_KitKat_1f60b --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f60b.svg.png --log_dir log/supp
 
 
-python main.py --config config/supp.yaml --experiment experiment_8x1 --signature twocircle --target data/exemplar/twocircle.svg.png --log_dir log/supp
+python main.py --config config/supp.yaml --experiment experiment_2x1 --signature twocircle_r100 --target data/exemplar/twocircle.png --log_dir log/supp

@@ -2,7 +2,7 @@ default:
   use_ycrcb: False
   seginit:
     type: circle
-    radius: 100
+    radius: 200
   save:
     init: true
     image: true
