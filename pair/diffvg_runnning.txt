@@ -1123,3 +1123,38 @@ python painterly_rendering_ablation.py ../../Layerwise/data/exemplar/fallingwate
 python painterly_rendering.py person2.jpeg --num_paths 800 --num_iter 800 --use_lpips_loss
 
 python main.py --config config/supp.yaml --experiment experiment_1x1 --signature 240px-Noto_Emoji_KitKat_1f60b_xing_0.1 --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f60b.svg.png --log_dir log/supp
+
+python main_xingloss.py demo7.png --num_paths 1 --pool_size 40  --num_segments 4 --xing_weight 0.01 --initial random
+
+python main_xingloss.py demo5.png --num_paths 1 --pool_size 40  --num_segments 4 --xing_weight 0.0 --initial random --num_segments 6
+python main_xingloss.py demo5.png --num_paths 1 --pool_size 40  --num_segments 4 --xing_weight 0.01 --initial random --num_segments 6
+python main_xingloss.py demo5.png --num_paths 1 --pool_size 40  --num_segments 4 --xing_weight 0.1 --initial random --num_segments 6
+python main_xingloss.py demo5.png --num_paths 1 --pool_size 40  --num_segments 4 --xing_weight 1.0 --initial random --num_segments 6
+
+
+
+
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_40 --target data/pair_vgtest_half/logo_40.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_43 --target data/pair_vgtest_half/logo_43.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature text_32 --target data/pair_vgtest_half/text_32.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_45 --target data/pair_vgtest_half/logo_45.jpg --log_dir log/supp
+
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature illustration_23 --target data/pair_vgtest_half/illustration_23.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_9 --target data/pair_vgtest_half/logo_9.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature illustration_3 --target data/pair_vgtest_half/illustration_3.jpg --log_dir log/supp
+
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature illustration_2 --target data/pair_vgtest_half/illustration_2.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_1 --target data/pair_vgtest_half/logo_1.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_25 --target data/pair_vgtest_half/logo_25.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature text_35 --target data/pair_vgtest_half/text_35.jpg --log_dir log/supp
