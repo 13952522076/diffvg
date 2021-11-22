@@ -1113,3 +1113,6 @@ python main.py --config config/supp.yaml --experiment experiment_8x1 --signature
 
 
 python main.py --config config/supp.yaml --experiment experiment_2x1 --signature twocircle_r100 --target data/exemplar/twocircle.png --log_dir log/supp
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/exemplar/balloon.png --num_paths 50 --save_folder supplementary/balloon_path50
