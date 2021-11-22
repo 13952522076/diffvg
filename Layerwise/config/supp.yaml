@@ -26,8 +26,8 @@ default:
   seed: 0
   loss:
     use_l1_loss: false
-    use_distance_weighted_loss: true
-    xing_loss_weight: 0.01
+    use_distance_weighted_loss: false
+    xing_loss_weight: 0.00
     bis_loss_weight: null
 
 experiment_1x1:

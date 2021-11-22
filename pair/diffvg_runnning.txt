@@ -1109,10 +1109,16 @@ python main.py --config config/supp.yaml --experiment experiment_8x1 --signature
 
 python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Noto_Emoji_KitKat_1f609 --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f609.svg.png --log_dir log/supp
 
-python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Noto_Emoji_KitKat_1f60b --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f60b.svg.png --log_dir log/supp
+python main.py --config config/supp.yaml --experiment experiment_8x1 --signature 240px-Noto_Emoji_KitKat_1f60c --target data/emoji_rgb/all/240px-Noto_Emoji_KitKat_1f60c.svg.png --log_dir log/supp
 
 
 python main.py --config config/supp.yaml --experiment experiment_2x1 --signature twocircle_r100 --target data/exemplar/twocircle.png --log_dir log/supp
 
 
 python painterly_rendering_ablation.py ../../Layerwise/data/exemplar/balloon.png --num_paths 50 --save_folder supplementary/balloon_path50
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/exemplar/fallingwater.png --num_paths 512 --save_folder supplementary/fallingwater_path512
+
+python painterly_rendering.py person2.jpeg --num_paths 800 --num_iter 800 --use_lpips_loss
