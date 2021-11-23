@@ -25,7 +25,7 @@ module load gcc/8.1.0
 export CC=/shared/centos7/gcc/8.1.0/bin/gcc
 export CXX=/shared/centos7/gcc/8.1.0/bin/g++
 conda activate im2vec
-cd /scratch/ma.xu1/diffvg/pair/Layerwise/
+cd /scratch/ma.xu1/diffvg/Layerwise/
 
 
 PA
@@ -1135,26 +1135,32 @@ python main_xingloss.py demo5.png --num_paths 1 --pool_size 40  --num_segments 4
 
 
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_40 --target data/pair_vgtest_half/logo_40.jpg --log_dir log/supp
-
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_43 --target data/pair_vgtest_half/logo_43.jpg --log_dir log/supp
-
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature text_32 --target data/pair_vgtest_half/text_32.jpg --log_dir log/supp
-
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_45 --target data/pair_vgtest_half/logo_45.jpg --log_dir log/supp
 
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature illustration_23 --target data/pair_vgtest_half/illustration_23.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_40 --target data/pair_vgtest_half/logo_40.jpg --log_dir log/supp
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_9 --target data/pair_vgtest_half/logo_9.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_43 --target data/pair_vgtest_half/logo_43.jpg --log_dir log/supp
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature illustration_3 --target data/pair_vgtest_half/illustration_3.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature text_32 --target data/pair_vgtest_half/text_32.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_45 --target data/pair_vgtest_half/logo_45.jpg --log_dir log/supp
 
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature illustration_2 --target data/pair_vgtest_half/illustration_2.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature illustration_23 --target data/pair_vgtest_half/illustration_23.jpg --log_dir log/supp
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_1 --target data/pair_vgtest_half/logo_1.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_9 --target data/pair_vgtest_half/logo_9.jpg --log_dir log/supp
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature logo_25 --target data/pair_vgtest_half/logo_25.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature illustration_3 --target data/pair_vgtest_half/illustration_3.jpg --log_dir log/supp
 
-python main.py --config config/all.yaml --experiment experiment_exp2_128 --signature text_35 --target data/pair_vgtest_half/text_35.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature illustration_2 --target data/pair_vgtest_half/illustration_2.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_1 --target data/pair_vgtest_half/logo_1.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_25 --target data/pair_vgtest_half/logo_25.jpg --log_dir log/supp
+
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature text_35 --target data/pair_vgtest_half/text_35.jpg --log_dir log/supp
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/logo_40.jpg --num_paths 8 --save_folder supplementary/fallingwater_path512
