@@ -14,12 +14,12 @@ try:
     os.mkdir("hr_binary")
 except:
     pass
-filename = "id1_id4_id30_id60_1.0_0.png"
+filename = "id1_id4_id30_id60_1.0_1.0.png"
 image = Image.open(f'hr/{filename}')
 x = TF.to_tensor(image)
 x.unsqueeze_(0)
-x[x>=0.5] = 1.0
-x[x<0.5] = 0.0
+x[x>=0.4] = 1.0
+x[x<0.4] = 0.0
 # x = TF.resize(x, 56)
 x = TF.resize(x,224, interpolation=TF.InterpolationMode.BILINEAR)
 
