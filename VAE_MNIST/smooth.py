@@ -14,17 +14,15 @@ try:
     os.mkdir("hr_binary")
 except:
     pass
-filename = "id1_id4_id30_id60_1.0_1.0.png"
-image = Image.open(f'hr/{filename}')
-x = TF.to_tensor(image)
-x.unsqueeze_(0)
-x[x>=0.4] = 1.0
-x[x<0.4] = 0.0
-# x = TF.resize(x, 56)
-x = TF.resize(x,224, interpolation=TF.InterpolationMode.BILINEAR)
-
-save_image(x, f'hr_binary/{filename}')
-
-
-
-print(x.shape)
+for i in ["0", "0.1", "0.3","0.5", "0.7", "0.9", "1.0"]:
+    for j in ["0", "0.1", "0.3","0.5", "0.7", "0.9", "1.0"]:
+        filename = f"id1_id4_id30_id60_{i}_{j}.png"
+        image = Image.open(f'hr/{filename}')
+        x = TF.to_tensor(image)
+        x.unsqueeze_(0)
+        x[x>=0.65] = 1.0
+        x[x<0.65] = 0.0
+        # x = TF.resize(x, 56)
+        x = TF.resize(x,224, interpolation=TF.InterpolationMode.BILINEAR)
+        save_image(x, f'hr_binary/{filename}')
+        print(x.shape)
