@@ -1157,10 +1157,23 @@ python main.py --config config/all.yaml --experiment experiment_exp2_256 --signa
 
 python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_1 --target data/pair_vgtest_half/logo_1.jpg --log_dir log/supp
 
-python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_25 --target data/pair_vgtest_half/logo_25.jpg --log_dir log/supp
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature logo_25 --target data/pair_vgtest_half/logo_25.png --log_dir log/supp
 
 python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature text_35 --target data/pair_vgtest_half/text_35.jpg --log_dir log/supp
 
 
 
-python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/logo_40.jpg --num_paths 8 --save_folder supplementary/fallingwater_path512
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/illustration_23.jpg --num_paths 8 --save_folder supplementary/illustration_23_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/illustration_23.jpg --num_paths 16 --save_folder supplementary/illustration_23_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/illustration_23.jpg --num_paths 32 --save_folder supplementary/illustration_23_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/illustration_23.jpg --num_paths 64 --save_folder supplementary/illustration_23_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/illustration_23.jpg --num_paths 128 --save_folder supplementary/illustration_23_path128
+python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/illustration_23.jpg --num_paths 256 --save_folder supplementary/illustration_23_path256
+
+
+/scratch/ma.xu1/diffvg/pair/Layerwise/results/painterly_rendering/supplementary/
+
+/scratch/ma.xu1/diffvg/Layerwise/log/supp/
+
+python main_folder_interpolate.py --config config/interpolate.yaml --experiment experiment_exp2_8 --target_folder ../VAE_MNIST/hr_binary --save_folder VAE_MNIST
+
