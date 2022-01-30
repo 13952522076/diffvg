@@ -49,7 +49,8 @@ def main(args):
     shape_groups = []
     if args.use_blob:
         for i in range(num_paths):
-            num_segments = random.randint(3, 5)
+            # num_segments = random.randint(3, 5)
+            num_segments = 3
             num_control_points = torch.zeros(num_segments, dtype = torch.int32) + 2
             points = []
             p0 = (random.random(), random.random())
