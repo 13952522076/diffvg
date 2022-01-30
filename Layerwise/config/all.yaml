@@ -135,3 +135,9 @@ experiment_exp2_256:
     base: 2
     max_path: 256
     max_path_per_iter: 32
+
+#[1-10,16,32,64]
+experiment_rebuttal:
+  path_schedule:
+    type: list
+    schedule: [1,1,1,1,1,1,1,1,1,1,6,16,32]
