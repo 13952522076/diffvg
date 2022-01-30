@@ -42,8 +42,8 @@ def main(args):
     num_paths = args.num_paths
     max_width = args.max_width
     
-    random.seed(1234)
-    torch.manual_seed(1234)
+    # random.seed(1234)
+    # torch.manual_seed(1234)
     
     shapes = []
     shape_groups = []
