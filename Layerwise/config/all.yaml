@@ -7,7 +7,7 @@ default:
     init: false
     image: false
     output: true
-    video: false
+    video: true
     loss: false
   trainable: 
     bg: False
@@ -104,6 +104,13 @@ experiment_exp2_32:
     max_path_per_iter: 32
 
 experiment_exp2_64:
+  path_schedule:
+    type: exp
+    base: 2
+    max_path: 64
+    max_path_per_iter: 32
+
+experiment_exp2_512:
   path_schedule:
     type: exp
     base: 2

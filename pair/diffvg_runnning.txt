@@ -28,6 +28,9 @@ conda activate im2vec
 cd /scratch/ma.xu1/diffvg/Layerwise/
 
 
+# run original diffvg
+python rendering.py --target smile.png --use_blob 
+
 PA
 module load cuda/11.0
 module load gcc/5.5.0
@@ -1177,3 +1180,214 @@ python painterly_rendering_ablation.py ../../Layerwise/data/pair_vgtest_half/ill
 
 python main_folder_interpolate.py --config config/interpolate.yaml --experiment experiment_exp2_8 --target_folder ../VAE_MNIST/hr_binary --save_folder VAE_MNIST
 
+
+
+
+
+
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 1 --target data/rebuttal/1.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 2 --target data/rebuttal/2.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 3 --target data/rebuttal/3.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 4 --target data/rebuttal/4.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 5 --target data/rebuttal/5.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 6 --target data/rebuttal/6.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 7 --target data/rebuttal/7.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 8 --target data/rebuttal/8.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 9 --target data/rebuttal/9.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 10 --target data/rebuttal/10.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 11 --target data/rebuttal/11.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 12 --target data/rebuttal/12.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 13 --target data/rebuttal/13.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 14 --target data/rebuttal/14.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 15 --target data/rebuttal/15.png --log_dir log/rebuttal
+python main.py --config config/all.yaml --experiment experiment_rebuttal --signature 16 --target data/rebuttal/16.png --log_dir log/rebuttal
+
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 1 --save_folder rebuttal/1_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 1 --save_folder rebuttal/2_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 1 --save_folder rebuttal/3_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 1 --save_folder rebuttal/4_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 1 --save_folder rebuttal/5_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 1 --save_folder rebuttal/6_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 1 --save_folder rebuttal/7_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 1 --save_folder rebuttal/8_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 1 --save_folder rebuttal/9_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 1 --save_folder rebuttal/10_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 1 --save_folder rebuttal/11_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 1 --save_folder rebuttal/12_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 1 --save_folder rebuttal/13_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 1 --save_folder rebuttal/14_path1
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 1 --save_folder rebuttal/15_path1
+
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 2 --save_folder rebuttal/1_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 2 --save_folder rebuttal/2_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 2 --save_folder rebuttal/3_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 2 --save_folder rebuttal/4_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 2 --save_folder rebuttal/5_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 2 --save_folder rebuttal/6_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 2 --save_folder rebuttal/7_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 2 --save_folder rebuttal/8_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 2 --save_folder rebuttal/9_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 2 --save_folder rebuttal/10_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 2 --save_folder rebuttal/11_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 2 --save_folder rebuttal/12_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 2 --save_folder rebuttal/13_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 2 --save_folder rebuttal/14_path2
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 2 --save_folder rebuttal/15_path2
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 3 --save_folder rebuttal/1_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 3 --save_folder rebuttal/2_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 3 --save_folder rebuttal/3_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 3 --save_folder rebuttal/4_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 3 --save_folder rebuttal/5_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 3 --save_folder rebuttal/6_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 3 --save_folder rebuttal/7_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 3 --save_folder rebuttal/8_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 3 --save_folder rebuttal/9_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 3 --save_folder rebuttal/10_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 3 --save_folder rebuttal/11_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 3 --save_folder rebuttal/12_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 3 --save_folder rebuttal/13_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 3 --save_folder rebuttal/14_path3
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 3 --save_folder rebuttal/15_path3
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 4 --save_folder rebuttal/1_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 4 --save_folder rebuttal/2_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 4 --save_folder rebuttal/3_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 4 --save_folder rebuttal/4_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 4 --save_folder rebuttal/5_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 4 --save_folder rebuttal/6_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 4 --save_folder rebuttal/7_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 4 --save_folder rebuttal/8_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 4 --save_folder rebuttal/9_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 4 --save_folder rebuttal/10_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 4 --save_folder rebuttal/11_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 4 --save_folder rebuttal/12_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 4 --save_folder rebuttal/13_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 4 --save_folder rebuttal/14_path4
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 4 --save_folder rebuttal/15_path4
+
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 8 --save_folder rebuttal/1_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 8 --save_folder rebuttal/2_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 8 --save_folder rebuttal/3_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 8 --save_folder rebuttal/4_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 8 --save_folder rebuttal/5_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 8 --save_folder rebuttal/6_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 8 --save_folder rebuttal/7_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 8 --save_folder rebuttal/8_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 8 --save_folder rebuttal/9_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 8 --save_folder rebuttal/10_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 8 --save_folder rebuttal/11_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 8 --save_folder rebuttal/12_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 8 --save_folder rebuttal/13_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 8 --save_folder rebuttal/14_path8
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 8 --save_folder rebuttal/15_path8
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 16 --save_folder rebuttal/1_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 16 --save_folder rebuttal/2_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 16 --save_folder rebuttal/3_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 16 --save_folder rebuttal/4_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 16 --save_folder rebuttal/5_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 16 --save_folder rebuttal/6_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 16 --save_folder rebuttal/7_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 16 --save_folder rebuttal/8_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 16 --save_folder rebuttal/9_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 16 --save_folder rebuttal/10_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 16 --save_folder rebuttal/11_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 16 --save_folder rebuttal/12_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 16 --save_folder rebuttal/13_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 16 --save_folder rebuttal/14_path16
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 16 --save_folder rebuttal/15_path16
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 32 --save_folder rebuttal/1_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 32 --save_folder rebuttal/2_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 32 --save_folder rebuttal/3_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 32 --save_folder rebuttal/4_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 32 --save_folder rebuttal/5_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 32 --save_folder rebuttal/6_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 32 --save_folder rebuttal/7_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 32 --save_folder rebuttal/8_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 32 --save_folder rebuttal/9_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 32 --save_folder rebuttal/10_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 32 --save_folder rebuttal/11_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 32 --save_folder rebuttal/12_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 32 --save_folder rebuttal/13_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 32 --save_folder rebuttal/14_path32
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 32 --save_folder rebuttal/15_path32
+
+
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/1.png --num_paths 64 --save_folder rebuttal/1_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 64 --save_folder rebuttal/2_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 64 --save_folder rebuttal/3_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/4.png --num_paths 64 --save_folder rebuttal/4_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/5.png --num_paths 64 --save_folder rebuttal/5_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/6.png --num_paths 64 --save_folder rebuttal/6_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/7.png --num_paths 64 --save_folder rebuttal/7_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/8.png --num_paths 64 --save_folder rebuttal/8_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/9.png --num_paths 64 --save_folder rebuttal/9_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/10.png --num_paths 64 --save_folder rebuttal/10_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/11.png --num_paths 64 --save_folder rebuttal/11_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/12.png --num_paths 64 --save_folder rebuttal/12_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/13.png --num_paths 64 --save_folder rebuttal/13_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/14.png --num_paths 64 --save_folder rebuttal/14_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/15.png --num_paths 64 --save_folder rebuttal/15_path64
+
+
+rebuttal interploate
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.1
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.2
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.3
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.4
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.5
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.6
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.7
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.8
+python interpolate.py diffvg_1.svg diffvg_2.svg --alpha 0.9
+
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/2.png --num_paths 64 --save_folder rebuttal_interploate_randseed/2_path64
+python painterly_rendering_ablation.py ../../Layerwise/data/rebuttal/3.png --num_paths 64 --save_folder rebuttal_interploate_randseed/3_path64
+
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.1
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.2
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.3
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.4
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.5
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.6
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.7
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.8
+python interpolate.py randseed_diffvg_1.svg randseed_diffvg_2.svg --alpha 0.9
+
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.1
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.2
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.3
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.4
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.5
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.6
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.7
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.8
+python interpolate.py randseed_diffvg_11.svg randseed_diffvg_22.svg --alpha 0.9
+
+
+
+-----------------------
+python main.py --config config/base.yaml --experiment experiment_5x1 --signature demo --target figures/smile.png --log_dir log/
+
+
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature ct_1 --target ./data/ct/ct1.png
+python main.py --config config/all.yaml --experiment experiment_exp2_256 --signature ct_2 --target ./data/ct/ct2.png
